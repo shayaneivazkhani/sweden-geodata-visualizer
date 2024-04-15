@@ -1,0 +1,418 @@
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const duckdb = require('duckdb');
+
+const app = express();
+const port = 3001;
+
+// Allow Fetch requests from http://localhost:3000
+app.use(cors({
+  origin: 'http://localhost:3000',
+}));
+
+
+/* 🩸 Shayans exempel —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
+
+/* 🩸 DEL 1 – track performance */
+
+// measure in milli seconds
+const logger = (req, res, next) => {
+  // This is a middleware that logs all incoming requests.
+  // It logs:
+  //  - the response status code
+  //  - the request method
+  //  - the request URL
+  //  - the time (in milliseconds) it took for the server to respond
+
+  const t = Date.now();
+  next();
+  console.log(
+    `   backend ––> [${res.statusCode}] ${req.method} ${req.url} (🔸${Date.now() - t}ms)`
+  );
+};
+// measure in mikro seconds
+const logger2 = (req, res, next) => {
+  // This is a middleware that logs all incoming requests.
+  // It logs:
+  //  - the response status code
+  //  - the request method
+  //  - the request URL
+  //  - the time (in microseconds) it took for the server to respond
+
+  const startTime = process.hrtime();
+  next();
+  const endTime = process.hrtime(startTime);
+  const elapsedTimeInMicroseconds = endTime[0] * 1e6 + endTime[1] / 1e3; // Convert to microseconds
+  console.log(
+    `   backend ––> [${res.statusCode}] ${req.method} ${req.url} (${elapsedTimeInMicroseconds}µs)`
+  );
+};
+// Register a custom middleware for logging incoming requests
+app.use(logger2);
+
+/* 🩸 DEL 2 – set up server to handle JSON */
+
+/* Middleware to parse JSON bodies — Express doesn't automatically parse POST HTTP body (a string) into a JavaScript object (a JSON).
+  The bodyParser.json() middleware does exactly that—it parses the incoming request body as JSON and exposes it on req.body property of the request object.
+*/
+app.use(bodyParser.json());
+
+/* 🩸 DEL 3 – set up database */
+
+let dbInstance = null; //❗️INCREASE PREFORMANCE❗️ –> fixat Global variable to hold the singleton database instance instead of creating and destroying a connection for every incoming request to server, eftersom en express server är ändå singlethreaded
+
+async function initializeduck() {
+  if (!dbInstance) { // Check if the singleton instance exists
+    const duk = new duckdb.Database('database.db');
+    try {
+      await duk.connect(); // Connect to the database
+      dbInstance = duk; // Store the database instance in the global variable
+    } catch (error) {
+      console.log('❗️ Connection to database failed: ', error);
+      throw error; // Throw the error to indicate connection failure
+    }
+  }
+  return dbInstance; // Return the global database instance
+}
+
+/* 🩸 DEL 4... – set up endpoints */
+
+// Endpooint to handle GET requests 
+app.get("/api/column", async (req, res) => {
+  const col_name = req.query.col || "-1"; // default value of -1 if 'col' is not provided
+
+  try {
+    const db = await initializeduck();
+    const query = `SELECT ${col_name} FROM tendmilldb;`;  // kom på own logic to handle cases that doesnt match column name in table
+
+    db.all(query, function (err, queryres) {
+      if (err) {
+        throw err;
+      }
+      const sanitizedResult = queryres.map(row => {
+        const value = row[Object.keys(row)[0]]; // Assuming the first column returned by the query is the one you want
+        return {
+          [col_name]: value ? value.toString() : 'Column value is undefined'
+        };
+      });
+
+      res.json(sanitizedResult);
+    });
+  } catch (error) {
+    console.log("error: ", error);
+    res.status(500).json({ error: "An error occurred while processing your request" });
+  } finally {
+    //db.close();
+  }
+});
+
+
+app.get("/api/purchase", async (req, res) => {
+  const livsmedel = req.query.livsmedel || "Köttbullar"; // default value of Mjölk if 'livsmedel' is not provided
+  const sub_g = req.query.sub_g || "-1"; // default value of -1 if 'col' is not provided
+  const which_sub = sub_g === "1" ? 'sub_group' : 'sub_sub_group';
+  try {
+    const db = await initializeduck();
+    const query = `SELECT
+                      constellation_name,
+                      ${which_sub} AS group,
+                      ROUND(SUM(units), 0) AS totalunits,
+                      unit,
+                      ROUND(SUM(units) / total.total_units * 100, 4) AS percentage_of_total_units
+                    FROM tendmilldb, (SELECT 
+                                            SUM(units) AS total_units 
+                                      FROM 
+                                            tendmilldb
+                                      WHERE ${which_sub} LIKE '${livsmedel}') AS total
+                    WHERE
+                      ${which_sub} LIKE '${livsmedel}'
+                    GROUP BY
+                      constellation_name,
+                      ${which_sub},
+                      total_units,
+                      unit
+                    ORDER BY
+                      totalunits DESC;`;
+
+    db.all(query, function (err, queryres) {
+      if (err) {
+        throw err;
+      }
+
+      // Map each row to an object containing all column names and their values
+      const sanitizedResult = queryres.map(row => {
+        const rowObject = {};
+        for (const [key, value] of Object.entries(row)) {
+          rowObject[key] = value ? value.toString() : 'NULL';
+        }
+        return rowObject;
+      });
+
+      res.json(sanitizedResult);
+    });
+  } catch (error) {
+    console.log("error: ", error);
+    res.status(500).json({ error: "An error occurred while processing your request" });
+  } finally {
+    //db.close();
+  }
+});
+
+
+
+// Endpooint to handle POST requests 
+app.post("/api/column", async (req, res) => {
+  const number = req.body.col || "-1"; // default value of -1 if 'col' is not provided
+
+  try {
+    const db = await initializeduck();
+    const query = `SELECT ${col_name} FROM tendmilldb;`;  // kom på own logic to handle cases that doesnt match column name in table
+
+    db.all(query, function (err, queryres) {
+      if (err) {
+        throw err;
+      }
+      const sanitizedResult = queryres.map(row => {
+        const value = row[Object.keys(row)[0]]; // Assuming the first column returned by the query is the one you want
+        return {
+          [col_name]: value ? value.toString() : 'Column value is undefined'
+        };
+      });
+
+      res.json(sanitizedResult);
+    });
+  } catch (error) {
+    console.log("error: ", error);
+    res.status(500).json({ error: "An error occurred while processing your request" });
+  } finally {
+    //db.close();
+  }
+});
+
+
+/* —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————🩸*/
+
+
+app.get("/api/companies/meatballsDelivered", async (req, res) => {
+  try {
+    const db = await initializeduck();
+    const query = `
+      SELECT producer, brand, sub_sub_group, ROUND(SUM(units)) AS total_units, unit
+      FROM tendmilldb
+      WHERE sub_sub_group LIKE 'Köttbullar'
+      GROUP BY producer, brand, sub_sub_group, unit
+      ORDER BY total_units DESC;
+    `;
+
+    db.all(query, function (err, queryres) {
+      if (err) {
+        throw err;
+      }
+
+      // Map each row to an object containing all column names and their values
+      const sanitizedResult = queryres.map(row => {
+        const rowObject = {};
+        for (const [key, value] of Object.entries(row)) {
+          rowObject[key] = value ? value.toString() : 'Column value is undefined';
+        }
+        return rowObject;
+      });
+
+      res.json(sanitizedResult);
+    });
+  } catch (error) {
+    console.log("error: ", error);
+    res.status(500).json({ error: "An error occurred while processing your request" });
+  } finally {
+    //db.close();
+  }
+});
+
+app.get("/api/averageCost/ecoMeatballs", async (req, res) => {
+  try {
+    const db = await initializeduck();
+    const query = `
+    SELECT producer, brand, sub_sub_group, ROUND(SUM(cost)) AS totalcost,
+    ROUND(SUM(units)) AS totalunits, ROUND(totalcost/totalunits) AS averagecostperunit
+    FROM tendmilldb WHERE sub_sub_group LIKE 'Köttbullar' AND
+    (name LIKE '%EKO%' OR name LIKE '%eko%' OR name LIKE '%Eko%')
+    GROUP BY producer, brand, sub_sub_group
+    ORDER BY averagecostperunit DESC;`;
+
+    db.all(query, function (err, queryres) {
+      if (err) {
+        throw err;
+      }
+
+      // Map each row to an object containing all column names and their values
+      const sanitizedResult = queryres.map(row => {
+        const rowObject = {};
+        for (const [key, value] of Object.entries(row)) {
+          rowObject[key] = value ? value.toString() : 'Column value is undefined';
+        }
+        return rowObject;
+      });
+
+      res.json(sanitizedResult);
+    });
+  } catch (error) {
+    console.log("error: ", error);
+    res.status(500).json({ error: "An error occurred while processing your request" });
+  } finally {
+    //db.close();
+  }
+});
+
+app.get("/api/averageCost/notEcoMeatballs", async (req, res) => {
+  try {
+    const db = await initializeduck();
+    const query = `SELECT producer, brand, sub_sub_group, ROUND(SUM(cost)) AS totalcost,
+    ROUND(SUM(units)) AS totalunits, ROUND(totalcost/totalunits) AS averagecostperunit
+    FROM tendmilldb WHERE sub_sub_group LIKE 'Köttbullar' AND
+    NOT (name LIKE '%EKO%' OR name LIKE '%eko%' OR name LIKE '%Eko%')
+    GROUP BY producer, brand, sub_sub_group
+    ORDER BY averagecostperunit DESC;`;
+
+    db.all(query, function (err, queryres) {
+      if (err) {
+        throw err;
+      }
+
+      // Map each row to an object containing all column names and their values
+      const sanitizedResult = queryres.map(row => {
+        const rowObject = {};
+        for (const [key, value] of Object.entries(row)) {
+          rowObject[key] = value ? value.toString() : 'Column value is undefined';
+        }
+        return rowObject;
+      });
+
+      res.json(sanitizedResult);
+    });
+  } catch (error) {
+    console.log("error: ", error);
+    res.status(500).json({ error: "An error occurred while processing your request" });
+  } finally {
+    //db.close();
+  }
+});
+
+
+
+//osäker på om den här är rätt, har inte räknat. Orginal fungerade inte (queryn alltså)
+app.get("/api/kommun/meatBallsPurchase/ecoNoEco", async (req, res) => {
+  try {
+    const db = await initializeduck();
+    const query = `SELECT
+                      a.constellation_name,
+                      a.sub_sub_group,
+                      ROUND(SUM(a.units)) AS totalunits,
+                      ROUND((SUM(CASE WHEN a.name LIKE '%Eko%' OR a.name LIKE '%eko%' THEN a.units ELSE 0 END) / SUM(a.units) * 100), 2) AS percentage_eko,
+                      ROUND((SUM(CASE WHEN a.name NOT LIKE '%Eko%' AND a.name NOT LIKE '%eko%' THEN a.units ELSE 0 END) / SUM(a.units) * 100), 2) AS percentage_noneko,
+                      ROUND((SUM(a.units) / (SELECT SUM(units) FROM tendmilldb WHERE sub_sub_group LIKE 'Köttbullar') * 100), 2) AS percentage_of_total_units
+                  FROM
+                      tendmilldb a
+                  WHERE
+                      a.sub_sub_group LIKE 'Köttbullar'
+                  GROUP BY
+                      a.constellation_name,
+                      a.sub_sub_group
+                  ORDER BY
+                      totalunits DESC
+                  LIMIT 100;`;
+
+    db.all(query, function (err, queryres) {
+      if (err) {
+        throw err;
+      }
+
+      // Map each row to an object containing all column names and their values
+      const sanitizedResult = queryres.map(row => {
+        const rowObject = {};
+        for (const [key, value] of Object.entries(row)) {
+          rowObject[key] = value ? value.toString() : 'Column value is undefined';
+        }
+        return rowObject;
+      });
+
+      res.json(sanitizedResult);
+    });
+  } catch (error) {
+    console.log("error: ", error);
+    res.status(500).json({ error: "An error occurred while processing your request" });
+  } finally {
+    //db.close();
+  }
+});
+
+
+
+/*—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
+
+let counter = 0; // Initialize counter
+
+async function initializedb() {
+  const db = new duckdb.Database('database.db');
+  try {
+
+    db.connect();
+    console.log('Finished');
+
+    return db;
+
+  } catch (error) {
+    console.log('failed: ', error);
+  }
+}
+
+// Endpoint to get message
+app.get('/api/message', (req, res) => {
+  res.json({ message: 'Hello from the backend!', counter });
+});
+
+// Endpoint to increment the counter
+app.get('/api/incrementCounter', (req, res) => {
+  counter++;
+  res.json({ counter });
+});
+
+// Endpooint to get id from database
+app.get('/api/getid_database', async (req, res) => {
+  let db;
+
+  try {
+    db = await initializedb();
+
+    const query = 'SELECT id, FROM tendmilldb;';
+
+    db.all(query, function (err, queryres) {
+      if (err) {
+        throw err;
+      }
+      console.log(queryres);
+
+      const sanitizedResult = queryres.map(row => ({
+        id: row.id.toString(),
+        //start_date : row.start_date.toString()
+      }));
+
+      res.json(sanitizedResult);
+    });
+
+  } catch (error) {
+    console.log("error: ", error);
+
+  } finally {
+    db.close();
+    console.log('closed succesfully');
+  }
+
+});
+
+
+/* START THE SERVER —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});

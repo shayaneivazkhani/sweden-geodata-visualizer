@@ -1,0 +1,18 @@
+.content3_main_outer_body {
+    margin-top: 50px;
+}
+
+.content3_text {
+    margin-left: 50px; 
+    margin-bottom: 50px;
+
+    color: rgb(253, 241, 230);
+
+    text-align: left;
+    font-family: "Copperplate", sans-serif;
+    font-size: 30px;
+    font-weight: 100;
+    
+    font-stretch: ultra-condensed;
+    line-height: 1.5;
+}

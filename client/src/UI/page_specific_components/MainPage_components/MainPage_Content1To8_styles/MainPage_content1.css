@@ -1,0 +1,332 @@
+/*
+    font-family: Garamond, serif;
+    font-family: "Times New Roman", Times, serif;
+    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Lucida Console", "Courier New", monospace;
+    font-family: 'Roboto', sans-serif;
+    font-family: 'Brush Script MT', cursive;
+    font-family: font-family: Georgia, serif;
+    font-family: "Arial", Sans-serif;
+    
+    font-family: 'Verdana', sans-serif;
+
+    font-family: 'Gill Sans', sans-serif;
+
+    font-family: "DM Serif Display", serif;
+    font-family: 'Arial', serif;
+    font-family: 'Didot', serif;
+    font-family: 'Optima', sans-serif;
+    font-family: 'Trebuchet MS', sans-serif;
+    font-family: "Copperplate", Fantasy;
+    font-family: 'Mulish', sans-serif;
+*/
+
+
+/*—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
+
+
+
+
+.header_row {
+  width: 100%;
+  border-radius: 0px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.Section_with_navigation_link {
+  margin-right: 20px;
+}
+
+
+.Homepage_picture_link {
+  width: 90px;
+  margin-top: 5px;
+  margin-left: 15px;
+  margin-bottom: 10px;
+
+  animation: rubberBand; /* referring directly to the animation's @keyframe declaration */
+  animation-duration: 1s; /* don't forget to set a duration! */
+}
+/*
+.About_link {
+
+  background-color: rgb(46, 103, 108);
+}
+
+.Personal_build_link {
+
+  font-size: 25px;
+}
+*/
+
+/*
+.header_text {
+  background-color: rgb(34, 76, 79);
+
+  user-select: none;
+
+  text-align: left;
+  color: rgb(253, 241, 230);
+  font-family: "Copperplate", Fantasy;
+  font-size: 15px;
+  line-height: 1.5;
+
+  margin-top: 10px;
+  margin-left: 30px;
+  margin-right: 15px;
+  margin-bottom: 1px;
+}
+*/
+
+/*—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+  In the example hsl(120, 50%, 50%);:
+
+  120 is the hue value, representing green on the color wheel.
+  50% is the saturation value, representing a moderate level of saturation.
+  50% is the lightness value, representing a moderate level of brightness.
+*/
+/*
+.header_text_title_text {
+  color: rgba(253, 241, 230, 0.47);
+
+  text-align: left;
+  font-family: 'Optima', sans-serif;
+  font-size: 16px;
+  font-weight: 100; 
+  
+  font-stretch: ultra-condensed;
+  line-height: 1.5;
+}
+*/
+
+/* Layout when screen width is less than 600 px —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
+
+/*
+.header_row {
+  background-color: rgb(12, 29, 50);
+  border-radius: 0px;
+  width: 100%;
+
+  display: flexbox;
+
+  grid-template-columns: 100%;
+  grid-template-rows: 1fr 2fr;
+  grid-template-areas: "page_navigator"
+                        "header_text";
+}
+
+.Homepage_picture_link {
+  background-color: rgb(12, 29, 50);
+  box-shadow: 0 0 20px rgb(0, 25, 250);
+
+  margin-top: 30px;
+  margin-left: 15px;
+  margin-right: 10px;
+  margin-bottom: 50px;
+}
+
+.header_text {
+  background-color: rgb(12, 29, 50);
+  height: 450px;
+
+  user-select: none;
+
+  text-align: left;
+  color: rgb(253, 241, 230);
+  font-family: "Copperplate", Fantasy;
+  font-size: 15px;
+  line-height: 1.5;
+
+  margin-top: 10px;
+  margin-left: 30px;
+  margin-right: 15px;
+  margin-bottom: 10px;
+}
+*/
+
+/* Layout when screen width is more than 600 px —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
+
+/*
+@media only screen and (min-width: 600px) {
+  .header_row {
+      background-color: rgb(12, 29, 50);
+      border-radius: 0px;
+      width: 100%;
+
+      display: flexbox;
+
+      grid-template-columns: 100%;
+      grid-template-rows: 1fr 2fr;
+      grid-template-areas: "page_navigator"
+                            "header_text";
+  }
+
+  .Homepage_picture_link {
+    background-color: rgb(12, 29, 50);
+    box-shadow: 0 0 20px rgb(0, 25, 250);
+
+    margin-top: 30px;
+    margin-left: 15px;
+    margin-right: 10px;
+    margin-bottom: 40px;
+  }
+
+  .header_text {
+    background-color: rgb(12, 29, 50);
+    height: 350px;
+
+    user-select: none;
+
+    text-align: left;
+    color: rgb(253, 241, 230);
+    font-family: "Copperplate", Fantasy;
+    font-size: 15px;
+    line-height: 1.5;
+
+    margin-top: 5px;
+    margin-left: 30px;
+    margin-right: 15px;
+    margin-bottom: 10px;
+  }
+}
+*/
+
+
+/* Layout when screen width is bigger than 900 px ————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
+
+/*
+@media only screen and (min-width: 1000px) {
+  .header_row {
+    border-radius: 0px;
+    width: 100%;
+
+    display: grid;
+    align-items: flex-start;
+    justify-content: center;
+
+    grid-template-columns: repeat(2, 1fr); // Defines two columns each taking 1 fraction of the available space 
+    grid-template-rows: 1fr;
+    grid-template-areas: "page_navigator header_text";
+  }
+
+  .Homepage_picture_link {
+    width: 50px;
+    height: 40px;
+
+    margin-top: 20px;
+    margin-left: 15px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+
+  .header_text {
+    background-color: rgb(12, 29, 50);
+
+    user-select: none;
+
+    text-align: left;
+    color: rgb(253, 241, 230);
+    font-family: "Copperplate", Fantasy;
+    font-size: 15px;
+    line-height: 1.5;
+
+    margin-top: 10px;
+    margin-left: 30px;
+    margin-right: 15px;
+    margin-bottom: 1px;
+  }
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* önodiga unused CSS —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
+
+/*
+  .page_navigator {
+    background-color: #492E87;
+  }
+
+  .header_text {
+    background-color: #492E87;
+    overflow:scroll;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  */
+
+/*
+
+#header_row {
+    clear: both;
+    text-align: center; / Center align the text 
+}
+
+#header_row div {
+  float: none; / Remove float 
+  display: inline-block; / Display divs as inline-block to make them sit next to each other 
+}
+
+#header_text {
+    
+
+}
+*/
+
+/*
+
+
+.row div {
+  padding: 3px;
+  border: 2px solid black;
+  height: 20px;
+  width: 20px;
+  float: left;
+}
+
+.row {
+  clear: both;
+}
+
+
+*/

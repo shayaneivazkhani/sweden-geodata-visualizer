@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+  <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="initial-scale=1, width=device-width" />
+
+      <link rel="icon" href="./images/favicon.ico">
+      <title>MeatballMadness</title>
+
+      <!--  WHY NOT? placera här => <link rel="stylesheet" href="index.css"> -->
+      <style>
+        html {
+          margin: 0;
+          padding: 0;
+        }
+        
+        /*––––––––––––––––– Save Important COLORS with custom name so that they could be used whereever needed –––––––––––––––––––––*/
+
+        /*
+            • :root is a pseudo-class that targets the root element of the document (usually the <html> element). 
+              By defining variables within :root, they become globally available throughout your CSS.
+
+            • --main-color and --secondary-color are the custom CSS variables you've defined with hexadecimal color values.
+
+            • You can then use var(--variable-name) to reference the custom colors wherever you need them in your CSS.
+          */
+
+          /* definiera färger som hålls i variabler 
+          .root {
+            --main-color: #de0404;
+          }
+          .element {
+            color: var(--main-color);
+          }
+        */
+
+        /* WORKING towards dark/light mode button ———————————————————*/
+        /* 
+        :root {
+            --white: #fff;
+            --black: #000;
+            --gray-50: #f9f9f9;
+            --gray-100: #ececec;
+            --gray-200: #cdcdcd;
+            --gray-300: #b4b4b4;
+            --gray-400: #9b9b9b;
+            --gray-500: #676767;
+            --gray-600: #424242;
+            --gray-700: #2f2f2f;
+            --gray-800: #212121;
+            --gray-900: #171717;
+            --gray-950: #0d0d0d;
+            --brand-purple:#ab68ff
+        }
+
+        html {
+            --text-primary: var(--gray-950);
+            --text-secondary: var(--gray-500);
+            --text-tertiary: var(--gray-400);
+            --text-quaternary: var(--gray-300);
+            --border-light: rgba(0, 0, 0, .1);
+            --border-medium: rgba(0, 0, 0, .15);
+            --border-heavy: rgba(0, 0, 0, .2);
+            --border-xheavy: rgba(0, 0, 0, .25);
+            --main-surface-primary: var(--white);
+            --main-surface-secondary: var(--gray-50);
+            --main-surface-tertiary: var(--gray-100);
+            --sidebar-surface-primary: var(--gray-50);
+            --sidebar-surface-secondary: var(--gray-100);
+            --sidebar-surface-tertiary: var(--gray-200);
+            --link: #2964aa;
+            --link-hover: #749ac8;
+            --selection:#007aff
+        }
+        
+        .dark {
+            --text-primary: var(--gray-100);
+            --text-secondary: var(--gray-300);
+            --text-tertiary: var(--gray-400);
+            --text-quaternary: var(--gray-500);
+            --border-light: hsla(0, 0%, 100%, .1);
+            --border-medium: hsla(0, 0%, 100%, .15);
+            --border-heavy: hsla(0, 0%, 100%, .2);
+            --border-xheavy: hsla(0, 0%, 100%, .25);
+            --main-surface-primary: var(--gray-800);
+            --main-surface-secondary: var(--gray-700);
+            --main-surface-tertiary: var(--gray-600);
+            --sidebar-surface-primary: var(--gray-900);
+            --sidebar-surface-secondary: var(--gray-800);
+            --sidebar-surface-tertiary: var(--gray-700);
+            --link: #7ab7ff;
+            --link-hover:#5e83b3
+        }
+        */
+
+        /*—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
+        body {
+          overflow: auto;
+        }
+        body {
+              margin: 0; /* Remove default margin */
+              padding: 0; /* Remove default padding */
+
+              /*overflow-x: hidden; Prevent horizontal scrollbar */
+              /*min-width: 800px;  dont let user be able to make the window smaller than 600 pixels */
+
+              /*background-color: rgb(12, 29, 50);*/ /* Set background color */
+
+              /*background: rgb(0,0,0);*/
+              /*background: linear-gradient(0deg, rgb(20, 22, 42) 0%, #352073 100%);*/
+              /*background: linear-gradient(0.36turn, #0a2c3c, #1e43a1, #412dc0, #430e59);*/
+
+              background: linear-gradient(95deg, #193674, #350e70, #151e75, #671ca1);
+              background-size: 800% 800%;
+
+              -webkit-animation: AnimationName 18s ease infinite;
+              -moz-animation: AnimationName 18s ease infinite;
+              animation: AnimationName 18s ease infinite;
+          }
+          /* Scrollbar—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
+        
+
+          @media only screen and (min-width: 100px) and (max-width: 900px) {
+            body::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+              background-color: rgb(0, 0, 0);
+            }
+          }
+          @media only screen and (min-width: 901px) and (max-width: 1300px) {
+            body::-webkit-scrollbar {
+              width: 0.8vw;
+              height: 0.8vw;
+              background-color: rgb(0, 0, 0);
+            }
+          }
+          @media only screen and (min-width: 1301px) and (max-width: 50000px) {
+            body::-webkit-scrollbar {
+              width: 0.6vw;
+              height: 0.6vw;
+              background-color: rgb(0, 0, 0);
+            }
+          }
+
+          body::-webkit-scrollbar:hover {
+            background-color: rgb(0, 0, 0);
+          }
+          body::-webkit-scrollbar-track {
+              background-color: rgba(0, 171, 193, 0);
+              border-radius:9999px;
+          }
+          body::-webkit-scrollbar-track:hover {
+               /*background-color: rgba(0,172,193, 0.89); */
+          }
+          body::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 134, 18, 0.98);
+            /*border-color: rgba(94, 222, 55, 0.87); */
+            border-radius: 9999px;
+            border: width 10px;
+          }
+          body::-webkit-scrollbar-thumb:hover {
+            background-color:rgba(255,106,50, 0.97);
+          }
+          /*—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
+          @-webkit-keyframes AnimationName {
+              0%{background-position:81% 0%}
+              50%{background-position:20% 100%}
+              100%{background-position:81% 0%}
+          }
+          @-moz-keyframes AnimationName {
+              0%{background-position:81% 0%}
+              50%{background-position:20% 100%}
+              100%{background-position:81% 0%}
+          }
+          @keyframes AnimationName {
+              0%{background-position:81% 0%}
+              50%{background-position:20% 100%}
+              100%{background-position:81% 0%}
+          }
+      </style>
+          <!-- css animations from https://animate.style/ -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+      <!-- Fonts to support Material Design – i.e. MUI library (Material UI) that is imported to create the components -->
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <!-- Icons to support Material Design -->
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+      <!-- Include Extra fonts -->
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine|Inconsolata|Optima">
+  </head>
+
+   <!-- Disable USER right-clicking =>  oncontextmenu="return false" -->
+  <body oncontextmenu="return false">
+      
+      
+      <div id="root">
+          <!-- The APP goes in here -->
+      </div>
+
+  </body>
+
+</html>
