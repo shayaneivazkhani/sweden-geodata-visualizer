@@ -57,7 +57,7 @@ export default function TreeSubpagesMenuToStatisticPages() {
       >
        
        <TypographyTitle>
-               Navigate to pages with statistics
+               Pages with statistics
       </TypographyTitle>
         
         <List>

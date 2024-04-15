@@ -64,7 +64,7 @@ export default function BuildMenuToPersonalPages() {
       >
        
        <TypographyTitle>
-            Navigate to custom individual subpages
+            Individual custom subpages
        </TypographyTitle>
         
         <List>

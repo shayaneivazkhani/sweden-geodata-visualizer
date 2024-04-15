@@ -28,7 +28,7 @@ const Content2 = () => {
     const TextTypography = styled(Typography)(() => ({
         color: "var(--mainPage-Content2-textColor1)",
         fontFamily: "var(--mainpage--content2-font1)",
-        fontSize: 23,
+        fontSize: "clamp(15px, 1.5vw, 40px)",
         fontWeight: 400,
         textAlign: "left", 
     }));

@@ -24,7 +24,9 @@ Navigate to MeatBallMadness then either client directory or server directory, th
 - ✅ Byt ansvar för Content1...8  och ersätt ansvaret med Pages1..8 där i pages innehåller en viss konfiguration av Content1...8
 - ✅  Fixa klart HTML layout för HomePage 
 - ✅  Backend integration of data into diff charts in homepage
-- [ ]  TABLE Auto Sort Bugg: const headCells column 'units' doesnt get sorted properly unlike column 'andel' in file Table_sticky_column_name_autoSort.js — therefor i have disabled the sorting ability of column 'units' until it gets fixed
+- [ ] wrap 3 card links to subpages i en Grid
+- [ ] fixa en Header komponent i general_komponents av content1 komponent i MainPage
+- [ ] TABLE Auto Sort Bugg: const headCells column 'units' doesnt get sorted properly unlike column 'andel' in file Table_sticky_column_name_autoSort.js — therefor i have disabled the sorting ability of column 'units' until it gets fixed
 - [ ] Fixa klart HTML & CSS för 3 subpage statistik sidorna in subpages
 - [ ] Backend integration of data into diff charts in subpages
 - ✅ Light/Darkmode switch button
