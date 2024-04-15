@@ -6,8 +6,8 @@ const Content5 = () => {
     const footerStyle = {
         width: "100%",
         paddingTop: "5px",
-        backgroundColor: "rgb(0,0,0)",
-        borderTop: "1px solid rgb(163,239,243)",
+        backgroundColor: "var(--header-NavBar-Color)",
+        borderTop: "1px solid var(--doc-divider-horisontal-Color)",
         boxShadow: "0 3px 20px 0 rgba(162,155,254,0.68)"
       };
     

@@ -25,7 +25,7 @@ const StyledCard = styled(Card)(({ color }) => ({
   boxShadow: "0 0px 5px 0 rgb(0, 0, 0)",
   transition: "0.15s",
   "&:hover": {
-    border: "2.1px solid rgba(30,237,197, 0.78)",
+    border: "2.1px solid var(--mainPage-3CardLinks-Border-Color1)",
     borderRadius: 1,
     boxShadow: "0 4px 20px 0 rgb(0, 0, 0)"
   }
@@ -40,16 +40,16 @@ const CardContentContent = styled(CardContent)(({ color }) => {
 
 
 const TypographyTitle = styled(Typography)(() => ({
-  fontFamily: "Copperplate",
+  fontFamily: "var(--mainpage--content2-3card-font1)",
   fontSize: "25px",
-  color: "#fb9062",
+  color: "var(--mainPage-3CardLinks-Title-Color1)",
   fontWeight: 500,
   fontSize: 26,
   //textTransform: "uppercase"
 }));
 const TypographySubtitle = styled(Typography)(() => ({
-  fontFamily: "Verdana",
-  color: "#c8734e",
+  fontFamily: "var(--mainpage--content2-3card-font2)",
+  color: "var(--mainPage-3CardLinks-subTitle-Color1)",
   opacity: 0.87,
  // marginTop: "1rem",
   fontWeight: 400,
@@ -81,7 +81,7 @@ const CustomCard = ({ color, image, title, subtitle }) => (
 export default function SubPagesCard() {
 
   const animation = {
-    loop: true,
+    loop: false,
     autoplay: true,
     animationData: animationGroupOfGraphs,
     rendererSettings: {
@@ -114,6 +114,15 @@ export default function SubPagesCard() {
     paddingRight: "40px",
   };
 
+  const TypographyTitle = styled(Typography)(() => ({
+    color: "var(--accent_color2)",
+    fontFamily: "var(--accent-font1)",
+    fontSize: 14,
+    fontWeight: 400,
+    textAlign: "left", 
+    textTransform: "uppercase"
+  }));
+
   return (
     <React.Fragment>
       <Box
@@ -134,7 +143,7 @@ export default function SubPagesCard() {
               <div className="first_card" style={cardStyle}>
                 <Link href="/livsmedel" underline="none">
                   <CustomCard
-                    color={"#094d43"}
+                    color={"var(--mainPage-3CardLinks-BgColor1)"}
                     title={"Food sales"}
                     subtitle={"Review comprehensive statistics on reported food sales from municipalities across Sweden during year 2023"}
                     image={"/images/livsmedel_card_img.jpg"}
@@ -144,7 +153,7 @@ export default function SubPagesCard() {
               <div className="second_card" style={cardStyle}>
                 <Link href="/ekologiskt" underline="none">
                   <CustomCard
-                    color={"#35094D"}
+                    color={"var(--mainPage-3CardLinks-BgColor1)"}
                     title={"Organic sales"}
                     subtitle={"Explore the proportion of organic food sales within these municipalities across Sweden during year 2023"}
                     image={"/images/ekologiskt_card_img.jpg"}
@@ -154,7 +163,7 @@ export default function SubPagesCard() {
               <div className="third_card" style={cardStyle}>
                 <Link href="/deals" underline="none">
                   <CustomCard
-                    color="#1F094D"
+                    color="var(--mainPage-3CardLinks-BgColor1)"
                     title={"Deals Made"}
                     subtitle={"Statistics revealing the profitability of deals made by each municipality with food vendors in 2023."}
                     image={"/images/deals_card_img.jpg"}
@@ -167,9 +176,9 @@ export default function SubPagesCard() {
           <div className="second_column" style={secondColumnStyle}>
 
             <Lottie options={animation} height={220} width={220} />
-            <Typography variant="overline" color={"rgb(163,239,243)"} display="block" gutterBottom>
+            <TypographyTitle>
                ⬅︎ Navigate to these sections
-            </Typography>
+            </TypographyTitle>
 
          </div>
         </div>

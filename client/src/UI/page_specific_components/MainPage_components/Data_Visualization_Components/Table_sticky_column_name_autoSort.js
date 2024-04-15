@@ -341,15 +341,24 @@ export default function EnhancedTable(props) {
     return (
         <React.Fragment>
             <FormControlLabel
-                control={
-                    <Switch checked={dense} onChange={handleChangeDense} />
+                label={
+                    <Typography
+                        sx={{
+                            fontFamily: "monospace", // Specify the desired font family
+                            fontSize: "13px", // Specify the desired font size
+                        }}
+                    >
+                        dense
+                    </Typography>
                 }
-                label="Dense"
                 style={{
-                    color: "rgb(163,239,243)",
+                    color: "var(--accent_color3)",
                     paddingRight: "20px",
                     borderRadius: "20px",
                 }}
+                control={
+                    <Switch checked={dense} onChange={handleChangeDense} />
+                }
             />
             {/* <Paper sx={{ width: "100%", mb: 2 }}> */}
             <Paper sx={{ width: "760px", height: "500px", overflow: "hidden" }}>

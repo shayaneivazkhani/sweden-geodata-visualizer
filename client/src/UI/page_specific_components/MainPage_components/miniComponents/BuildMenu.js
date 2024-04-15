@@ -43,13 +43,12 @@ export default function BuildMenuToPersonalPages() {
 
 
     const TypographyTitle = styled(Typography)(() => ({
-      fontFamily: "Optima",
-      fontSize: "25px",
-      color: "rgb(163,239,243)",
-      fontWeight: 500,
-      fontSize: 26,
-      textAlign: "center", // Center the text
-      //textTransform: "uppercase"
+      color: "var(--accent_color2)",
+      fontFamily: "var(--accent-font1)",
+      fontSize: 16,
+      fontWeight: 400,
+      textAlign: "left", // Center the text
+      textTransform: "uppercase"
     }));
   
     const list = (anchor) => (
@@ -64,9 +63,9 @@ export default function BuildMenuToPersonalPages() {
         onKeyDown={toggleDrawer(anchor, false)}
       >
        
-       <Typography variant="overline" color={"rgb(163,239,243)"} display="block" gutterBottom>
+       <TypographyTitle>
             Navigate to custom individual subpages
-       </Typography>
+       </TypographyTitle>
         
         <List>
           {data.map((item) => (
@@ -74,18 +73,20 @@ export default function BuildMenuToPersonalPages() {
               key={item.label}
               sx={{
                   py: 0,
-                  minHeight: 32,
+                  marginLeft: "7px",
+                  minHeight: 36,
               }}
               style={{ color: "#fb9062" }}
             >
-            <ListItemIcon sx={{ color: "inherit" }}>
+            <ListItemIcon sx={{ color: "inherit", minWidth: "auto", marginRight: "10px" }}>
                 {item.icon}
             </ListItemIcon>
             <ListItemText
                 primary={item.label}
                 primaryTypographyProps={{
-                    fontSize: 14,
-                    fontWeight: "medium",
+                    fontFamily: "var(--secondary-font)",
+                    fontSize: 16,
+                    fontWeight: 400,
                 }}
             />
         </ListItemButton>
@@ -95,11 +96,10 @@ export default function BuildMenuToPersonalPages() {
     );
 
     const TypographyText = styled(Typography)(() => ({
-      fontFamily: "Copperplate",
-      fontSize: "25px",
-      color: "rgb(163,239,243)",
-      fontWeight: 500,
+      color: "var(--accent_color1)",
+      fontFamily: "var(--secondary-font)",
       fontSize: 20,
+      fontWeight: 500,
       //textTransform: "uppercase"
       paddingTop: "20px",
       "&:hover": {

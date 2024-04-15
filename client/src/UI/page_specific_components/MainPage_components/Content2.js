@@ -12,7 +12,7 @@ const Content2 = () => {
     
     const bodyStyle = {
         width: "100%",
-        borderBottom: "1px solid rgb(163,239,243)" // Add a white border at the bottom
+        borderBottom: "1px solid var(--doc-divider-horisontal-Color)" // Add a white border at the bottom
     };
 
     const animation = {
@@ -26,12 +26,11 @@ const Content2 = () => {
 
 
     const TextTypography = styled(Typography)(() => ({
-        fontFamily: "Optima",
-        color: "#e6e5e6",
-        fontSize: "23px",
+        color: "var(--mainPage-Content2-textColor1)",
+        fontFamily: "var(--mainpage--content2-font1)",
+        fontSize: 23,
         fontWeight: 400,
-        fontSize: 21
-        //textTransform: "uppercase" 
+        textAlign: "left", 
     }));
 
 
@@ -65,58 +64,5 @@ const Content2 = () => {
     );
 };
 
-/*
-const Content2 = () => {
-    const defaultOptions1 = {
-        loop: true,
-        autoplay: true,
-        animationData: animationGroupOfGraphs,
-        rendererSettings: {
-          preserveAspectRatio: "xMidYMid slice"
-        }
-    };
-    const defaultOptions2 = {
-        loop: false,
-        autoplay: true,
-        animationData: animationwave,
-        rendererSettings: {
-          preserveAspectRatio: "xMidYMid slice"
-        }
-    };
-
-    return (
-        <div className="content2_main_body centered"> 
-
-            <div className="waveAnimation">
-                <Lottie 
-                    options={defaultOptions2}
-                    height={500}
-                    width={250}
-                />
-            </div>
-
-            <div className="animationGroupOfGraphs">
-                <Lottie 
-                    options={defaultOptions1}
-                    height={350}
-                    width={350}
-                />
-            </div>
-        </div>
-    );
-};
-*/
-
-/*
-const Content2 = () => {
-  return (
-    <div>
-        <StyledEngineProvider injectFirst>
-             <SectionsWithActions />
-        </StyledEngineProvider>
-    </div>
-  );
-}
-*/
 
 export default Content2;

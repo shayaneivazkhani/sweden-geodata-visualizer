@@ -17,7 +17,6 @@ const TabItem = styled(Tab)(({ theme }) => ({
     textAlign: "center",
     transition: "all .5s",
     padding: "10px 15px",
-    color: "#555555",
     height: "auto",
     margin: "10px 0",
     float: "none",
@@ -47,6 +46,14 @@ const Content3 = () => {
         alignItems: "center", // Center items horizontally
         justifyContent: "center", // Center items vertically
     };
+    const text_Style = {
+        color: "var(--mainPage-Content2-textColor1)",
+        fontFamily: "var(--mainpage--content2-font1)",
+        fontSize: 23,
+        fontWeight: 400,
+        textAlign: "left", 
+        textTransform: "uppercase"
+    };
     const tabs_headStyle = {
         width: "100%",
     };
@@ -61,7 +68,7 @@ const Content3 = () => {
                     className="content3_main_inner_body"
                     style={innerBodyStyle}
                 >
-                    <div className="content3_text">See a quick example</div>
+                    <div className="content3_text" style={text_Style}>See a quick example</div>
 
                     <Box
                         sx={{

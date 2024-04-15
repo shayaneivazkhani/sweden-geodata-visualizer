@@ -27,7 +27,7 @@ Navigate to MeatBallMadness then either client directory or server directory, th
 - [ ]  TABLE Auto Sort Bugg: const headCells column 'units' doesnt get sorted properly unlike column 'andel' in file Table_sticky_column_name_autoSort.js — therefor i have disabled the sorting ability of column 'units' until it gets fixed
 - [ ] Fixa klart HTML & CSS för 3 subpage statistik sidorna in subpages
 - [ ] Backend integration of data into diff charts in subpages
-- [ ] Light/Darkmode switch button
+- ✅ Light/Darkmode switch button
 - [ ] Fixa alignment av alla element oavsett skärmstorlek 700px–4000px ska alltid visa korrekt placering
 - [ ] justera färgerna och fonterna för hela websidan tills it looks good
 - [ ] Measuring Performance
