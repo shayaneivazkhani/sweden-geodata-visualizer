@@ -1,5 +1,5 @@
 const express = require('express');
-//const cors = require('cors'); 
+const cors = require('cors'); 
 const bodyParser = require('body-parser');
 const duckdb = require('duckdb');
 
@@ -13,12 +13,12 @@ const port = 3001;
    It helps avoid CORS (Cross-Origin Resource Sharing) issues during development 
    by allowing your frontend and backend to communicate seamlessly without encountering cross-origin restrictions.
 */
-// Allow Fetch requests from http://localhost:3000
-/*
+
+// Allow Fetch requests from http://localhost:3000 för annars fungerar inte data fetch requests i firefox?
 app.use(cors({
   origin: 'http://localhost:3000',
 }));
-*/
+
 
 /* 🩸 Shayans exempel —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
 
