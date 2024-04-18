@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Box, ThemeProvider } from "@mui/material";
+import Stack from "@mui/system/Stack";
 import Color from "color";
 import Lottie from "react-lottie";
 
@@ -124,10 +125,17 @@ export default function SubPagesCard() {
         textTransform: "uppercase",
     }));
 
+    const Item = styled("div")(({ theme }) => ({
+        padding: theme.spacing(1),
+        textAlign: "left",
+        borderRadius: 0,
+    }));
+
     return (
         <React.Fragment>
             <Box
                 sx={{
+                    flexGrow: 1,
                     borderRadius: 1,
                     paddingTop: "35px",
                     paddingBottom: "35px",
@@ -139,46 +147,58 @@ export default function SubPagesCard() {
             >
                 <div style={containerStyle}>
                     <div className="first_column" style={firstColumnStyle}>
-                        <div className="first_card" style={cardStyle}>
-                            <Link href="/livsmedel" underline="none">
-                                <CustomCard
-                                    color={
-                                        "var(--mainPage-3CardLinks-BgColor1)"
-                                    }
-                                    title={"Food sales"}
-                                    subtitle={
-                                        "Review comprehensive statistics on reported food sales from municipalities across Sweden during year 2023"
-                                    }
-                                    image={"/images/livsmedel_card_img.jpg"}
-                                />
-                            </Link>
-                        </div>
-                        <div className="second_card" style={cardStyle}>
-                            <Link href="/ekologiskt" underline="none">
-                                <CustomCard
-                                    color={
-                                        "var(--mainPage-3CardLinks-BgColor1)"
-                                    }
-                                    title={"Organic sales"}
-                                    subtitle={
-                                        "Explore the proportion of organic food sales within these municipalities across Sweden during year 2023"
-                                    }
-                                    image={"/images/ekologiskt_card_img.jpg"}
-                                />
-                            </Link>
-                        </div>
-                        <div className="third_card" style={cardStyle}>
-                            <Link href="/deals" underline="none">
-                                <CustomCard
-                                    color="var(--mainPage-3CardLinks-BgColor1)"
-                                    title={"Deals Made"}
-                                    subtitle={
-                                        "Statistics revealing the profitability of deals made by each municipality with food vendors in 2023."
-                                    }
-                                    image={"/images/deals_card_img.jpg"}
-                                />
-                            </Link>
-                        </div>
+                       
+                            <Item>
+                                <div className="first_card" style={cardStyle}>
+                                    <Link href="/livsmedel" underline="none">
+                                        <CustomCard
+                                            color={
+                                                "var(--mainPage-3CardLinks-BgColor1)"
+                                            }
+                                            title={"Food sales"}
+                                            subtitle={
+                                                "Review comprehensive statistics on reported food sales from municipalities across Sweden during year 2023"
+                                            }
+                                            image={
+                                                "/images/livsmedel_card_img.jpg"
+                                            }
+                                        />
+                                    </Link>
+                                </div>
+                            </Item>
+                            <Item>
+                                <div className="second_card" style={cardStyle}>
+                                    <Link href="/ekologiskt" underline="none">
+                                        <CustomCard
+                                            color={
+                                                "var(--mainPage-3CardLinks-BgColor1)"
+                                            }
+                                            title={"Organic sales"}
+                                            subtitle={
+                                                "Explore the proportion of organic food sales within these municipalities across Sweden during year 2023"
+                                            }
+                                            image={
+                                                "/images/ekologiskt_card_img.jpg"
+                                            }
+                                        />
+                                    </Link>
+                                </div>
+                            </Item>
+                            <Item>
+                                <div className="third_card" style={cardStyle}>
+                                    <Link href="/deals" underline="none">
+                                        <CustomCard
+                                            color="var(--mainPage-3CardLinks-BgColor1)"
+                                            title={"Deals Made"}
+                                            subtitle={
+                                                "Statistics revealing the profitability of deals made by each municipality with food vendors in 2023."
+                                            }
+                                            image={"/images/deals_card_img.jpg"}
+                                        />
+                                    </Link>
+                                </div>
+                            </Item>
+                      
                     </div>
 
                     <div className="second_column" style={secondColumnStyle}>

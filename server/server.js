@@ -88,11 +88,16 @@ async function initializeduck() {
 
 // Endpooint to handle GET requests 
 app.get("/api/column", async (req, res) => {
-  const col_name = req.query.col || "-1"; // default value of -1 if 'col' is not provided
+  const col_name = req.query.col || "sub_group"; // default value of -1 if 'col' is not provided
 
   try {
     const db = await initializeduck();
-    const query = `SELECT ${col_name} FROM tendmilldb;`;  // kom på own logic to handle cases that doesnt match column name in table
+    const query = `SELECT 
+                      DISTINCT ${col_name} 
+                   FROM 
+                      tendmilldb
+                   ORDER BY
+                      ${col_name};`;  
 
     db.all(query, function (err, queryres) {
       if (err) {
@@ -101,9 +106,10 @@ app.get("/api/column", async (req, res) => {
       const sanitizedResult = queryres.map(row => {
         const value = row[Object.keys(row)[0]]; // Assuming the first column returned by the query is the one you want
         return {
-          [col_name]: value ? value.toString() : 'Column value is undefined'
+          [col_name]: value ? value.toString() : 'NULL'
         };
       });
+      
 
       res.json(sanitizedResult);
     });
@@ -118,8 +124,8 @@ app.get("/api/column", async (req, res) => {
 
 app.get("/api/purchase", async (req, res) => {
   const livsmedel = req.query.livsmedel || "Salt"; // default value of Salt if 'livsmedel' is not provided
-  const sub_g = req.query.sub_g || "-1"; // default value of -1 if 'col' is not provided
-  const which_sub = sub_g === "1" ? 'sub_group' : 'sub_sub_group';
+  const sub_g = req.query.sub_g || "sub_group"; // default value of -1 if 'col' is not provided
+  const which_sub = (sub_g === "1" ? 'sub_group' : 'sub_sub_group');
   try {
     const db = await initializeduck();
     const query = `SELECT
@@ -142,6 +148,126 @@ app.get("/api/purchase", async (req, res) => {
                       unit
                     ORDER BY
                       totalunits DESC;`;
+
+    db.all(query, function (err, queryres) {
+      if (err) {
+        throw err;
+      }
+
+      // Map each row to an object containing all column names and their values
+      const sanitizedResult = queryres.map(row => {
+        const rowObject = {};
+        for (const [key, value] of Object.entries(row)) {
+          rowObject[key] = value ? value.toString() : 'NULL';
+        }
+        return rowObject;
+      });
+
+      res.json(sanitizedResult);
+    });
+  } catch (error) {
+    console.log("error: ", error);
+    res.status(500).json({ error: "An error occurred while processing your request" });
+  } finally {
+    //db.close();
+  }
+});
+
+
+app.get("/api/column/main_group", async (req, res) => {
+  const col_name = req.query.main_group || "main_group"; // Set a default value or adjust as needed
+  
+  try {
+    const db = await initializeduck();
+    const query = `SELECT 
+                      DISTINCT main_group 
+                   FROM 
+                      tendmilldb
+                   ORDER BY
+                      main_group;`;  
+
+    db.all(query, function (err, queryres) {
+      if (err) {
+        throw err;
+      }
+      const sanitizedResult = queryres.map(row => {
+        const value = row[Object.keys(row)[0]]; // Assuming the first column returned by the query is the one you want
+        return {
+          [col_name]: value ? value.toString() : 'NULL'
+        };
+      });
+
+      res.json(sanitizedResult);
+    });
+  } catch (error) {
+    console.log("error: ", error);
+    res.status(500).json({ error: "An error occurred while processing your request" });
+  } finally {
+    //db.close();
+  }
+});
+
+app.get("/api/column/sub_group", async (req, res) => {
+  const col_name = req.query.main_group || "Glass"; // default value of -1 if 'col' is not provided
+  try {
+    const db = await initializeduck();
+    const query = `
+                SELECT 
+                    DISTINCT sub_group 
+                FROM 
+                    tendmilldb
+                WHERE 
+                    main_group = '${col_name}'
+                ORDER BY
+                    sub_group;`;
+
+    db.all(query, function (err, queryres) {
+      if (err) {
+        throw err;
+      }
+      const sanitizedResult = queryres.map(row => ({
+        id: row.sub_group ? row.sub_group.toString() : "",
+        //start_date : row.start_date.toString()
+      }));
+
+
+      res.json(sanitizedResult);
+    });
+  } catch (error) {
+    console.log("error: ", error);
+    res.status(500).json({ error: "An error occurred while processing your request" });
+  } finally {
+    //db.close();
+  }
+});
+
+app.get("/api/list/goods", async (req, res) => {
+  const livsmedel = req.query.livsmedel || "Salt"; // default value of Salt if 'livsmedel' is not provided
+  const sub_g = req.query.sub_g || "-1"; // default value of -1 if 'col' is not provided
+  const which_sub = sub_g === "1" ? 'sub_group' : 'sub_sub_group';
+  try {
+    const db = await initializeduck();
+    const query = `SELECT
+                      area,
+                      main_group,
+                      sub_group,
+                      sub_sub_group,
+                      name,
+                      ROUND(SUM(units), 0) AS totalunits,
+                      unit,
+                    FROM tendmilldb
+                    GROUP BY
+                      area,
+                      main_group,
+                      sub_group,
+                      sub_sub_group,
+                      name,
+                      unit
+                    ORDER BY
+                      area,
+                      main_group,
+                      sub_group,
+                      sub_sub_group;`;
 
     db.all(query, function (err, queryres) {
       if (err) {

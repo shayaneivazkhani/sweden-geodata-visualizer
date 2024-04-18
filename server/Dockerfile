@@ -4,15 +4,14 @@ FROM node:18
 RUN apt-get update && \
     apt-get install -y cmake build-essential
 
+# Set working directory
 WORKDIR /app
 
-COPY server/package*.json ./
-COPY server/yarn.lock ./
+# Copy directory to env
+COPY server/ /app
 
 # Install dependencies
-RUN yarn install
-
-COPY server/ .
+RUN yarn install --production=true --audit
 
 EXPOSE 3001
 

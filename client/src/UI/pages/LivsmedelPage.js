@@ -1,12 +1,14 @@
-import React from 'react'
+import React from "react";
 
 import Header from "../general_components/Header_NavBar/HeaderBar";
-import Footer from '../general_components/Header_NavBar/Footer';
+import Footer from "../general_components/Header_NavBar/Footer";
 
-import '../styles/pageStyles/LivsmedelPage.css';
+//import SelectAttributesBox from "../page_specific_components/LivsmedelPage_components/Select_attributes_box";
+import SelectFetch from "../page_specific_components/LivsmedelPage_components/Select_fetch";
+
+import "../styles/pageStyles/LivsmedelPage.css";
 
 const Livsmedel = () => {
-
     const body_style = {
         width: "100%",
         height: "100vh",
@@ -20,6 +22,9 @@ const Livsmedel = () => {
             <div style={body_style}>
                 <h2>Livsmedel Page</h2>
                 <a href="/">Main Page</a>
+                <div>
+                    <SelectFetch />
+                </div>
             </div>
             <div>
                 <Footer />

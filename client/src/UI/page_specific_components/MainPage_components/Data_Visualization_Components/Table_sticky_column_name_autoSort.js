@@ -230,7 +230,7 @@ export default function EnhancedTable(props) {
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [dense, setDense] = useState(false);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [rowsPerPage, setRowsPerPage] = useState(25);
     // Empty array to hold fetched data
     const [rows, setRows] = useState([]); // Initialize rows state with an empty array
     // Inside your component function
@@ -261,47 +261,55 @@ export default function EnhancedTable(props) {
         variable as true.
     */
     useEffect(() => {
+        const cachedData = localStorage.getItem(`${props.produkt}`);
         // Check local storage for cached data
-    const cachedData = localStorage.getItem(`${props.produkt}`);
-    if (cachedData) {
-        setRows(JSON.parse(cachedData));
-    } else {
-        // Fetch data from the endpoint
-        fetch(
-            `http://localhost:3001/api/purchase?sub_g=${props.sub_group}&livsmedel=${props.produkt}`,
-        )
-            .then((response) => {
-                // Check if response is ok
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                // Parse JSON response
-                return response.json();
-            })
-            .then((data) => {
-                // Assuming the JSON response is an array of objects with properties constellation_name, sub_sub_group, totalunits, and percentage_of_total_units
-                // Iterate over each object in the array and create data objects using createData function
-                const newData = data
-                    .filter((item) => item.totalunits > 5)
-                    .map((item) =>
-                        createData(
-                            item.constellation_name,
-                            item.group,
-                            item.totalunits,
-                            item.unit,
-                            item.percentage_of_total_units,
-                        ),
+        if (cachedData) {
+            setRows(JSON.parse(cachedData));
+        } else {
+            /* Fetch data from the endpoint
+            MENU:
+                props.sub_group == -1 ——> main_group LIKE props.produkt
+                props.sub_group == 0 ——> sub_group LIKE props.produkt
+                props.sub_group == -1 ——> sub_sub_group LIKE props.produkt
+        */
+            fetch(
+                `http://localhost:3001/api/purchase?sub_g=${props.sub_group}&livsmedel=${props.produkt}`,
+            )
+                .then((response) => {
+                    // Check if response is ok
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    // Parse JSON response
+                    return response.json();
+                })
+                .then((data) => {
+                    // Assuming the JSON response is an array of objects with properties constellation_name, sub_sub_group, totalunits, and percentage_of_total_units
+                    // Iterate over each object in the array and create data objects using createData function
+                    const newData = data
+                        .filter((item) => item.totalunits > 5 && item.percentage_of_total_units !== 'NULL')
+                        .map((item) =>
+                            createData(
+                                item.constellation_name,
+                                item.group,
+                                item.totalunits,
+                                item.unit,
+                                item.percentage_of_total_units,
+                            ),
+                        );
+
+                    // Set the new data to state
+                    setRows(newData);
+
+                    // Save fetched data to local storage så att nya updateringar av sidan inte orsakar extra Fetch requests till servern ——> minskar belastning på servern med ökad användare
+                    localStorage.setItem(
+                        `${props.produkt}`,
+                        JSON.stringify(newData),
                     );
-
-                // Set the new data to state
-                setRows(newData);
-
-                // Save fetched data to local storage så att nya updateringar av sidan inte orsakar extra Fetch requests till servern ——> minskar belastning på servern med ökad användare
-                localStorage.setItem(`${props.produkt}`, JSON.stringify(newData));
-            })
-            .catch((error) => {
-                console.error("Error fetching data:", error);
-            });
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                });
         }
     }, [props.sub_group, props.produkt]); // Empty dependency array ensures this effect runs only once on component mount (ComponentDidMount)
 
@@ -390,7 +398,7 @@ export default function EnhancedTable(props) {
                         "&::-webkit-scrollbar-thumb": {
                             backgroundColor: "rgba(255, 134, 18, 0.98)",
                             borderRadius: "3px",
-                            transition: 'background-color 0.2s', // Add transition for smooth effect
+                            transition: "background-color 0.2s", // Add transition for smooth effect
                             "&:hover": {
                                 backgroundColor: "rgba(255,106,50, 0.97)", // Change opacity on hover
                             },
@@ -463,7 +471,10 @@ export default function EnhancedTable(props) {
                                         <TableCell align="right">
                                             {row.unit}
                                         </TableCell>
-                                        <TableCell align="right" style={{ width: "100px" }}>
+                                        <TableCell
+                                            align="right"
+                                            style={{ width: "100px" }}
+                                        >
                                             {row.andel}
                                         </TableCell>
                                     </TableRow>
@@ -484,7 +495,7 @@ export default function EnhancedTable(props) {
 
                 <TablePagination
                     rowsPerPageOptions={[
-                        10,
+                        25,
                         50,
                         100,
                         { label: "All", value: -1 },
