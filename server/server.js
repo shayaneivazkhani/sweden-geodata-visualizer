@@ -93,23 +93,25 @@ app.get("/api/column", async (req, res) => {
   try {
     const db = await initializeduck();
     const query = `SELECT 
-                      DISTINCT ${col_name} 
+                      ${col_name},
+                      COUNT(${col_name}) as antal
                    FROM 
                       tendmilldb
+                   GROUP BY
+                      ${col_name},
                    ORDER BY
-                      ${col_name};`;  
+                   antal DESC;`;  
 
     db.all(query, function (err, queryres) {
       if (err) {
         throw err;
       }
-      const sanitizedResult = queryres.map(row => {
-        const value = row[Object.keys(row)[0]]; // Assuming the first column returned by the query is the one you want
-        return {
-          [col_name]: value ? value.toString() : 'NULL'
-        };
-      });
-      
+      // Map query result to include both column value and count
+      const sanitizedResult = queryres.map(row => ({
+        [col_name]: row[col_name] ? row[col_name].toString() : 'NULL',
+        antal: Number(row.antal) // Convert BigInt to number before including it in the response
+      }));
+        
 
       res.json(sanitizedResult);
     });
@@ -227,9 +229,43 @@ app.get("/api/column/sub_group", async (req, res) => {
       }
       const sanitizedResult = queryres.map(row => ({
         id: row.sub_group ? row.sub_group.toString() : "",
-        //start_date : row.start_date.toString()
       }));
 
+
+      res.json(sanitizedResult);
+    });
+  } catch (error) {
+    console.log("error: ", error);
+    res.status(500).json({ error: "An error occurred while processing your request" });
+  } finally {
+    //db.close();
+  }
+});
+
+app.get("/api/column/sub_sub_group", async (req, res) => {
+  const col_name = req.query.main_group || "Glass"; // default value of -1 if 'col' is not provided
+  const col_name2 = req.query.sub_group || "Sorbet"; // default value of -1 if 'col' is not provided
+  try {
+    const db = await initializeduck();
+    const query = `
+                SELECT 
+                    DISTINCT sub_sub_group 
+                FROM 
+                    tendmilldb
+                WHERE 
+                    sub_group = '${col_name2}'
+                ORDER BY
+                    sub_sub_group;`;
+
+    db.all(query, function (err, queryres) {
+      if (err) {
+        throw err;
+      }
+      
+      
+      const sanitizedResult = queryres.map(row => ({
+        id: row.sub_sub_group ? row.sub_sub_group.toString() : "",
+      }));
 
       res.json(sanitizedResult);
     });
