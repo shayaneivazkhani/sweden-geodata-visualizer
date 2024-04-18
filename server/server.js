@@ -1,16 +1,24 @@
 const express = require('express');
-const cors = require('cors');
+//const cors = require('cors'); 
 const bodyParser = require('body-parser');
 const duckdb = require('duckdb');
 
 const app = express();
 const port = 3001;
 
+/* OBS!: Enabled PROXY in client/package.json för av anledningar not yet known but is a better security API pattern tydligen
+   
+   This setup simplifies your development environment by allowing you to run both frontend and backend servers independently without worrying about cross-origin issues.
+   
+   It helps avoid CORS (Cross-Origin Resource Sharing) issues during development 
+   by allowing your frontend and backend to communicate seamlessly without encountering cross-origin restrictions.
+*/
 // Allow Fetch requests from http://localhost:3000
+/*
 app.use(cors({
   origin: 'http://localhost:3000',
 }));
-
+*/
 
 /* 🩸 Shayans exempel —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
 
@@ -109,7 +117,7 @@ app.get("/api/column", async (req, res) => {
 
 
 app.get("/api/purchase", async (req, res) => {
-  const livsmedel = req.query.livsmedel || "Köttbullar"; // default value of Mjölk if 'livsmedel' is not provided
+  const livsmedel = req.query.livsmedel || "Salt"; // default value of Salt if 'livsmedel' is not provided
   const sub_g = req.query.sub_g || "-1"; // default value of -1 if 'col' is not provided
   const which_sub = sub_g === "1" ? 'sub_group' : 'sub_sub_group';
   try {

@@ -1,8 +1,6 @@
 import React from "react";
 
-import "./MainPage_Content1To8_styles/MainPage_content5.css";
-
-const Content5 = () => {
+const Footer = () => {
     const footerStyle = {
         height: "80px",
         width: "100%",
@@ -19,4 +17,4 @@ const Content5 = () => {
     );
 };
 
-export default Content5;
+export default Footer;

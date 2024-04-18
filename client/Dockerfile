@@ -14,13 +14,13 @@ COPY client/ /app
 # yarn install --frozen-lockfile — Don’t generate a yarn.lock lockfile and fail if an update is needed.
 # yarn install --production[=true|false] — --production is the same as --production=true
 # yarn install --audit — Checks for known security issues with the installed packages.
-RUN yarn install --production=true --audit
+RUN yarn install --production=true --audit --frozen-lockfile
 
 RUN yarn build 
 
 # Expose port 3000
 EXPOSE 3000
 
-# Serve the build output using serve
+# Serve the production build output using serve
 RUN yarn global add serve
 CMD ["serve", "-s", "build"]

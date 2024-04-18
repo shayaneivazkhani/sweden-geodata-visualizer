@@ -1,14 +1,29 @@
 import React from 'react'
 
-import Navbar from '../page_specific_components/AhmedPage_components/Navbar'
+import Header from "../general_components/Header_NavBar/HeaderBar";
+import Footer from '../general_components/Header_NavBar/Footer';
 
 const Ahmed = () => {
-    return(
-        <div className="ahmed">
-            <Navbar />
-            <h2>Haj Hassine</h2>
-        </div>
-    )
-}
+
+    const body_style = {
+        width: "100%",
+        height: "100vh",
+    };
+
+    return (
+        <React.Fragment>
+            <div>
+                <Header />
+            </div>
+            <div style={body_style}>
+                <h2>Ahmed Page</h2>
+                <a href="/">Main Page</a>
+            </div>
+            <div>
+                <Footer />
+            </div>
+        </React.Fragment>
+    );
+};
 
 export default Ahmed;

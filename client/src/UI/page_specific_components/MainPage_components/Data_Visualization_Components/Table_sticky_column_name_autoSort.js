@@ -250,7 +250,22 @@ export default function EnhancedTable(props) {
         [order, orderBy, page, rowsPerPage, rows, forceUpdate], // Step 3: Include forceUpdate
     );
 
+    /*
+        In React functional components, you can't directly check if a component is mounted or not as you
+        would in class components with 'this state' or this isMounted() *. Instead, you typically use the
+        useEffect ' hook to manage side effects such as fetching data and cleaning up.
+        However, you can simulate the concept of a component being mounted or unmounted using a variable.
+        This variable can be updated in the 'useEffect hook's cleanup function. When the component
+        mounts, the cleanup function from the previous render will be called, setting the variable to false'.
+        When the component unmounts, the cleanup function of the current render won't be called, leaving the
+        variable as true.
+    */
     useEffect(() => {
+        // Check local storage for cached data
+    const cachedData = localStorage.getItem(`${props.produkt}`);
+    if (cachedData) {
+        setRows(JSON.parse(cachedData));
+    } else {
         // Fetch data from the endpoint
         fetch(
             `http://localhost:3001/api/purchase?sub_g=${props.sub_group}&livsmedel=${props.produkt}`,
@@ -280,11 +295,15 @@ export default function EnhancedTable(props) {
 
                 // Set the new data to state
                 setRows(newData);
+
+                // Save fetched data to local storage så att nya updateringar av sidan inte orsakar extra Fetch requests till servern ——> minskar belastning på servern med ökad användare
+                localStorage.setItem(`${props.produkt}`, JSON.stringify(newData));
             })
             .catch((error) => {
                 console.error("Error fetching data:", error);
             });
-    }, []); // Empty dependency array ensures this effect runs only once on component mount (ComponentDidMount)
+        }
+    }, [props.sub_group, props.produkt]); // Empty dependency array ensures this effect runs only once on component mount (ComponentDidMount)
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === "asc";

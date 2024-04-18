@@ -1,6 +1,9 @@
 import React from 'react'
 
-import Content1 from '../page_specific_components/MainPage_components/Content1'
+import Header from '../general_components/Header_NavBar/HeaderBar';
+import Footer from '../general_components/Header_NavBar/Footer';
+
+//import Content1 from '../page_specific_components/MainPage_components/Content1'
 import Content2 from '../page_specific_components/MainPage_components/Content2'
 import Content3 from '../page_specific_components/MainPage_components/Content3'
 import Content4 from '../page_specific_components/MainPage_components/Content4'
@@ -15,8 +18,8 @@ const MainPage = () => {
     return(
         <div className="mainpage_layout">
             <React.Fragment>
-                <div className="content1 centered">
-                    <Content1/>
+                <div className="content1">
+                    <Header/>
                 </div>
                 <div className="content2 centered">
                     <Content2/>
@@ -27,12 +30,12 @@ const MainPage = () => {
                 <div className="content4 centered">
                     <Content4/>
                 </div>
-                <div className="content5 centered">
-                    <Content5/>
+                <div className="content5">
+                    <Footer/>
                 </div>
             </React.Fragment>
         </div>
     )
 }
 
-export default MainPage
+export default MainPage;
