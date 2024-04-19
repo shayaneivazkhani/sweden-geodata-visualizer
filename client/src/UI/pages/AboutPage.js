@@ -5,6 +5,17 @@ import Footer from '../general_components/Header_NavBar/Footer';
 
 const AboutPage = () => {
 
+    const topFixedStyle = {
+        width: "100%",
+        position: "fixed",
+        zIndex: "1",
+    };
+
+    const scrollableStyle = {
+        paddingTop: "85px",
+        zIndex: 0,
+    };
+
     const body_style = {
         width: "100%",
         height: "100vh",
@@ -12,9 +23,10 @@ const AboutPage = () => {
 
     return (
         <React.Fragment>
-            <div>
+            <div style={topFixedStyle}>
                 <Header />
             </div>
+        <div style={scrollableStyle}>    
             <div style={body_style}>
                 <h2>About Page</h2>
                 <a href="/">Main Page</a>
@@ -22,6 +34,7 @@ const AboutPage = () => {
             <div>
                 <Footer />
             </div>
+        </div>
         </React.Fragment>
     );
 };

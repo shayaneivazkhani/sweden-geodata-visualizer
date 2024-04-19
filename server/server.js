@@ -262,7 +262,6 @@ app.get("/api/column/sub_sub_group", async (req, res) => {
         throw err;
       }
       
-      
       const sanitizedResult = queryres.map(row => ({
         id: row.sub_sub_group ? row.sub_sub_group.toString() : "",
       }));

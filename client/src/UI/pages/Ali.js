@@ -1,9 +1,19 @@
-import React from 'react';
+import React from "react";
 
 import Header from "../general_components/Header_NavBar/HeaderBar";
-import Footer from '../general_components/Header_NavBar/Footer';
+import Footer from "../general_components/Header_NavBar/Footer";
 
 const Ali = () => {
+    const topFixedStyle = {
+        width: "100%",
+        position: "fixed",
+        zIndex: "1",
+    };
+
+    const scrollableStyle = {
+        paddingTop: "85px",
+        zIndex: 0,
+    };
 
     const body_style = {
         width: "100%",
@@ -12,15 +22,17 @@ const Ali = () => {
 
     return (
         <React.Fragment>
-            <div>
+            <div style={topFixedStyle}>
                 <Header />
             </div>
-            <div style={body_style}>
-                <h2>Ali Page</h2>
-                <a href="/">Main Page</a>
-            </div>
-            <div>
-                <Footer />
+            <div style={scrollableStyle}>
+                <div style={body_style}>
+                    <h2>Ali Page</h2>
+                    <a href="/">Main Page</a>
+                </div>
+                <div>
+                    <Footer />
+                </div>
             </div>
         </React.Fragment>
     );

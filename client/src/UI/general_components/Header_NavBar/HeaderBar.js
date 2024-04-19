@@ -11,6 +11,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import AssessmentSharpIcon from "@mui/icons-material/AssessmentSharp";
+import { border } from "@mui/system";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 60,
@@ -64,7 +65,7 @@ function DarkLightModeSwitch() {
     const [darkMode, setDarkMode] = useState(() => {
         // Initialize dark mode state from localStorage
         const savedMode = localStorage.getItem("darkMode");
-        return savedMode ? JSON.parse(savedMode) : true;
+        return savedMode ? JSON.parse(savedMode) : false;
     });
 
     useEffect(() => {
@@ -89,7 +90,7 @@ function DarkLightModeSwitch() {
     };
 
     const switchContainterStyle = {
-        paddingTop: "15px",
+        paddingTop: "4px",
     };
 
     return (
@@ -197,7 +198,7 @@ function StatisticSubpageMenu() {
         fontSize: 20,
         fontWeight: 500,
         //textTransform: "uppercase"
-        paddingTop: "20px",
+        paddingTop: "var(--padding-top-text-navbar)",
         transition: "0.10s",
         "&:hover": {
             transform: "scale(1.03)",
@@ -319,7 +320,7 @@ function BuildMenu() {
         fontSize: 20,
         fontWeight: 500,
         //textTransform: "uppercase"
-        paddingTop: "20px",
+        paddingTop: "var(--padding-top-text-navbar)",
         "&:hover": {
             transform: "scale(1.03)",
         },
@@ -350,7 +351,7 @@ const Header = () => {
 
     const headerStyle = {
         width: "100%",
-        height: "82px",
+        height: "55px",
         display: "flex",
         alignItems: "flex-start",
         justifyContent: "space-between",
@@ -361,18 +362,18 @@ const Header = () => {
 
     const homepage_pictureLinkStyle = {
         width: "90px",
-        marginTop: "5px",
-        marginLeft: "15px",
+        marginTop: "10px",
+        marginLeft: "10px",
         marginRight: "10px",
     };
 
     const navLinkStyle = {
-        marginRight: "20px",
+        marginRight: "20px", 
     };
 
     const imageStyle = {
-        width: "105px",
-        height: "70px",
+        width: "115px",
+        height: "75px",
         backgroundColor: "rgba(0,0,0,0.00)",
         display: "block", // Ensure proper display of the image
         transition: "transform 0.4s", // Add transition for smoother effect
@@ -386,15 +387,14 @@ const Header = () => {
         fontWeight: 500,
         fontSize: 20,
         textTransform: "uppercase",
-        paddingTop: "20px",
+        paddingTop: "var(--padding-top-text-navbar)",
         "&:hover": {
             transform: "scale(1.03)",
         },
     }));
 
     const buttonStyle = {
-        height: "50px",
-        paddingBottom: "20px",
+        height: "100%",
         display: "flex",
         flexDirection: "column", // Arrange children vertically
         alignItems: "center", // Center items horizontally
@@ -445,7 +445,18 @@ const Header = () => {
                                 justifyContent: "space-between",
                             }}
                         >
-                            <DarkLightModeSwitch />
+                            <div
+                                style={{
+                                    paddingTop: "1px",
+                                    marginBottom: "20px",
+                                
+                                    "&:hover": { // Apply border styles on hover
+                                        border: `0.7px solid var(--mainPage-3CardLinks-Border-Color1)`, // Change border color on hover
+                                    },
+                                }}
+                            >
+                                <DarkLightModeSwitch />
+                            </div>
 
                             <div
                                 style={{
@@ -453,21 +464,24 @@ const Header = () => {
                                     marginTop: "10px",
                                     marginLeft: "1px",
                                     marginRight: "12px",
-                                    height: "60px",
+                                    height: "35px",
                                 }}
                             ></div>
+
                             <div style={buttonStyle}>
                                 <StatisticSubpageMenu />
                             </div>
+
                             <div
                                 style={{
                                     borderRight: "0.1px solid #5b5958",
                                     marginTop: "10px",
                                     marginLeft: "12px",
                                     marginRight: "12px",
-                                    height: "60px",
+                                    height: "35px",
                                 }}
                             ></div>
+
                             <div style={buttonStyle}>
                                 <a href="/about">
                                     <Button>
@@ -475,15 +489,17 @@ const Header = () => {
                                     </Button>
                                 </a>
                             </div>
+
                             <div
                                 style={{
                                     borderRight: "0.1px solid #5b5958",
                                     marginTop: "10px",
                                     marginLeft: "12px",
                                     marginRight: "12px",
-                                    height: "60px",
+                                    height: "35px",
                                 }}
                             ></div>
+
                             <div style={buttonStyle}>
                                 <BuildMenu />
                             </div>

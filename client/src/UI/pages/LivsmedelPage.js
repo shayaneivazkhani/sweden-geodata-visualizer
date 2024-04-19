@@ -9,6 +9,17 @@ import SelectFetch from "../page_specific_components/LivsmedelPage_components/Se
 import "../styles/pageStyles/LivsmedelPage.css";
 
 const Livsmedel = () => {
+    const topFixedStyle = {
+        width: "100%",
+        position: "fixed",
+        zIndex: "1",
+    };
+
+    const scrollableStyle = {
+        paddingTop: "85px",
+        zIndex: 0,
+    };
+
     const body_style = {
         width: "100%",
         height: "100vh",
@@ -16,18 +27,20 @@ const Livsmedel = () => {
 
     return (
         <React.Fragment>
-            <div>
+            <div style={topFixedStyle}>
                 <Header />
             </div>
-            <div style={body_style}>
-                <h2>Livsmedel Page</h2>
-                <a href="/">Main Page</a>
-                <div>
-                    <SelectFetch />
+            <div style={scrollableStyle}>
+                <div style={body_style}>
+                    <h2>Livsmedel Page</h2>
+                    <a href="/">Main Page</a>
+                    <div>
+                        <SelectFetch />
+                    </div>
                 </div>
-            </div>
-            <div>
-                <Footer />
+                <div>
+                    <Footer />
+                </div>
             </div>
         </React.Fragment>
     );
