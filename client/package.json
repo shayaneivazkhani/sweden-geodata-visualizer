@@ -20,6 +20,7 @@
     "@testing-library/user-event": "^13.5.0",
     "chance": "latest",
     "color": "latest",
+    "d3": "^7.9.0",
     "prop-types": "latest",
     "react": "latest",
     "react-dom": "latest",
