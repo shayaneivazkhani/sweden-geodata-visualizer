@@ -112,7 +112,6 @@ app.get("/api/column", async (req, res) => {
         antal: Number(row.antal) // Convert BigInt to number before including it in the response
       }));
         
-
       res.json(sanitizedResult);
     });
   } catch (error) {
@@ -275,6 +274,52 @@ app.get("/api/column/sub_sub_group", async (req, res) => {
     //db.close();
   }
 });
+
+
+app.get("/api/column/D3Result", async (req, res) => {
+  const livsmedel = req.query.livsmedel || "Salt"; // default value of Salt if 'livsmedel' is not provided
+  const which_sub = 'sub_group';
+  try {
+    const db = await initializeduck();
+    const query = `SELECT
+                      constellation_name || ' ' || ROUND(SUM(units), 0) || ' ' || GROUP_CONCAT(DISTINCT unit) AS name,
+                      ROUND(SUM(units) / total.total_units * 100, 4)  || ' %' AS value
+                   FROM tendmilldb, 
+                      (SELECT 
+                          SUM(units) AS total_units 
+                        FROM 
+                          tendmilldb
+                        WHERE ${which_sub} LIKE '${livsmedel}') AS total
+                   WHERE
+                      ${which_sub} LIKE '${livsmedel}'
+                   GROUP BY
+                      constellation_name,
+                      total_units`;
+
+    db.all(query, function (err, queryres) {
+      if (err) {
+        throw err;
+      }
+
+      // Map each row to an object containing all column names and their values
+      const sanitizedResult = queryres.map(row => {
+        const rowObject = {};
+        for (const [key, value] of Object.entries(row)) {
+          rowObject[key] = value ? value.toString() : 'NULL';
+        }
+        return rowObject;
+      });
+
+      res.json(sanitizedResult);
+    });
+  } catch (error) {
+    console.log("error: ", error);
+    res.status(500).json({ error: "An error occurred while processing your request" });
+  } finally {
+    //db.close();
+  }
+});
+
 
 app.get("/api/list/goods", async (req, res) => {
   const livsmedel = req.query.livsmedel || "Salt"; // default value of Salt if 'livsmedel' is not provided
