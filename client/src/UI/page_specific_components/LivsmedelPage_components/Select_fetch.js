@@ -9,143 +9,241 @@ import zIndex from "@mui/material/styles/zIndex";
 
 const MyD3Component = () => {
     const svgRef = useRef();
+    const [graphData, setGraphData] = useState(null);
 
     useEffect(() => {
-        const width = 1000;
-        const height = 400;
+        const width = 600;
+        const height = 600;
 
         const svg = d3.select(svgRef.current);
 
-        const graphData = {
-            nodes: [
-                { name: "A", value: 15, x: 300, y: 100 },
-                { name: "B", value: 20, x: 200, y: 200 },
-                { name: "C", value: 30, x: 300, y: 300 },
-                { name: "D", value: 50, x: 500, y: 500 },
-            ],
-            links: [
-                { source: "A", target: "B" },
-                { source: "B", target: "C" },
-                { source: "A", target: "C" },
-                { source: "B", target: "D" },
-                { source: "D", target: "C" },
-            ],
-        };
+        if (graphData) {
+            const pack = d3.pack()
+                .size([width, height])
+                .padding(5);
 
-        const nodesMap = {};
-        graphData.nodes.forEach((node) => {
-            nodesMap[node.name] = node;
-        });
+            const root = d3.hierarchy(graphData)
+                .sum(d => d.value)
+                .sort((a, b) => b.value - a.value);
 
-        graphData.links.forEach((link) => {
-            link.source = nodesMap[link.source];
-            link.target = nodesMap[link.target];
-        });
+            const packedData = pack(root);
 
-        const simulation = d3
-            .forceSimulation(graphData.nodes)
-            .force("charge", d3.forceManyBody().strength(-300))
-            .force("center", d3.forceCenter(width / 2, height / 2))
-            .force("collide", d3.forceCollide(40).strength(1))
-            .force(
-                "link",
-                d3.forceLink(graphData.links).id((d) => d.name),
-            )
-            .on("tick", ticked);
+            const colorScale = d3.scaleSequential()
+                .domain([0, 50])
+                .interpolator(d3.interpolateYlOrRd);
 
-        const links = svg
-            .append("g")
-            .selectAll("line")
-            .data(graphData.links)
-            .enter()
-            .append("line")
-            .attr("stroke-width", 3)
-            .style("stroke", "blue");
+            const node = svg.selectAll("g")
+                .data(packedData.descendants())
+                .enter().append("g")
+                .attr("transform", d => `translate(${d.x},${d.y})`);
 
-        const drag = d3
-            .drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended);
-
-        const textsAndNodes = svg
-            .append("g")
-            .selectAll("g")
-            .data(graphData.nodes)
-            .enter()
-            .append("g")
-            .call(drag);
-
-        const colorScale = d3
-            .scaleSequential()
-            .domain([0, 50])
-            .interpolator(d3.interpolateYlOrRd);
-
-        var circles = textsAndNodes
-            .append("circle")
-            .attr("r", function (d) {
-                return d.value; // Set the radius to the value of d.value
-            })
-            .attr("fill", function (d) {
-                d.originalColor = colorScale(d.value); // Store the original color in a custom property
-                return d.originalColor; // Set the fill color based on d.value
-            })
-            .text(function (d) {
-                return d.value;
-            })
-            .on("mouseover", function (event, d) {
-                var originalColor = d3.select(this).attr("fill"); // Store the original color
-                d3.select(this).attr("fill", "blue"); // Change the fill color to blue upon mouseover
-                svg.append("text")
-                    .attr("id", "nodeValue")
-                    .attr("x", d.x + 20)
-                    .attr("y", d.y - 20)
-                    .text("value: " + d.value);
-                // Restore the original color when the mouse leaves
-                d3.select(this).on("mouseout", function () {
-                    d3.select(this).attr("fill", originalColor);
-                    d3.select("#nodeValue").remove();
+            node.append("circle")
+                .attr("r", d => d.r)
+                .attr("fill", d => colorScale(d.data.value))
+                .attr("fill-opacity", 0.7) 
+                .on("mouseover", function (event, d) {
+                    var originalColor = d3.select(this).attr("fill"); // Store the original color
+                    d3.select(this).attr("fill", "white"); // Change the fill color to blue upon mouseover
+                    svg.append("text")
+                        .attr("id", "nodeValue")
+                        .attr("x", d.x + 20)
+                        .attr("y", d.y - 20)
+                        .text(d.value + "KG");
+                    // Restore the original color when the mouse leaves
+                    d3.select(this).on("mouseout", function () {
+                        d3.select(this).attr("fill", originalColor);
+                        d3.select("#nodeValue").remove();
+                    });
                 });
+
+            node.append("text")
+                .attr("dy", "0.3em")
+                .attr("text-anchor", "middle")
+                .text(d => d.data.name);
+
+            return () => {
+                svg.selectAll("*").remove();
+            };
+        }
+    }, [graphData]);
+
+    useEffect(() => {
+        fetch('http://localhost:3001/api/column/D3Result?livsmedel=Köttbullar')
+            .then(response => response.json())
+            .then(data => {
+                const processedData = data.map(item => ({
+                    name: item.name,
+                    value: parseFloat(item.value),
+                }));
+
+                setGraphData({ children: processedData });
+            });
+    }, []);
+
+    return (
+        <div className="ropiojw">
+            <svg ref={svgRef} width="100%" height="90vw" />
+        </div>
+    );
+};
+
+/*
+
+const MyD3Component = () => {
+    const svgRef = useRef();
+    const [graphData, setGraphData] = useState(null);
+
+    useEffect(() => {
+        //const width = window.innerWidth;
+        //const height = window.innerHeight;
+        const width = 600;
+        const height = 600;
+
+        const svg = d3.select(svgRef.current);
+
+        if (graphData) {
+            const nodesMap = {};
+            graphData.nodes.forEach((node) => {
+                nodesMap[node.name] = node;
             });
 
-        const texts = textsAndNodes.append("text").text((d) => d.name);
+            graphData.links.forEach((link) => {
+                link.source = nodesMap[link.source];
+                link.target = nodesMap[link.target];
+            });
 
-        function ticked() {
-            textsAndNodes.attr("transform", (d) => `translate(${d.x},${d.y})`);
+            const simulation = d3
+                .forceSimulation(graphData.nodes)
+                .force("charge", d3.forceManyBody().strength(300))
+                .force("center", d3.forceCenter(width, height))
+                .force("collide", d3.forceCollide(40).strength(0.5))
+                .force(
+                    "link",
+                    d3.forceLink(graphData.links).id((d) => d.name),
+                )
+                .on("tick", ticked);
 
-            links
-                .attr("x1", (d) => d.source.x)
-                .attr("y1", (d) => d.source.y)
-                .attr("x2", (d) => d.target.x)
-                .attr("y2", (d) => d.target.y);
-        }
+            const links = svg
+                .append("g")
+                .selectAll("line")
+                .data(graphData.links)
+                .enter()
+                .append("line")
+                .attr("stroke-width", 3)
+                .style("stroke", "blue");
 
-        function dragstarted(event, d) {
-            if (!event.active) {
-                simulation.alphaTarget(0.3).restart();
+            const drag = d3
+                .drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended);
+
+            const textsAndNodes = svg
+                .append("g")
+                .selectAll("g")
+                .data(graphData.nodes)
+                .enter()
+                .append("g")
+                .call(drag);
+
+            const colorScale = d3
+                .scaleSequential()
+                .domain([0, 50])
+                .interpolator(d3.interpolateYlOrRd);
+
+            var circles = textsAndNodes
+                .append("circle")
+                .attr("r", function (d) {
+                    return d.value; // Set the radius to the value of d.value
+                })
+                .attr("fill", function (d) {
+                    d.originalColor = colorScale(d.value); // Store the original color in a custom property
+                    return d.originalColor; // Set the fill color based on d.value
+                })
+                .text(function (d) {
+                    return d.value;
+                })
+                .on("mouseover", function (event, d) {
+                    var originalColor = d3.select(this).attr("fill"); // Store the original color
+                    d3.select(this).attr("fill", "white"); // Change the fill color to blue upon mouseover
+                    svg.append("text")
+                        .attr("id", "nodeValue")
+                        .attr("x", d.x + 20)
+                        .attr("y", d.y - 20)
+                        .text("value: " + d.value);
+                    // Restore the original color when the mouse leaves
+                    d3.select(this).on("mouseout", function () {
+                        d3.select(this).attr("fill", originalColor);
+                        d3.select("#nodeValue").remove();
+                    });
+                });
+
+            const texts = textsAndNodes.append("text").text((d) => d.name);
+
+            function ticked() {
+                textsAndNodes.attr("transform", (d) => `translate(${d.x},${d.y})`);
+
+                links
+                    .attr("x1", (d) => d.source.x)
+                    .attr("y1", (d) => d.source.y)
+                    .attr("x2", (d) => d.target.x)
+                    .attr("y2", (d) => d.target.y);
             }
-            d.fx = d.x;
-            d.fy = d.y;
-        }
 
-        function dragged(event, d) {
-            d.fx = event.x;
-            d.fy = event.y;
-        }
-
-        function dragended(event, d) {
-            if (!event.active) {
-                simulation.alphaTarget(0);
+            function dragstarted(event, d) {
+                if (!event.active) {
+                    simulation.alphaTarget(0.3).restart();
+                }
+                d.fx = d.x;
+                d.fy = d.y;
             }
-            d.fx = null;
-            d.fy = null;
-        }
 
-        return () => {
-            // Clean up any d3-related resources here if needed // Clean up any d3-related resources here if needed
-            svg.selectAll("*").remove(); // Remove all elements added by D3
-            simulation.stop(); // Stop the D3 simulation
-        };
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+
+            function dragended(event, d) {
+                if (!event.active) {
+                    simulation.alphaTarget(0);
+                }
+                d.fx = null;
+                d.fy = null;
+            }
+
+            return () => {
+                // Clean up any d3-related resources here if needed // Clean up any d3-related resources here if needed
+                svg.selectAll("*").remove(); // Remove all elements added by D3
+                simulation.stop(); // Stop the D3 simulation
+            };
+        }
+    }, [graphData]);
+
+    useEffect(() => {
+
+        // Fetch data from the API endpoint
+        fetch('http://localhost:3001/api/column/D3Result?livsmedel=Köttbullar')
+            .then(response => response.json())
+            .then(data => {
+                // Process fetched data and assign it to graphData
+                const processedData = {
+                    nodes: data.map(item => ({
+                        name: item.name,
+                        value: parseFloat(item.value), // Convert value to a float
+                        x: parseFloat(item.x), // Convert x-coordinate to a float
+                        y: parseFloat(item.y), // Convert y-coordinate to a float
+                    })),
+                    links: [],
+                };
+
+                // Add links based on the nodes data
+                // Example: connect nodes sequentially
+                for (let i = 0; i < processedData.nodes.length - 1; i++) {
+                    processedData.links.push({ source: processedData.nodes[i].name, target: processedData.nodes[i + 1].name });
+                }
+
+                setGraphData(processedData);
+            });
     }, []);
 
     const d3componentStyle = {
@@ -157,6 +255,9 @@ const MyD3Component = () => {
         </div>
     );
 };
+
+*/
+
 
 var H1BGraph = () => {
     return (
