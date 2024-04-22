@@ -24,12 +24,13 @@ const Livsmedel = () => {
 
     const body_style = {
         width: "100%",
+        minWidth: "1100px",
     };
 
     const TextTypography = styled(Typography)(() => ({
         color: "var(--mainPage-Content2-textColor1)",
         fontFamily: "var(--mainpage--content2-font1)",
-        fontSize: "clamp(15px, 1.5vw, 40px)",
+        fontSize: "clamp(15px, 2.5vw, 60px)",
         fontWeight: 400,
         textAlign: "center",
     }));

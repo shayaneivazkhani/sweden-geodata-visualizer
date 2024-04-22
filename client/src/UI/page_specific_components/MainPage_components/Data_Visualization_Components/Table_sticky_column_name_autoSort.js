@@ -294,7 +294,7 @@ export default function EnhancedTable(props) {
                                 item.group,
                                 item.totalunits,
                                 item.unit,
-                                item.percentage_of_total_units,
+                                parseFloat(item.percentage_of_total_units),
                             ),
                         );
 

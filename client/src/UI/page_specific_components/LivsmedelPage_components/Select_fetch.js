@@ -6,9 +6,16 @@ import { Box } from "@mui/material";
 import { useRef } from "react";
 import * as d3 from "d3";
 import zIndex from "@mui/material/styles/zIndex";
-import { margin } from "@mui/system";
+import { margin, minWidth } from "@mui/system";
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
-const MyD3Component = () => {
+
+
+const MyD3Component = (props) => {
     const svgRef = useRef();
     const [graphData, setGraphData] = useState(null);
 
@@ -23,7 +30,7 @@ const MyD3Component = () => {
             const pack = d3
                 .pack()
                 .size([width + 40, height])
-                .padding(58);
+                .padding(120);
 
             const root = d3
                 .hierarchy(graphData)
@@ -37,13 +44,38 @@ const MyD3Component = () => {
 
             // Define your custom color classes and corresponding colors
             const colorClasses = [
-                { range: [0, 100], color: "#fcdd90" },
-                { range: [101, 200], color: "#fabb22" },
-                { range: [201, 1000], color: "#e2b9cf" },
-                { range: [1001, 4000], color: "#c6739f" },
-                { range: [4001, 50000], color: "blue" },
+                { range: [0, 500], color: "#ffcaab" },  
+                { range: [501, 1000], color: "#ffb088" },
+                { range: [1001, 2000], color: "#ffa17a" },
+                { range: [2001, 3000], color: "#ff8a59" },
+                { range: [3001, 4000], color: "#ff8a59" },
+                { range: [4001, 5000], color: "#ff5b31" },
+                { range: [5001, 6000], color: "#ff5b31" },
+                { range: [6001, 8000], color: "#ff5b31" },
+                { range: [8001, 10000], color: "#e42e00" }, // Blue
+                { range: [10001, 30000], color: "#e42e00" }, // Blue
+                { range: [30001, 40000], color: "#e42e00" }, // Blue
+                { range: [40001, 50000], color: "#ca2900" }, // Blue
+                { range: [50001, 60000], color: "#ca2900" }, // Blue
+                { range: [60001, 70000], color: "#ca2900" }, // Blue
+                { range: [70001, 80000], color: "#ca2900" }, // Blue
+                { range: [80001, 90000], color: "#ca2900" }, // Blue
+                { range: [90001, 100000], color: "#ca2900" }, // Blue
+                { range: [100001, 110000], color: "#b12400" }, // Blue
+                { range: [110001, 120000], color: "#b12400" }, // Blue
+                { range: [120001, 130000], color: "#b12400" }, // Blue
+                { range: [130001, 140000], color: "#b12400" }, // Blue
+                { range: [140001, 150000], color: "#b12400" }, // Blue
+                { range: [150001, 160000], color: "#b12400" }, // Blue
+                { range: [160001, 170000], color: "#b12400" }, // Blue
+                { range: [170001, 180000], color: "#b12400" }, // Blue
+                { range: [180001, 190000], color: "#b12400" }, // Blue
+                { range: [190001, 200000], color: "#b12400" }, // Very Purple
+                { range: [200001, 1000000], color: "#b12400" }, // Blue
+
                 // Add more ranges and colors as needed
             ];
+            
             // Create a function to map a value to its corresponding color based on the defined classes
             const getColor = (value) => {
                 for (const { range, color } of colorClasses) {
@@ -64,8 +96,12 @@ const MyD3Component = () => {
 
             node.append("circle")
                 .attr("r", (d) => {
-                    const minValue = 20; // Adjust this to your minimum value
-                    return d.data.value ? (d.value <= minValue ? minValue : d.r + 15) : width/2.95;
+                    if (d.data.value) {
+                        const minValue = 25; // Adjust this to your minimum value
+                        return d.value <= minValue ? minValue : d.r + 20;
+                    } else {
+                        return width/2.95;
+                    }
                 })
                 .attr("fill", (d) => {
                     if (d.data.value) {
@@ -77,19 +113,18 @@ const MyD3Component = () => {
                 })
                 //attr("fill", d => colorScale(d.data.value))
                 .attr("fill-opacity", 0.68)
-
-                .style("stroke-width", (d) => {
-                    if (d.data.value) {
-                        return 0
-                    } else {
-                        return 1; // Or any default color for circles without data values
-                    }
-                })
                 .style("stroke",(d) => {
                     if (d.data.value) {
-                        return "none";
+                        return "black";
                     } else {
-                        return "blue"; // Or any default color for circles without data values
+                        return "none"; // Or any default color for circles without data values
+                    }
+                })
+                .style("stroke-width", (d) => {
+                    if (d.data.value) {
+                        return 0.6
+                    } else {
+                        return 0; // Or any default color for circles without data values
                     }
                 })
                 .on("mouseover", function (event, d) {
@@ -104,13 +139,13 @@ const MyD3Component = () => {
                     });
                     svg.append("text")
                         .attr("id", "nodeValue")
-                        .attr("x", 1100)
+                        .attr("x", 1000)
                         .attr("y", 300)
                         .text(d.data.name)
                         .style("font-family", "monospace") // Change the font family here
-                        .style("font-size", "24") // Change the font size here
+                        .style("font-size", "15") // Change the font size here
                         .attr("fill", "#2a2828");
-                    //.attr("fill", "#127357");
+                        //.attr("fill", "#127357");
                     // Restore the original color when the mouse leaves
                     d3.select(this).on("mouseout", function () {
                         d3.select(this).attr("fill", originalColor);
@@ -123,7 +158,7 @@ const MyD3Component = () => {
                 .attr("text-anchor", "middle")
                 .style("font-family", "monospace") // Change the font family here
                 .style("font-size", "1.2em") // Change the font size here
-                .text((d) => d.data.value);
+                .text((d) => d.data.value ? d.data.value : "");
 
             return () => {
                 svg.selectAll("*").remove();
@@ -132,7 +167,7 @@ const MyD3Component = () => {
     }, [graphData]);
 
     useEffect(() => {
-        fetch("http://localhost:3001/api/column/D3Result?livsmedel=Köttbullar")
+        fetch(`http://localhost:3001/api/column/D3Result?main_g=${props.main_grupp}&sub_g=${props.sub_grupp}`)
             .then((response) => response.json())
             .then((data) => {
                 const processedData = data.map((item) => ({
@@ -144,20 +179,20 @@ const MyD3Component = () => {
 
                 setGraphData({ children: processedData });
             });
-    }, []);
+    }, [props.main_grupp, props.sub_grupp]);
 
 
     const dataDiagramStyle = {
-        width: "100%",
+        minWidth: "1100px",
         paddingTop: "40px",
-        paddingLeft: "50px",
+        paddingLeft: "0px",
         //backgroundColor: "rgba(0, 90, 90, 0.18)",
         //backgroundColor: "rgba(0, 0, 70, 0.18)",
     };
 
     return (
         <div className="dataDiagram" style={dataDiagramStyle}>
-            <svg ref={svgRef} width="100%" height="1200" />
+            <svg ref={svgRef} width="100%" height="900" />
         </div>
     );
 };
@@ -333,6 +368,7 @@ const MyD3Component = () => {
 
 */
 
+/*
 var H1BGraph = () => {
     return (
         <div className="row">
@@ -342,6 +378,7 @@ var H1BGraph = () => {
         </div>
     );
 };
+*/
 
 function sleep(duration) {
     return new Promise((resolve) => {
@@ -351,10 +388,12 @@ function sleep(duration) {
     });
 }
 
-function SelectMainGroup({ onChange }) {
+function SelectMainGroup({main, onChange }) {
     const [inputValue, setInputValue] = useState("");
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
+
+    const [value, setValue] = useState(options[0]);
     const loading = open && options.length === 0;
 
     useEffect(() => {
@@ -411,12 +450,12 @@ function SelectMainGroup({ onChange }) {
         return () => {
             active = false;
         };
-    }, [loading]);
+    }, [loading, main]);
 
     React.useEffect(() => {
         if (!open) {
             setOptions([]);
-        }
+        } 
     }, [open]);
 
     return (
@@ -475,6 +514,7 @@ function SelectSubGroup({ main, onChange }) {
     const [options, setOptions] = useState([]);
     const loading = open && options.length === 0;
 
+
     useEffect(() => {
         let active = true;
 
@@ -486,6 +526,8 @@ function SelectSubGroup({ main, onChange }) {
             await sleep(1e1); // For demo purposes.
 
             if (active) {
+                const cachedString = JSON.parse(localStorage.getItem("main-grupp"));
+
                 const response = await fetch(
                     `http://localhost:3001/api/column/sub_group?main_group=${main}`,
                 );
@@ -520,11 +562,13 @@ function SelectSubGroup({ main, onChange }) {
         }
     }, [open]);
 
+   
     return (
         <React.Fragment>
             {/* <div>{`Sub Value: '${inputValue}'`}</div> */}
             <br />
             <Autocomplete
+                key={main} // just change main to trigger reset of the lable
                 inputValue={inputValue}
                 onInputChange={(event, newInputValue) => {
                     setInputValue(newInputValue);
@@ -672,6 +716,53 @@ function SelectSubSubGroup({ main, sub, onChange }) {
     );
 }
 
+function SelectLabels() {
+    const [age, setAge] = React.useState('');
+  
+    const handleChange = (event) => {
+      setAge(event.target.value);
+    };
+  
+    return (
+      <div>
+        <FormControl sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="demo-simple-select-helper-label">Age</InputLabel>
+          <Select
+            labelId="demo-simple-select-helper-label"
+            id="demo-simple-select-helper"
+            value={age}
+            label="Age"
+            onChange={handleChange}
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value={10}>Ten</MenuItem>
+            <MenuItem value={20}>Twenty</MenuItem>
+            <MenuItem value={30}>Thirty</MenuItem>
+          </Select>
+          <FormHelperText>With label + helper text</FormHelperText>
+        </FormControl>
+        <FormControl sx={{ m: 1, minWidth: 120 }}>
+          <Select
+            value={age}
+            onChange={handleChange}
+            displayEmpty
+            inputProps={{ 'aria-label': 'Without label' }}
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value={10}>Ten</MenuItem>
+            <MenuItem value={20}>Twenty</MenuItem>
+            <MenuItem value={30}>Thirty</MenuItem>
+          </Select>
+          <FormHelperText>Without label</FormHelperText>
+        </FormControl>
+      </div>
+    );
+  }
+
 export default function SelectGroup() {
     const [main, setMain] = useState("");
     const [sub, setSub] = useState("");
@@ -686,7 +777,6 @@ export default function SelectGroup() {
     };
 
     
-
     const textStyle = {
         color: "var(--accent_color3)",
         paddingRight: "50px",
@@ -695,16 +785,30 @@ export default function SelectGroup() {
 
     function handleChangeMain(newInputValue) {
         setMain(newInputValue);
-        setSub(newInputValue);
+        // Save fetched data to local storage så att nya updateringar av sidan inte orsakar extra Fetch requests till servern ——> minskar belastning på servern med ökad användare
+        localStorage.setItem(
+            "main-grupp",
+            JSON.stringify(newInputValue),
+        );
     }
     function handleChangeSub(newInputValue) {
         setSub(newInputValue);
         //setSub_sub(newInputValue);
     }
-
     /*function handleChangeSubSub(newInputValue) {
         setSub_sub(newInputValue);
     }*/
+
+    /*function setSubOption(newValue) {
+        setSub(newValue);
+    }*/
+
+    React.useEffect(() => {
+        localStorage.setItem(
+            "main-grupp",
+            JSON.stringify(""),
+        );
+    }, []);
 
     return (
         <React.Fragment>
@@ -723,10 +827,9 @@ export default function SelectGroup() {
                     <div style={textStyle}>{`Sub: '${sub}'`}</div>
                     {/*<div style={textStyle}>{`Sub_sub: '${sub_sub}'`}</div> */}
                     <br />
-
                     {/* Pass main and onChange props */}
-                    <SelectMainGroup onChange={handleChangeMain} />
-                    <SelectSubGroup main={sub} onChange={handleChangeSub} />
+                    <SelectMainGroup  main={main} onChange={handleChangeMain} />
+                    <SelectSubGroup main={main} onChange={handleChangeSub} />
                     {/*  
                         <SelectSubSubGroup
                             main={sub}
@@ -736,7 +839,7 @@ export default function SelectGroup() {
                     */}
                 </div>
                 <div>
-                    <MyD3Component />
+                    <MyD3Component main_grupp={main} sub_grupp={sub}/>
                 </div>
             </Box>
         </React.Fragment>
