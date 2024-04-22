@@ -26,12 +26,21 @@ const MyD3Component = (props) => {
         let height = window.innerHeight - (window.innerHeight/9);
         let width = window.innerWidth - (window.innerWidth/13);
 
-        const svg = d3.select(svgRef.current);
+        const svg = d3.select(svgRef.current)
+            .style("max-width", "100%")
+            .style("height", "auto")
+            .style("display", "block")
+            .style("margin", "-5 -1px")
+            .style("border", "1px solid var(--livsmedelPage-Diagram-BorderColor1)")
+            .style("border-radius", "5px")
+            .style("background", `var(--livsmedelPage-Diagram-BgColor1)`)
+            .style("cursor", "pointer");
+            //.style("padding-left", "3vw");
 
         if (graphData) {
             const pack = d3
                 .pack()
-                .size([width-40 , height-30])
+                .size([width-40 , height-50])
                 .padding(110);
 
             const root = d3
@@ -96,7 +105,7 @@ const MyD3Component = (props) => {
                 .data(packedData.descendants()) // This binds the data to the selection. packedData.descendants() returns an array of all nodes in the hierarchy, including the root node and its descendants. Each node represents a circle in the pack layout.
                 .enter()                        // This enters the data and creates placeholders for each data element that doesn't have a corresponding element in the selection. This prepares to append new g elements for data elements that are not yet represented in the SVG.
                 .append("g")                    //.append("g"): This appends a g element for each data element that doesn't have a corresponding element in the selection. Each g element will represent a node in the pack layout and serve as a container for the circle and its associated text.
-                .attr("transform", (d) => `translate(${d.x-240},${d.y-15})`);  // .attr("transform", (d) => translate(${d.x},${d.y})): This sets the transformation (position) of each g element based on the x and y coordinates of the corresponding data element. The translate() function is used to move the g element to the specified coordinates. d.x and d.y are properties of each data element (d), representing the coordinates where the node should be positioned within the SVG container.
+                .attr("transform", (d) => `translate(${d.x+110},${d.y-15})`);  // .attr("transform", (d) => translate(${d.x},${d.y})): This sets the transformation (position) of each g element based on the x and y coordinates of the corresponding data element. The translate() function is used to move the g element to the specified coordinates. d.x and d.y are properties of each data element (d), representing the coordinates where the node should be positioned within the SVG container.
 
             node.append("circle")
                 .attr("r", (d) => {
@@ -141,19 +150,52 @@ const MyD3Component = (props) => {
                             return "none"; // Or any default color for circles without data values
                         }
                     });
-                    svg.append("text")
-                        .attr("id", "nodeValue")
-                        .attr("x", width - 650)
-                        .attr("y", 20)
-                        .text(d.data.name)
-                        .style("font-family", "monospace") // Change the font family here
-                        .style("font-size", "18") // Change the font size here
-                        .attr("fill", "#2a2828");
-                        //.attr("fill", "#127357");
-                    // Restore the original color when the mouse leaves
-                    d3.select(this).on("mouseout", function () {
+                    // Append a <g> (group) element to contain both <text> elements
+                    const textGroup = svg.append("g")
+                        .attr("id", "nodeGroup");
+                        
+                        textGroup.append("text") // Append the first <text> element
+                            .attr("id", "nodeValue1")
+                            .attr("x", 5)
+                            .attr("y", 25)
+                            .text(d.data.place)
+                            .style("font-family", "monospace")
+                            .style("font-size", "clamp(10px, 1vw, 25px)")
+                            .attr("fill", "#2a2828");
+                        
+                        textGroup.append("text") // Append the second <text> element
+                            .attr("id", "nodeValue2") // Adjusted ID to make it unique
+                            .attr("x", 5)
+                            .attr("y", 65)
+                            .text(d.data.name)
+                            .style("font-family", "monospace")
+                            .style("font-size", "clamp(10px, 1vw, 25px)")
+                            .attr("fill", "#2a2828");
+                        
+                        textGroup.append("text") // Append the second <text> element
+                            .attr("id", "nodeValue3") // Adjusted ID to make it unique
+                            .attr("x", 5)
+                            .attr("y", 105)
+                            .text(d.data.mengd)
+                            .style("font-family", "monospace")
+                            .style("font-size", "clamp(10px, 1vw, 25px)")
+                            .attr("fill", "#2a2828");
+                        
+                        textGroup.append("text") // Append the second <text> element
+                            .attr("id", "nodeValue4") // Adjusted ID to make it unique
+                            .attr("x", 5)
+                            .attr("y", 145)
+                            .text(d.data.andel_sverige)
+                            .style("font-family", "monospace")
+                            .style("font-size", "clamp(10px, 1vw, 25px)")
+                            .attr("fill", "#2a2828");    
+                    
+                    d3.select(this).on("mouseout", function () { // Restore the original color when the mouse leaves
                         d3.select(this).attr("fill", originalColor);
-                        d3.select("#nodeValue").remove();
+                        d3.select("#nodeValue1").remove();
+                        d3.select("#nodeValue2").remove();
+                        d3.select("#nodeValue3").remove();
+                        d3.select("#nodeValue4").remove();
                     });
                 });
 
@@ -161,7 +203,7 @@ const MyD3Component = (props) => {
                 .attr("dy", "0.3em")
                 .attr("text-anchor", "middle")
                 .style("font-family", "monospace") // Change the font family here
-                .style("font-size", "1.2em") // Change the font size here
+                .style("font-size", "clamp(10px, 1vw, 20px)") // Change the font size here
                 .text((d) => d.data.value ? d.data.value : "");
 
             return () => {
@@ -175,10 +217,11 @@ const MyD3Component = (props) => {
             .then((response) => response.json())
             .then((data) => {
                 const processedData = data.map((item) => ({
+                    place: item.place,
                     name: item.name,
+                    mengd: item.mengd,
                     value: parseFloat(item.value),
-                    x: item.x,
-                    y: item.y,
+                    andel_sverige: item.andel_sverige,
                 }));
 
                 setGraphData({ children: processedData });

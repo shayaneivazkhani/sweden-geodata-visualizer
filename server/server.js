@@ -294,7 +294,7 @@ app.get("/api/column/D3Result", async (req, res) => {
 
     try {
         const db = await initializeduck();
-        const query = `SELECT
+        /*const query = `SELECT
                              constellation_name || ',  ' || ROUND(SUM(units), 2) || ' ' || GROUP_CONCAT(DISTINCT unit) || '  ${livsmedel}'  AS name,
                               ROUND(SUM(units), 0) AS value,
                               ' ' || ROUND(SUM(units), 0) || ' ' || GROUP_CONCAT(DISTINCT unit) || ' ${livsmedel}' AS x,
@@ -311,6 +311,26 @@ app.get("/api/column/D3Result", async (req, res) => {
                           GROUP BY
                               constellation_name,
                               total_units`;
+        */
+       const query = `SELECT
+                              'Område:  ' || constellation_name AS place,
+                              'Livsmedel: ' || '${livsmedel}' AS name,
+                               ROUND(SUM(units), 0) AS value,
+                               'Mängd: ' || ROUND(SUM(units), 0) || ' ' || GROUP_CONCAT(DISTINCT unit) AS mengd,
+                               ROUND(SUM(units), 0) || ' ' || GROUP_CONCAT(DISTINCT unit) AS enhet,
+                               'Andel av Sveriges förbrukning: ' || (ROUND(SUM(units) / total.total_units * 100, 4)) || '%'  AS andel_sverige,
+                           FROM tendmilldb, 
+                               (SELECT 
+                                   SUM(units) AS total_units 
+                                 FROM 
+                                   tendmilldb
+                                 WHERE ${which_sub} LIKE '${livsmedel}') AS total
+                           WHERE
+                               ${which_sub} LIKE '${livsmedel}'
+                           GROUP BY
+                               constellation_name,
+                               total_units`;
+                      
 
         db.all(query, function (err, queryres) {
             if (err) {
