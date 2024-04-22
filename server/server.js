@@ -282,10 +282,11 @@ app.get("/api/column/D3Result", async (req, res) => {
   try {
     const db = await initializeduck();
     const query = `SELECT
-                      constellation_name || ' ' || ROUND(SUM(units), 0) || ' ' || GROUP_CONCAT(DISTINCT unit) AS name,
+                      constellation_name || ',  ' || ROUND(SUM(units), 2) || ' ' || GROUP_CONCAT(DISTINCT unit) || '  ${livsmedel}'  AS name,
                       ROUND(SUM(units), 0) AS value,
-                      ROUND(SUM(units) / total.total_units * 100, 4) + 100 AS x,
-                      ROUND(SUM(units) / total.total_units * 100, 4) + 100 AS y
+                      ' ' || ROUND(SUM(units), 0) || ' ' || GROUP_CONCAT(DISTINCT unit) || ' ${livsmedel}' AS x,
+                      ROUND(SUM(units), 0) || ' ' || GROUP_CONCAT(DISTINCT unit) AS y,
+                      ' ' || ROUND(SUM(units), 0) || 'Produkt ' || ' ${livsmedel}' AS z,
                    FROM tendmilldb, 
                       (SELECT 
                           SUM(units) AS total_units 

@@ -6,49 +6,111 @@ import { Box } from "@mui/material";
 import { useRef } from "react";
 import * as d3 from "d3";
 import zIndex from "@mui/material/styles/zIndex";
+import { margin } from "@mui/system";
 
 const MyD3Component = () => {
     const svgRef = useRef();
     const [graphData, setGraphData] = useState(null);
 
+
     useEffect(() => {
-        const width = 600;
-        const height = 600;
+        const width = 1100;
+        const height = 750;
 
         const svg = d3.select(svgRef.current);
 
         if (graphData) {
-            const pack = d3.pack()
-                .size([width, height])
-                .padding(5);
+            const pack = d3
+                .pack()
+                .size([width + 40, height])
+                .padding(58);
 
-            const root = d3.hierarchy(graphData)
-                .sum(d => d.value)
+            const root = d3
+                .hierarchy(graphData)
+                .sum((d) => d.value)
                 .sort((a, b) => b.value - a.value);
 
             const packedData = pack(root);
 
-            const colorScale = d3.scaleSequential()
-                .domain([0, 50])
-                .interpolator(d3.interpolateYlOrRd);
+            // const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+            //const colorScale = d3.scaleSequential().domain([0, 500]).interpolator(d3.interpolateYlOrRd);
 
-            const node = svg.selectAll("g")
-                .data(packedData.descendants())
-                .enter().append("g")
-                .attr("transform", d => `translate(${d.x},${d.y})`);
+            // Define your custom color classes and corresponding colors
+            const colorClasses = [
+                { range: [0, 100], color: "#fcdd90" },
+                { range: [101, 200], color: "#fabb22" },
+                { range: [201, 1000], color: "#e2b9cf" },
+                { range: [1001, 4000], color: "#c6739f" },
+                { range: [4001, 50000], color: "blue" },
+                // Add more ranges and colors as needed
+            ];
+            // Create a function to map a value to its corresponding color based on the defined classes
+            const getColor = (value) => {
+                for (const { range, color } of colorClasses) {
+                    if (value >= range[0] && value <= range[1]) {
+                        return color;
+                    }
+                }
+                // Default color if no match is found
+                return "white";
+            };
+
+            const node = svg
+                .selectAll("g")
+                .data(packedData.descendants()) // This binds the data to the selection. packedData.descendants() returns an array of all nodes in the hierarchy, including the root node and its descendants. Each node represents a circle in the pack layout.
+                .enter()                        // This enters the data and creates placeholders for each data element that doesn't have a corresponding element in the selection. This prepares to append new g elements for data elements that are not yet represented in the SVG.
+                .append("g")                    //.append("g"): This appends a g element for each data element that doesn't have a corresponding element in the selection. Each g element will represent a node in the pack layout and serve as a container for the circle and its associated text.
+                .attr("transform", (d) => `translate(${d.x},${d.y})`);  // .attr("transform", (d) => translate(${d.x},${d.y})): This sets the transformation (position) of each g element based on the x and y coordinates of the corresponding data element. The translate() function is used to move the g element to the specified coordinates. d.x and d.y are properties of each data element (d), representing the coordinates where the node should be positioned within the SVG container.
 
             node.append("circle")
-                .attr("r", d => d.r)
-                .attr("fill", d => colorScale(d.data.value))
-                .attr("fill-opacity", 0.7) 
+                .attr("r", (d) => {
+                    const minValue = 20; // Adjust this to your minimum value
+                    return d.data.value ? (d.value <= minValue ? minValue : d.r + 15) : width/2.95;
+                })
+                .attr("fill", (d) => {
+                    if (d.data.value) {
+                        // Use the getColor function to set the fill color of your circles
+                        return getColor(d.data.value); // Use the getColor function to set the fill color of circles with data values
+                    } else {
+                        return "none"; // Or any default color for circles without data values
+                    }
+                })
+                //attr("fill", d => colorScale(d.data.value))
+                .attr("fill-opacity", 0.68)
+
+                .style("stroke-width", (d) => {
+                    if (d.data.value) {
+                        return 0
+                    } else {
+                        return 1; // Or any default color for circles without data values
+                    }
+                })
+                .style("stroke",(d) => {
+                    if (d.data.value) {
+                        return "none";
+                    } else {
+                        return "blue"; // Or any default color for circles without data values
+                    }
+                })
                 .on("mouseover", function (event, d) {
                     var originalColor = d3.select(this).attr("fill"); // Store the original color
-                    d3.select(this).attr("fill", "white"); // Change the fill color to blue upon mouseover
+                    d3.select(this).attr("fill", (d) => {
+                        if (d.data.value) {
+                            // Use the getColor function to set the fill color of your circles
+                            return "#4bc2a0"; // Use the getColor function to set the fill color of circles with data values
+                        } else {
+                            return "none"; // Or any default color for circles without data values
+                        }
+                    });
                     svg.append("text")
                         .attr("id", "nodeValue")
-                        .attr("x", d.x + 20)
-                        .attr("y", d.y - 20)
-                        .text(d.value + "KG");
+                        .attr("x", 1100)
+                        .attr("y", 300)
+                        .text(d.data.name)
+                        .style("font-family", "monospace") // Change the font family here
+                        .style("font-size", "24") // Change the font size here
+                        .attr("fill", "#2a2828");
+                    //.attr("fill", "#127357");
                     // Restore the original color when the mouse leaves
                     d3.select(this).on("mouseout", function () {
                         d3.select(this).attr("fill", originalColor);
@@ -59,7 +121,9 @@ const MyD3Component = () => {
             node.append("text")
                 .attr("dy", "0.3em")
                 .attr("text-anchor", "middle")
-                .text(d => d.data.name);
+                .style("font-family", "monospace") // Change the font family here
+                .style("font-size", "1.2em") // Change the font size here
+                .text((d) => d.data.value);
 
             return () => {
                 svg.selectAll("*").remove();
@@ -68,21 +132,32 @@ const MyD3Component = () => {
     }, [graphData]);
 
     useEffect(() => {
-        fetch('http://localhost:3001/api/column/D3Result?livsmedel=Köttbullar')
-            .then(response => response.json())
-            .then(data => {
-                const processedData = data.map(item => ({
+        fetch("http://localhost:3001/api/column/D3Result?livsmedel=Köttbullar")
+            .then((response) => response.json())
+            .then((data) => {
+                const processedData = data.map((item) => ({
                     name: item.name,
                     value: parseFloat(item.value),
+                    x: item.x,
+                    y: item.y,
                 }));
 
                 setGraphData({ children: processedData });
             });
     }, []);
 
+
+    const dataDiagramStyle = {
+        width: "100%",
+        paddingTop: "40px",
+        paddingLeft: "50px",
+        //backgroundColor: "rgba(0, 90, 90, 0.18)",
+        //backgroundColor: "rgba(0, 0, 70, 0.18)",
+    };
+
     return (
-        <div className="ropiojw">
-            <svg ref={svgRef} width="100%" height="90vw" />
+        <div className="dataDiagram" style={dataDiagramStyle}>
+            <svg ref={svgRef} width="100%" height="1200" />
         </div>
     );
 };
@@ -257,7 +332,6 @@ const MyD3Component = () => {
 };
 
 */
-
 
 var H1BGraph = () => {
     return (
@@ -611,6 +685,8 @@ export default function SelectGroup() {
         backgroundColor: "rgba(0, 0, 70, 0.18)",
     };
 
+    
+
     const textStyle = {
         color: "var(--accent_color3)",
         paddingRight: "50px",
@@ -666,3 +742,20 @@ export default function SelectGroup() {
         </React.Fragment>
     );
 }
+
+/*
+<div style={dataDiagramStyle}>
+                    <Box
+                        sx={{
+                            flexGrow: 1,
+                            borderRadius: 1,
+                            paddingTop: "35px",
+                            paddingBottom: "35px",
+                            backgroundColor: "rgba(0, 0, 70, 0.18)",
+                            boxShadow: "0 0px 18px 0 rgba(162,155,254,0.28)",
+                        }}
+                    >
+                        <MyD3Component />
+                    </Box>
+                </div>
+*/
