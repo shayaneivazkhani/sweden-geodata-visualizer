@@ -19,12 +19,12 @@ const Livsmedel = () => {
 
     const scrollableStyle = {
         paddingTop: "85px",
-        zIndex: 0,
+        zIndex: "0",
     };
 
     const body_style = {
         width: "100%",
-        minWidth: "1100px",
+        minWidth: "900px",
     };
 
     const TextTypography = styled(Typography)(() => ({

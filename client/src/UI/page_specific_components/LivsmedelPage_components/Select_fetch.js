@@ -21,16 +21,18 @@ const MyD3Component = (props) => {
 
 
     useEffect(() => {
-        const width = 1100;
-        const height = 750;
+        //const width = 850;
+        //const height = 600;
+        let height = window.innerHeight - (window.innerHeight/9);
+        let width = window.innerWidth - (window.innerWidth/13);
 
         const svg = d3.select(svgRef.current);
 
         if (graphData) {
             const pack = d3
                 .pack()
-                .size([width + 40, height])
-                .padding(120);
+                .size([width-40 , height-30])
+                .padding(110);
 
             const root = d3
                 .hierarchy(graphData)
@@ -44,34 +46,36 @@ const MyD3Component = (props) => {
 
             // Define your custom color classes and corresponding colors
             const colorClasses = [
-                { range: [0, 500], color: "#ffcaab" },  
-                { range: [501, 1000], color: "#ffb088" },
-                { range: [1001, 2000], color: "#ffa17a" },
-                { range: [2001, 3000], color: "#ff8a59" },
-                { range: [3001, 4000], color: "#ff8a59" },
-                { range: [4001, 5000], color: "#ff5b31" },
-                { range: [5001, 6000], color: "#ff5b31" },
-                { range: [6001, 8000], color: "#ff5b31" },
-                { range: [8001, 10000], color: "#e42e00" }, // Blue
-                { range: [10001, 30000], color: "#e42e00" }, // Blue
-                { range: [30001, 40000], color: "#e42e00" }, // Blue
-                { range: [40001, 50000], color: "#ca2900" }, // Blue
-                { range: [50001, 60000], color: "#ca2900" }, // Blue
-                { range: [60001, 70000], color: "#ca2900" }, // Blue
-                { range: [70001, 80000], color: "#ca2900" }, // Blue
-                { range: [80001, 90000], color: "#ca2900" }, // Blue
-                { range: [90001, 100000], color: "#ca2900" }, // Blue
-                { range: [100001, 110000], color: "#b12400" }, // Blue
-                { range: [110001, 120000], color: "#b12400" }, // Blue
-                { range: [120001, 130000], color: "#b12400" }, // Blue
-                { range: [130001, 140000], color: "#b12400" }, // Blue
-                { range: [140001, 150000], color: "#b12400" }, // Blue
-                { range: [150001, 160000], color: "#b12400" }, // Blue
-                { range: [160001, 170000], color: "#b12400" }, // Blue
-                { range: [170001, 180000], color: "#b12400" }, // Blue
-                { range: [180001, 190000], color: "#b12400" }, // Blue
-                { range: [190001, 200000], color: "#b12400" }, // Very Purple
-                { range: [200001, 1000000], color: "#b12400" }, // Blue
+                { range: [0, 50], color: "#edf960" },  
+                { range: [51, 150], color: "#f6fcaf" },
+                { range: [151, 500], color: "#fdc066" },  
+                { range: [501, 1000], color: "#fd9700" },
+                { range: [1001, 2000], color: "#fd9132" },
+                { range: [2001, 3000], color: "#fd7600" },
+                { range: [3001, 4000], color: "#fd7e32" },
+                { range: [4001, 5000], color: "#fd5f00" },
+                { range: [5001, 6000], color: "#fd6432" },
+                { range: [6001, 8000], color: "#fd3e00" },
+                { range: [8001, 10000], color: "#fd196e" },
+                { range: [10001, 30000], color: "#e30054" },
+                { range: [30001, 40000], color: "#fd4cd5" }, 
+                { range: [40001, 50000], color: "#ca009c" }, 
+                { range: [50001, 60000], color: "#d332fd" }, 
+                { range: [60001, 70000], color: "#b400e3" },
+                { range: [70001, 80000], color: "#b94cfd" },
+                { range: [80001, 90000], color: "#b94cfd" }, 
+                { range: [90001, 100000], color: "#9b00fd" },
+                { range: [100001, 110000], color: "#9b00fd" }, 
+                { range: [110001, 120000], color: "#a14cfd" }, 
+                { range: [120001, 130000], color: "#a14cfd" },
+                { range: [130001, 140000], color: "#8619fd" }, 
+                { range: [140001, 150000], color: "#8619fd" },
+                { range: [150001, 160000], color: "#7900fd" },
+                { range: [160001, 170000], color: "#7900fd" }, 
+                { range: [170001, 180000], color: "#6c00e3" }, 
+                { range: [180001, 190000], color: "#6c00e3" }, 
+                { range: [190001, 200000], color: "#6c00e3" },
+                { range: [200001, 1000000], color: "#6c00e3" },
 
                 // Add more ranges and colors as needed
             ];
@@ -92,13 +96,13 @@ const MyD3Component = (props) => {
                 .data(packedData.descendants()) // This binds the data to the selection. packedData.descendants() returns an array of all nodes in the hierarchy, including the root node and its descendants. Each node represents a circle in the pack layout.
                 .enter()                        // This enters the data and creates placeholders for each data element that doesn't have a corresponding element in the selection. This prepares to append new g elements for data elements that are not yet represented in the SVG.
                 .append("g")                    //.append("g"): This appends a g element for each data element that doesn't have a corresponding element in the selection. Each g element will represent a node in the pack layout and serve as a container for the circle and its associated text.
-                .attr("transform", (d) => `translate(${d.x},${d.y})`);  // .attr("transform", (d) => translate(${d.x},${d.y})): This sets the transformation (position) of each g element based on the x and y coordinates of the corresponding data element. The translate() function is used to move the g element to the specified coordinates. d.x and d.y are properties of each data element (d), representing the coordinates where the node should be positioned within the SVG container.
+                .attr("transform", (d) => `translate(${d.x-240},${d.y-15})`);  // .attr("transform", (d) => translate(${d.x},${d.y})): This sets the transformation (position) of each g element based on the x and y coordinates of the corresponding data element. The translate() function is used to move the g element to the specified coordinates. d.x and d.y are properties of each data element (d), representing the coordinates where the node should be positioned within the SVG container.
 
             node.append("circle")
                 .attr("r", (d) => {
                     if (d.data.value) {
-                        const minValue = 25; // Adjust this to your minimum value
-                        return d.value <= minValue ? minValue : d.r + 20;
+                        const minValue = 11; // Adjust this to your minimum value
+                        return d.value <= minValue ? minValue : d.r + 13;
                     } else {
                         return width/2.95;
                     }
@@ -139,11 +143,11 @@ const MyD3Component = (props) => {
                     });
                     svg.append("text")
                         .attr("id", "nodeValue")
-                        .attr("x", 1000)
-                        .attr("y", 300)
+                        .attr("x", width - 650)
+                        .attr("y", 20)
                         .text(d.data.name)
                         .style("font-family", "monospace") // Change the font family here
-                        .style("font-size", "15") // Change the font size here
+                        .style("font-size", "18") // Change the font size here
                         .attr("fill", "#2a2828");
                         //.attr("fill", "#127357");
                     // Restore the original color when the mouse leaves
@@ -183,8 +187,9 @@ const MyD3Component = (props) => {
 
 
     const dataDiagramStyle = {
-        minWidth: "1100px",
-        paddingTop: "40px",
+        //minWidth: "900px",
+        paddingRight: "10px",
+        paddingTop: "0px",
         paddingLeft: "0px",
         //backgroundColor: "rgba(0, 90, 90, 0.18)",
         //backgroundColor: "rgba(0, 0, 70, 0.18)",
@@ -192,7 +197,7 @@ const MyD3Component = (props) => {
 
     return (
         <div className="dataDiagram" style={dataDiagramStyle}>
-            <svg ref={svgRef} width="100%" height="900" />
+            <svg ref={svgRef} width={window.innerWidth - (window.innerWidth/17)} height={ window.innerHeight - (window.innerHeight/14)} />
         </div>
     );
 };
@@ -526,7 +531,6 @@ function SelectSubGroup({ main, onChange }) {
             await sleep(1e1); // For demo purposes.
 
             if (active) {
-                const cachedString = JSON.parse(localStorage.getItem("main-grupp"));
 
                 const response = await fetch(
                     `http://localhost:3001/api/column/sub_group?main_group=${main}`,
@@ -716,53 +720,6 @@ function SelectSubSubGroup({ main, sub, onChange }) {
     );
 }
 
-function SelectLabels() {
-    const [age, setAge] = React.useState('');
-  
-    const handleChange = (event) => {
-      setAge(event.target.value);
-    };
-  
-    return (
-      <div>
-        <FormControl sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="demo-simple-select-helper-label">Age</InputLabel>
-          <Select
-            labelId="demo-simple-select-helper-label"
-            id="demo-simple-select-helper"
-            value={age}
-            label="Age"
-            onChange={handleChange}
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
-          </Select>
-          <FormHelperText>With label + helper text</FormHelperText>
-        </FormControl>
-        <FormControl sx={{ m: 1, minWidth: 120 }}>
-          <Select
-            value={age}
-            onChange={handleChange}
-            displayEmpty
-            inputProps={{ 'aria-label': 'Without label' }}
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
-          </Select>
-          <FormHelperText>Without label</FormHelperText>
-        </FormControl>
-      </div>
-    );
-  }
-
 export default function SelectGroup() {
     const [main, setMain] = useState("");
     const [sub, setSub] = useState("");
@@ -770,10 +727,12 @@ export default function SelectGroup() {
 
     const containerStyle = {
         width: "100%",
+        height: "100px",
         display: "flex",
         alignItems: "center", // Center items horizontally
         justifyContent: "flex-end", // Center items vertically
-        backgroundColor: "rgba(0, 0, 70, 0.18)",
+        backgroundColor: "rgba(0, 0, 70, 0)",
+        zIndex: 2,
     };
 
     
@@ -783,13 +742,14 @@ export default function SelectGroup() {
         borderRadius: "20px",
     };
 
+    const dataStyle = {
+        color: "var(--accent_color3)",
+        paddingRight: "50px",
+        zIndex: 0,
+    };
+
     function handleChangeMain(newInputValue) {
         setMain(newInputValue);
-        // Save fetched data to local storage så att nya updateringar av sidan inte orsakar extra Fetch requests till servern ——> minskar belastning på servern med ökad användare
-        localStorage.setItem(
-            "main-grupp",
-            JSON.stringify(newInputValue),
-        );
     }
     function handleChangeSub(newInputValue) {
         setSub(newInputValue);
@@ -797,10 +757,6 @@ export default function SelectGroup() {
     }
     /*function handleChangeSubSub(newInputValue) {
         setSub_sub(newInputValue);
-    }*/
-
-    /*function setSubOption(newValue) {
-        setSub(newValue);
     }*/
 
     React.useEffect(() => {
@@ -815,50 +771,28 @@ export default function SelectGroup() {
             <Box
                 sx={{
                     flexGrow: 1,
+                    margin: "3%",
+
                     borderRadius: 1,
-                    paddingTop: "35px",
-                    paddingBottom: "35px",
+
+                    paddingTop: "20px",
+                    paddingLeft: "60px",
+                    paddingRight: "55px",
+                    paddingBottom: "40px",
                     backgroundColor: "rgba(0, 0, 70, 0.18)",
-                    boxShadow: "0 0px 18px 0 rgba(162,155,254,0.28)",
+                    boxShadow: "inset 0 1px 10px 0 #050307",
                 }}
             >
                 <div style={containerStyle}>
-                    <div style={textStyle}>{`Main: '${main}'`}</div>
-                    <div style={textStyle}>{`Sub: '${sub}'`}</div>
-                    {/*<div style={textStyle}>{`Sub_sub: '${sub_sub}'`}</div> */}
-                    <br />
-                    {/* Pass main and onChange props */}
-                    <SelectMainGroup  main={main} onChange={handleChangeMain} />
-                    <SelectSubGroup main={main} onChange={handleChangeSub} />
-                    {/*  
-                        <SelectSubSubGroup
-                            main={sub}
-                            sub={sub_sub}
-                            onChange={handleChangeSubSub}
-                        />
-                    */}
+                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: "center", paddingRight: "15px"}}>
+                        <SelectMainGroup main={main} onChange={handleChangeMain} />
+                        <SelectSubGroup main={main} onChange={handleChangeSub} />
+                    </div>
                 </div>
-                <div>
-                    <MyD3Component main_grupp={main} sub_grupp={sub}/>
+                <div style={dataStyle}>
+                   <MyD3Component main_grupp={main} sub_grupp={sub}/>
                 </div>
             </Box>
         </React.Fragment>
     );
 }
-
-/*
-<div style={dataDiagramStyle}>
-                    <Box
-                        sx={{
-                            flexGrow: 1,
-                            borderRadius: 1,
-                            paddingTop: "35px",
-                            paddingBottom: "35px",
-                            backgroundColor: "rgba(0, 0, 70, 0.18)",
-                            boxShadow: "0 0px 18px 0 rgba(162,155,254,0.28)",
-                        }}
-                    >
-                        <MyD3Component />
-                    </Box>
-                </div>
-*/
