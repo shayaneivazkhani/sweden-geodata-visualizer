@@ -1,8 +1,17 @@
+node_modules
+yarn.lock
+
 # ignore jävla databasfilen ifall de e inte zipped
 /server/database.db
 
 # ignore filen som skapas i mac
 .DS_Store
+
+# ignore directory— https://github.com/harlan-zw/unlighthouse
+.unlighthouse
+
+
+
 
 # Logs
 logs

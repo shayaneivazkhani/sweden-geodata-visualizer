@@ -2,6 +2,17 @@
   margin-top: 20px;
   margin-left: 10%;
 }
+
+/*
+@media only screen and (min-width: 600px) {
+  .content2_main_inner_body {
+    margin-top: 20px;
+    margin-left: 10%;
+  }
+
+}
+*/
+
 .text_and_animation {
   display: flex;
   align-items: center;
@@ -12,17 +23,10 @@
     margin-bottom: 25px;
     margin-left: 55px;
 
-    animation: backInLeft; /* referring directly to the animation's @keyframe declaration */
-    animation-duration: 0.8s; /* don't forget to set a duration! */
+    /*animation: backInLeft; // referring directly to the animation's @keyframe declaration 
+    animation-duration: 0.8s; // don't forget to set a duration! */
 }
-/*
-@media only screen and (min-width: 600px) {
-  .content2_main_inner_body {
-    margin-top: 20px;
-    margin-left: 10%;
-  }
-}
-*/
+
 .text {
   user-select: none;
 
@@ -30,53 +34,14 @@
   margin-bottom: 45px;
   margin-left: 25px;
 
-  animation: fadeInRightBig; /* referring directly to the animation's @keyframe declaration */
+ animation: fadeInRightBig;  /* referring directly to the animation's @keyframe declaration  */
   animation-duration: 1.4s; /* don't forget to set a duration! */
 }
 
+
 .links_to_subpages {
-  animation: fadeInUpBig; /* referring directly to the animation's @keyframe declaration */
-  animation-duration: 1.5s; /* don't forget to set a duration! */
+  animation: fadeInUpBig; /* referring directly to the animation's @keyframe declaration  */
+  animation-duration: 1.5s; /* don't forget to set a duration!  */
 }
 
-/*
-.content2_main_body {
-    height: 250px;
-    width: 100%;
-
-    margin-top: 20px;
-    margin-bottom: 50px; 
-}
-.waveAnimation {
-
-    margin-right: 30px;
-}
-.animationGroupOfGraphs {
-
-    margin-left: 30px;
-    margin-right: 15px;
-}
-*/
-
-/*
-.content2_main_text {
-    background-color: rgb(53, 48, 150);
-    box-shadow: 0 0 40px  rgb(66, 2, 2);
-    border-color: rgb(30, 255, 0);
-    border: 10px;
-
-    user-select: none;
-    
-    text-align: left;
-    color: #dbdbdc;
-    font-family: Garamond, serif;
-    font-size: 30px;
-    font-weight: lighter;
-    line-height: 1.4;
-
-    margin-top: 20px;
-    margin-left: 100px;
-    margin-right: 100px;
-    margin-bottom: 1px; 
-  }
-  */
+/* ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————— */

@@ -6,6 +6,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="initial-scale=1, width=device-width" />
 
+  <!-- Preload the LCP image with a high fetchpriority so it starts loading with the stylesheet. -->
+    <!-- <link rel="preload" fetchpriority="high" as="image" href="/images/livsmedel_card_img.webp" type="image/webp"> -->
+    <!-- <link rel="preload" fetchpriority="high" as="image" href="/images/ekologiskt_card_img.webp" type="image/webp"> -->
+    <!-- <link rel="preload" fetchpriority="high" as="image" href="/images/deals_card_img.webp" type="image/webp"> -->
+
   <link rel="icon" href="./images/favicon.ico">
   <!-- Fonts to support Material Design – i.e. MUI library (Material UI) that is imported to create the components -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,7 +20,7 @@
   <!-- Include Copperplate fonts -->
   <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/copperplate" >
     <!-- Include Josefin Sans fonts (chatGPT have the same font) -->
-  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap" >
   <!-- css animations from https://animate.style/ -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
@@ -220,6 +225,18 @@
 
     /* Scrollbar—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
 
+    /*
+      The -webkit-scrollbar family of properties consists of seven
+    different pseudo-elements that, together, comprise a full scrollbar UI
+    element:
+              1. ::-webkit-scrollbar addresses the background of the bar itself. It is usually covered by the other elements
+              2. :: -webkit-scrollbar-button addresses the directional buttons on the scrollbar
+              3. ::-webkit-scrollbar-track addresses the empty space "below" the progress bar
+              4. ::-webkit-scrollbar-track-piece is the top-most layer of thethe progress bar not covered by the draggable scrolling element (thumb)
+              5. ::-webkit-scrollbar-thumb addresses the draggable scrolling element that resizes depending on the size of the scrollable element
+              6. ::-webkit-scrollbar-corner addresses the (usually) bottom corner of the scrollable element, where two scrollbars might meet
+              7. ::-webkit-resizer addresses the draggable resizing handle that appears above the scrollbar-corner at the bottom corner of some elements
+    */
 
     @media only screen and (min-width: 100px) and (max-width: 900px) {
       body::-webkit-scrollbar {
@@ -322,30 +339,29 @@
   </style>
 </head>
 
-<!-- Disable USER right-clicking =>  oncontextmenu="return false" -->
+  <!-- Disable USER right-clicking =>  oncontextmenu="return false" -->
+  <body oncontextmenu="return false">
 
-<body oncontextmenu="return false">
 
+    <div id="root">
+      <!-- The APP goes in here -->
+    </div>
 
-  <div id="root">
-    <!-- The APP goes in here -->
-  </div>
+    <script>
+      // Read mode value from localStorage
+      const darkModeValue = localStorage.getItem('darkMode');
+      const darkMode = darkModeValue ? JSON.parse(darkModeValue) : true;
 
-  <script>
-    // Read mode value from localStorage
-    const darkModeValue = localStorage.getItem('darkMode');
-    const darkMode = darkModeValue ? JSON.parse(darkModeValue) : true;
-
-    // Update body class attribute based on mode value
-    const body = document.body;
-    if (darkMode) {
-      body.classList.add('dark');
-      body.classList.remove('light');
-    } else {
-      body.classList.add('light');
-      body.classList.remove('dark');
-    }
-  </script>
-</body>
+      // Update body class attribute based on mode value
+      const body = document.body;
+      if (darkMode) {
+        body.classList.add('dark');
+        body.classList.remove('light');
+      } else {
+        body.classList.add('light');
+        body.classList.remove('dark');
+      }
+    </script>
+  </body>
 
 </html>

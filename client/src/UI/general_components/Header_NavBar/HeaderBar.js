@@ -181,7 +181,7 @@ function StatisticSubpageMenu() {
                         <ListItemText
                             primary={item.label}
                             primaryTypographyProps={{
-                                fontFamily: "var(--secondary-font)",
+                                fontFamily: "var(--secondary-font), Arial, sans-serif",
                                 fontSize: 16,
                                 fontWeight: 400,
                             }}
@@ -194,7 +194,7 @@ function StatisticSubpageMenu() {
 
     const TypographyText = styled(Typography)(() => ({
         color: "var(--accent_color1)",
-        fontFamily: "var(--secondary-font)",
+        fontFamily: "var(--secondary-font), Arial, sans-serif",
         fontSize: 20,
         fontWeight: 500,
         //textTransform: "uppercase"
@@ -303,7 +303,7 @@ function BuildMenu() {
                         <ListItemText
                             primary={item.label}
                             primaryTypographyProps={{
-                                fontFamily: "var(--secondary-font)",
+                                fontFamily: "var(--secondary-font), Arial, sans-serif",
                                 fontSize: 16,
                                 fontWeight: 400,
                             }}
@@ -316,7 +316,7 @@ function BuildMenu() {
 
     const TypographyText = styled(Typography)(() => ({
         color: "var(--accent_color1)",
-        fontFamily: "var(--secondary-font)",
+        fontFamily: "var(--secondary-font), Arial, sans-serif",
         fontSize: 20,
         fontWeight: 500,
         //textTransform: "uppercase"
@@ -368,7 +368,7 @@ const Header = () => {
     };
 
     const navLinkStyle = {
-        marginRight: "20px", 
+        marginRight: "20px",
     };
 
     const imageStyle = {
@@ -413,14 +413,39 @@ const Header = () => {
                         sx={{
                             borderRadius: 1,
                             height: "50px",
+                            "& a": {
+                                // style the <a> element inside Box
+                                display: "block",
+                                width: "115px",
+                                height: "75px",
+                                backgroundColor: "rgba(0, 0, 0, 0.00)",
+                                transition: "transform 0.4s",
+                                transform: isHovered
+                                    ? "scale(1.1)"
+                                    : "scale(1)",
+                                "& img": {
+                                    // style the <img> element inside <a>
+                                    width: "100%", // make the image width fill the container
+                                    height: "100%", // make the image height fill the container
+                                },
+                            },
                         }}
                     >
                         <a href="/">
-                            <img
-                                src="./images/project_logo_no_background.jpg"
-                                alt="return to homepage"
-                                style={imageStyle}
-                            ></img>
+                            <picture>
+                                <source
+                                    type="image/webp"
+                                    srcSet="./images/project_logo_no_background.webp"
+                                />
+                                <source
+                                    type="image/jpeg"
+                                    srcSet="./images/project_logo_no_background.jpg"
+                                />
+                                <img
+                                    src="./images/project_logo_no_background.jpg"
+                                    alt="return to homepage"
+                                />
+                            </picture>
                         </a>
                     </Box>
                 </div>
@@ -449,8 +474,9 @@ const Header = () => {
                                 style={{
                                     paddingTop: "1px",
                                     marginBottom: "20px",
-                                
-                                    "&:hover": { // Apply border styles on hover
+
+                                    "&:hover": {
+                                        // Apply border styles on hover
                                         border: `0.7px solid var(--mainPage-3CardLinks-Border-Color1)`, // Change border color on hover
                                     },
                                 }}

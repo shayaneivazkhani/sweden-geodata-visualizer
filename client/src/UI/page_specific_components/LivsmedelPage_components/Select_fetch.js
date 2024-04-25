@@ -5,13 +5,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Box } from "@mui/material";
 import { useRef } from "react";
 import * as d3 from "d3";
-import zIndex from "@mui/material/styles/zIndex";
-import { margin, minWidth } from "@mui/system";
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import * as topojson from 'topojson';
 
 
 
@@ -110,8 +104,8 @@ const MyD3Component = (props) => {
             node.append("circle")
                 .attr("r", (d) => {
                     if (d.data.value) {
-                        const minValue = 11; // Adjust this to your minimum value
-                        return d.value <= minValue ? minValue : d.r + 13;
+                        const minValue = 15; // Adjust this to your minimum value
+                        return d.value <= minValue ? minValue : d.r + 16;
                     } else {
                         return width/2.95;
                     }
@@ -160,7 +154,7 @@ const MyD3Component = (props) => {
                             .attr("y", 25)
                             .text(d.data.place)
                             .style("font-family", "monospace")
-                            .style("font-size", "clamp(10px, 1vw, 25px)")
+                            .style("font-size", "clamp(10px, 0.85vw, 22px)")
                             .attr("fill", "#2a2828");
                         
                         textGroup.append("text") // Append the second <text> element
@@ -169,7 +163,7 @@ const MyD3Component = (props) => {
                             .attr("y", 65)
                             .text(d.data.name)
                             .style("font-family", "monospace")
-                            .style("font-size", "clamp(10px, 1vw, 25px)")
+                            .style("font-size", "clamp(10px, 0.85vw, 22px)")
                             .attr("fill", "#2a2828");
                         
                         textGroup.append("text") // Append the second <text> element
@@ -178,7 +172,7 @@ const MyD3Component = (props) => {
                             .attr("y", 105)
                             .text(d.data.mengd)
                             .style("font-family", "monospace")
-                            .style("font-size", "clamp(10px, 1vw, 25px)")
+                            .style("font-size", "clamp(10px, 0.85vw, 22px)")
                             .attr("fill", "#2a2828");
                         
                         textGroup.append("text") // Append the second <text> element
@@ -187,7 +181,7 @@ const MyD3Component = (props) => {
                             .attr("y", 145)
                             .text(d.data.andel_sverige)
                             .style("font-family", "monospace")
-                            .style("font-size", "clamp(10px, 1vw, 25px)")
+                            .style("font-size", "clamp(10px, 0.85vw, 22px)")
                             .attr("fill", "#2a2828");    
                     
                     d3.select(this).on("mouseout", function () { // Restore the original color when the mouse leaves

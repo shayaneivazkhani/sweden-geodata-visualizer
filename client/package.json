@@ -20,7 +20,8 @@
     "@testing-library/user-event": "^13.5.0",
     "chance": "latest",
     "color": "latest",
-    "d3": "^7.9.0",
+    "d3": "4.2.8",
+    "d3-geo-projection": "^4.0.0",
     "prop-types": "latest",
     "react": "latest",
     "react-dom": "latest",
@@ -29,6 +30,7 @@
     "react-router-dom": "^6.22.1",
     "react-scripts": "latest",
     "react-swipeable-views": "latest",
+    "topojson": "1.6.20",
     "web-vitals": "^2.1.4"
   },
   "description": "This project integrates components from Material-UI. You can find more information at: \n- Temporary Drawer: https://github.com/mui/material-ui/blob/v5.15.9/docs/data/material/components/drawers/TemporaryDrawer.js \n- Floating Action Button Zoom: https://github.com/mui/material-ui/blob/v5.15.9/docs/data/material/components/floating-action-button/FloatingActionButtonZoom.js \n- https://github.com/mui/material-ui/blob/v5.15.9/docs/data/material/components/selects/MultipleSelectChip.js",
