@@ -317,7 +317,6 @@ app.get("/api/column/D3Result", async (req, res) => {
                               'Livsmedel: ' || '${livsmedel}' AS name,
                                ROUND(SUM(units), 0) AS value,
                                'Mängd: ' || ROUND(SUM(units), 0) || ' ' || GROUP_CONCAT(DISTINCT unit) AS mengd,
-                               ROUND(SUM(units), 0) || ' ' || GROUP_CONCAT(DISTINCT unit) AS enhet,
                                'Andel av Sveriges förbrukning: ' || (ROUND(SUM(units) / total.total_units * 100, 4)) || '%'  AS andel_sverige,
                            FROM tendmilldb, 
                                (SELECT 
