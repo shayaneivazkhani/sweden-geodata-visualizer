@@ -92,8 +92,9 @@ const MyD3Component = (props) => {
             { range: [-10, -1], color: "none" },
             { range: [0, 10], color: "#ffffff" },
             { range: [11, 20], color: "#ffffc0" },
-            { range: [21, 50], color: "#edf960" },
-            { range: [51, 150], color: "#f6fcaf" },
+            { range: [21, 50], color: "#fafdd7" },
+            { range: [51, 100], color: "#f6fcaf" },
+            { range: [101, 150], color: "#edf960" },
             { range: [151, 500], color: "#fdc066" },
             { range: [501, 1000], color: "#fd9700" },
             { range: [1001, 2000], color: "#fd9132" },
@@ -218,7 +219,7 @@ const MyD3Component = (props) => {
 
             // Initialize zoom settings
             const zoomSettings = d3.zoomIdentity
-                .translate(-250, 3510)
+                .translate(-290, 3590)
                 .scale(2100);
 
             // Call zoom on SVG element and apply initial zoom
@@ -494,8 +495,8 @@ const MyD3Component = (props) => {
             <div className="dataDiagram" style={dataDiagramStyle}>
                 <svg
                     ref={svgBubbleRef}
-                    width={window.innerWidth - window.innerWidth / 17}
-                    height={window.innerHeight - window.innerHeight / 14}
+                    width={window.innerWidth - window.innerWidth / 3}
+                    height={window.innerHeight - window.innerHeight / 4}
                 />
             </div>
             <div>
@@ -503,8 +504,8 @@ const MyD3Component = (props) => {
                 <div id="viz">
                     <svg
                         ref={svgMapRef}
-                        width={window.innerWidth - window.innerWidth / 8}
-                        height={window.innerHeight - window.innerHeight / 14}
+                        width={600}
+                        height={window.innerHeight - window.innerHeight / 4}
                     />
                 </div>
                 {/*  </div> */}
