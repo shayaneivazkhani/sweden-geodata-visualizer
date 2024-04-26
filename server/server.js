@@ -314,6 +314,7 @@ app.get("/api/column/D3Result", async (req, res) => {
         */
        const query = `SELECT
                               'Område:  ' || constellation_name AS place,
+                               constellation_name AS place2,
                               'Livsmedel: ' || '${livsmedel}' AS name,
                                ROUND(SUM(units), 0) AS value,
                                'Mängd: ' || ROUND(SUM(units), 0) || ' ' || GROUP_CONCAT(DISTINCT unit) AS mengd,

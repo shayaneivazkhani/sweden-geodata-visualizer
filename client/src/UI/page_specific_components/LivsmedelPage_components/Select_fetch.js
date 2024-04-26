@@ -42,52 +42,6 @@ const MapComponent = () => {
             .style("background", `var(--livsmedelPage-Diagram-BgColor1)`)
             .style("cursor", "pointer");
 
-        const colorbrewer = {
-            YlGn: {
-                3: ["#f7fcb9", "#addd8e", "#31a354"],
-                4: ["#ffffcc", "#c2e699", "#78c679", "#238443"],
-                5: ["#ffffcc", "#c2e699", "#78c679", "#31a354", "#006837"],
-                6: [
-                    "#ffffcc",
-                    "#d9f0a3",
-                    "#addd8e",
-                    "#78c679",
-                    "#31a354",
-                    "#006837",
-                ],
-                7: [
-                    "#ffffcc",
-                    "#d9f0a3",
-                    "#addd8e",
-                    "#78c679",
-                    "#41ab5d",
-                    "#238443",
-                    "#005a32",
-                ],
-                8: [
-                    "#ffffe5",
-                    "#f7fcb9",
-                    "#d9f0a3",
-                    "#addd8e",
-                    "#78c679",
-                    "#41ab5d",
-                    "#238443",
-                    "#005a32",
-                ],
-                9: [
-                    "#ffffe5",
-                    "#f7fcb9",
-                    "#d9f0a3",
-                    "#addd8e",
-                    "#78c679",
-                    "#41ab5d",
-                    "#238443",
-                    "#006837",
-                    "#004529",
-                ],
-            },
-        };
-
         if (mapData) {
             createMap(mapData);
         }
@@ -129,7 +83,6 @@ const MapComponent = () => {
                 // Add more ranges and colors as needed
             ];
 
-
             function stringToBinary(str) {
                 let binaryString = "";
                 for (let i = 0; i < str.length; i++) {
@@ -140,7 +93,7 @@ const MapComponent = () => {
                     binaryString += binaryChar;
                 }
                 // Convert the binary string to a number
-                return (parseInt(binaryString, 2)%100000);
+                return parseInt(binaryString, 2) % 10000;
             }
 
             // Create a function to map a value to its corresponding color based on the defined classes
@@ -160,10 +113,8 @@ const MapComponent = () => {
             var featureSize = d3.extent(platser.features, (d) =>
                 geoPath.area(d),
             );
-            var countryColor = d3
-                .scaleQuantize()
-                .domain(featureSize)
-                .range(colorbrewer.YlGn[3]);
+
+            //var countryColor = d3.scaleQuantize().domain(featureSize).range(colorbrewer.YlGn[3]);
 
             // Append paths for map features
             svgMap
@@ -173,10 +124,12 @@ const MapComponent = () => {
                 .append("path")
                 .attr("d", geoPath)
                 .attr("class", "platser")
-                .style("fill", (d) => getColor(stringToBinary(d.properties.name)))
+                .style("fill", (d) =>
+                    getColor(stringToBinary(d.properties.name)),
+                )
                 .style("stroke", "black");
-                //.style("fill", (d) => countryColor(geoPath.area(d)))
-                //.style("stroke", (d) => d3.rgb(countryColor(geoPath.area(d))).darker(),);
+            //.style("fill", (d) => countryColor(geoPath.area(d)))
+            //.style("stroke", (d) => d3.rgb(countryColor(geoPath.area(d))).darker(),);
 
             // Define zoom behavior
             const mapZoom = d3.zoom().on("zoom", function (event) {
@@ -327,8 +280,318 @@ const MapComponent = () => {
 };
 
 const MyD3Component = (props) => {
+/* Example working with JSON
+    // Sample JSON data stored in a variable
+    const jsonData = [
+        { name: 'Stockholm', mengd: 100 },
+        { name: 'Gothenburg', mengd: 200 },
+        { name: 'Malmo', mengd: 150 }
+    ];
+
+    // Function to search for 'Stockholm' and return its 'mengd' property
+    function getMengdForStockholm(data, kommunNamn) {
+        for (const obj of data) {
+            if (obj.name === kommunNamn) {
+                return obj.mengd;
+            }
+        }
+        // Return null if 'Stockholm' is not found
+        return null;
+    }
+    function getMengdForKommun2(data, kommunNamn) {
+        const result = data.find(obj => obj.name === kommunNamn);
+        return result ? result.mengd : null;
+    }
+
+    // Call the function and log the result
+    console.log(getMengdForStockholm(jsonData, "Stockholm"));
+    console.log(getMengdForKommun2(jsonData, "Stockholm"));
+*/  
+
     const svgBubbleRef = useRef();
     const [bubbleData, setBubbleData] = useState(null);
+
+    const svgMapRef = useRef(); // Ref for SVG element
+    const [mapData, setMapData] = useState(null);
+
+    // set Map data från GeoJSON
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const platserData = await d3.json(
+                    "/GeoJSON/kommuner_sverige.geojson",
+                );
+                setMapData(platserData);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+        fetchData(); // Call fetchData to fetch data and setGraphData
+    }, []);
+
+    // set data baserad på input i Main_group och Sub_group från USER och sedan fetch korrekt data från backend
+    useEffect(() => {
+        fetch(
+            `http://localhost:3001/api/column/D3Result?main_g=${props.main_grupp}&sub_g=${props.sub_grupp}`,
+        )
+            .then((response) => response.json())
+            .then((data) => {
+                const processedData = data.map((item) => ({
+                    place: item.place,
+                    place2: item.place2,
+                    name: item.name,
+                    mengd: item.mengd,
+                    value: parseFloat(item.value),
+                    andel_sverige: item.andel_sverige,
+                }));
+
+                setBubbleData({ children: processedData }); // { children: processedData }: This is an object literal in JavaScript. You're creating an object with a property named children, and its value is set to processedData.
+            });
+    }, [props.main_grupp, props.sub_grupp]); // The effect will re-run whenever props.main_grupp or props.sub_grupp change.
+
+
+
+    useEffect(() => {
+        const svgMap = d3
+            .select(svgMapRef.current)
+            /*.style("max-width", "100%")
+            .style("height", "auto")
+            .style("display", "block")
+            .style("margin", "-5 -1px")
+            .style(
+                "border",
+                "1px solid var(--livsmedelPage-Diagram-BorderColor1)",
+            )
+            .style("border-radius", "5px")
+            .style("background", `var(--livsmedelPage-Diagram-BgColor1)`)
+            .style("cursor", "pointer")*/;
+
+
+        if (mapData) {
+            createMap(mapData);
+        }
+
+        function createMap(platser) {
+            // Define your custom color classes and corresponding colors
+            const colorClasses = [
+                { range: [0, 50], color: "#edf960" },
+                { range: [51, 150], color: "#f6fcaf" },
+                { range: [151, 500], color: "#fdc066" },
+                { range: [501, 1000], color: "#fd9700" },
+                { range: [1001, 2000], color: "#fd9132" },
+                { range: [2001, 3000], color: "#fd7600" },
+                { range: [3001, 4000], color: "#fd7e32" },
+                { range: [4001, 5000], color: "#fd5f00" },
+                { range: [5001, 6000], color: "#fd6432" },
+                { range: [6001, 8000], color: "#fd3e00" },
+                { range: [8001, 10000], color: "#fd196e" },
+                { range: [10001, 30000], color: "#e30054" },
+                { range: [30001, 40000], color: "#fd4cd5" },
+                { range: [40001, 50000], color: "#ca009c" },
+                { range: [50001, 60000], color: "#d332fd" },
+                { range: [60001, 70000], color: "#b400e3" },
+                { range: [70001, 80000], color: "#b94cfd" },
+                { range: [80001, 90000], color: "#b94cfd" },
+                { range: [90001, 100000], color: "#9b00fd" },
+                { range: [100001, 110000], color: "#9b00fd" },
+                { range: [110001, 120000], color: "#a14cfd" },
+                { range: [120001, 130000], color: "#a14cfd" },
+                { range: [130001, 140000], color: "#8619fd" },
+                { range: [140001, 150000], color: "#8619fd" },
+                { range: [150001, 160000], color: "#7900fd" },
+                { range: [160001, 170000], color: "#7900fd" },
+                { range: [170001, 180000], color: "#6c00e3" },
+                { range: [180001, 190000], color: "#6c00e3" },
+                { range: [190001, 200000], color: "#6c00e3" },
+                { range: [200001, 1000000], color: "#6c00e3" },
+
+                // Add more ranges and colors as needed
+            ];
+
+            // Create a function to map a value to its corresponding color based on the defined classes
+            const getColor = (value) => {
+                for (const { range, color } of colorClasses) {
+                    if (value >= range[0] && value <= range[1]) {
+                        return color;
+                    }
+                }
+                // Default color if no match is found
+                return "white";
+            };
+
+            var projection = d3.geoMercator().scale(100).translate([250, 250]);
+
+            var geoPath = d3.geoPath().projection(projection);
+            var featureSize = d3.extent(platser.features, (d) =>
+                geoPath.area(d),
+            );
+            //var countryColor = d3.scaleQuantize().domain(featureSize).range(colorbrewer.YlGn[3]);
+
+            function stringToBinary(str) {
+                let binaryString = "";
+                for (let i = 0; i < str.length; i++) {
+                    // Get the Unicode value of each character
+                    let binaryChar = str.charCodeAt(i).toString(2);
+                    // Pad the binary representation to 8 bits if needed
+                    binaryChar = "0".repeat(8 - binaryChar.length) + binaryChar;
+                    binaryString += binaryChar;
+                }
+                // Convert the binary string to a number
+                return parseInt(binaryString, 2) % 10000;
+            }
+            function getValueForKommunIn(data, kommunNamn) {
+                const result = data.find(obj => obj.place2 === kommunNamn);
+                return result ? result.value : null;
+            }
+            function getMengdFor(data, kommunNamn) {
+                for (const obj of data) {
+                    if (obj.place2 === kommunNamn) {
+                        return parseInt(obj.value, 10);
+                    }
+                }
+                // Return null if 'Stockholm' is not found
+                return 1;
+            }
+            // Append paths for map features
+            svgMap
+                .selectAll("path")
+                .data(platser.features)
+                .enter()
+                .append("path")
+                .attr("d", geoPath)
+                .attr("class", "platser")
+                .style("fill", (d) =>
+                    getColor(getMengdFor(bubbleData.children, d.properties.name)),
+                )
+                .style("stroke", "black");
+            //.style("fill", (d) => countryColor(geoPath.area(d)))
+            //.style("stroke", (d) => d3.rgb(countryColor(geoPath.area(d))).darker(),);
+
+            // Define zoom behavior
+            const mapZoom = d3.zoom().on("zoom", function (event) {
+                projection
+                    .translate([event.transform.x, event.transform.y])
+                    .scale(event.transform.k);
+                d3.selectAll("path.platser").attr("d", geoPath);
+            });
+
+            // Initialize zoom settings
+            const zoomSettings = d3.zoomIdentity
+                .translate(-250, 3510)
+                .scale(2100);
+
+            // Call zoom on SVG element and apply initial zoom
+            svgMap.call(mapZoom).call(mapZoom.transform, zoomSettings);
+
+            // Function to handle zooming in/out
+            function zoomButton(zoomDirection) {
+                const width = 50;
+                const height = 50;
+                let newZoom, newX, newY;
+                if (zoomDirection === "in") {
+                    newZoom = projection.scale() * 1.5;
+                    newX =
+                        (projection.translate()[0] - width / 2) * 1.5 +
+                        width / 2;
+                    newY =
+                        (projection.translate()[1] - height / 2) * 1.5 +
+                        height / 2;
+                } else if (zoomDirection === "out") {
+                    newZoom = projection.scale() * 0.75;
+                    newX =
+                        (projection.translate()[0] - width / 2) * 0.75 +
+                        width / 2;
+                    newY =
+                        (projection.translate()[1] - height / 2) * 0.75 +
+                        height / 2;
+                }
+
+                const newZoomSettings = d3.zoomIdentity
+                    .translate(newX, newY)
+                    .scale(newZoom);
+
+                svgMap
+                    .transition()
+                    .duration(100)
+                    .call(mapZoom.transform, newZoomSettings);
+            }
+
+            // Append zoom buttons only if not already present
+            if (svgMap.selectAll("#controls").empty()) {
+                const controlsContainer = d3.select("#controls");
+                controlsContainer
+                    .append("button")
+                    .on("click", () => zoomButton("in"))
+                    .html("Zoom In");
+                controlsContainer
+                    .append("button")
+                    .on("click", () => zoomButton("out"))
+                    .html("Zoom Out");
+            }
+
+            // Add hover actions
+            d3.selectAll("path")
+                .on("mouseover", function (event, d) {
+                    if (!d || !d.properties || !geoPath(d)) {
+                        console.log("has no properties maybe");
+                        return;
+                    }
+
+                    const thisBounds = geoPath.bounds(d);
+                    const thisCenter = geoPath.centroid(d);
+
+                    // Check if the centroid coordinates are valid
+                    if (isNaN(thisCenter[0]) || isNaN(thisCenter[1])) {
+                        console.log("has no centroid coordinates maybe");
+                        return;
+                    }
+
+                    // Display the name property if available
+                    const name = d.properties.name || "NULL";
+
+                    // Append the name as text
+                    svgMap
+                        .append("text")
+                        .attr("class", "feature-name")
+                        .attr("x", thisCenter[0])
+                        .attr("y", thisCenter[1])
+                        .attr("dy", "-0.5em") // Offset the text slightly above the centroid
+                        .style("text-anchor", "middle") // Center the text horizontally
+                        .style("font-family", "monospace")
+                        .style("font-size", "clamp(10px, 0.85vw, 22px)")
+                        .text(name);
+
+                    // Draw a rectangle to highlight the bounds
+                    svgMap
+                        .append("rect")
+                        .attr("class", "bbox")
+                        .attr("x", thisBounds[0][0])
+                        .attr("y", thisBounds[0][1])
+                        .attr("width", thisBounds[1][0] - thisBounds[0][0])
+                        .attr("height", thisBounds[1][1] - thisBounds[0][1]);
+
+                    // Draw a circle to mark the centroid
+                    svgMap
+                        .append("circle")
+                        .attr("class", "centroid")
+                        .attr("r", 5)
+                        .attr("cx", thisCenter[0])
+                        .attr("cy", thisCenter[1]);
+                })
+                .on("mouseout", function () {
+                    svgMap.selectAll("text.feature-name").remove();
+                    svgMap.selectAll("circle.centroid").remove();
+                    svgMap.selectAll("rect.bbox").remove();
+                });
+
+            return () => {
+                svgMap.selectAll("*").remove();
+            };
+        }
+    }, [bubbleData]);
+
+
+    /* Bubble ⬇︎  —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————🩸*/
 
     useEffect(() => {
         //const width = 850;
@@ -349,7 +612,7 @@ const MyD3Component = (props) => {
             .style("border-radius", "5px")
             .style("background", `var(--livsmedelPage-Diagram-BgColor1)`)
             .style("cursor", "pointer");
-            //.style("padding-left", "3vw");
+        //.style("padding-left", "3vw");
 
         if (bubbleData) {
             const pack = d3
@@ -531,27 +794,12 @@ const MyD3Component = (props) => {
 
             return () => {
                 svgBubble.selectAll("*").remove();
+                d3.select(svgMapRef.current).selectAll("*").remove();
             };
         }
     }, [bubbleData]);
 
-    useEffect(() => {
-        fetch(
-            `http://localhost:3001/api/column/D3Result?main_g=${props.main_grupp}&sub_g=${props.sub_grupp}`,
-        )
-            .then((response) => response.json())
-            .then((data) => {
-                const processedData = data.map((item) => ({
-                    place: item.place,
-                    name: item.name,
-                    mengd: item.mengd,
-                    value: parseFloat(item.value),
-                    andel_sverige: item.andel_sverige,
-                }));
-
-                setBubbleData({ children: processedData }); // { children: processedData }: This is an object literal in JavaScript. You're creating an object with a property named children, and its value is set to processedData.
-            });
-    }, [props.main_grupp, props.sub_grupp]); // The effect will re-run whenever props.main_grupp or props.sub_grupp change.
+  
 
     const dataDiagramStyle = {
         //minWidth: "900px",
@@ -563,12 +811,26 @@ const MyD3Component = (props) => {
     };
 
     return (
-        <div className="dataDiagram" style={dataDiagramStyle}>
-            <svg
-                ref={svgBubbleRef}
-                width={window.innerWidth - window.innerWidth / 17}
-                height={window.innerHeight - window.innerHeight / 14}
-            />
+        <div>
+            <div className="dataDiagram" style={dataDiagramStyle}>
+                <svg
+                    ref={svgBubbleRef}
+                    width={window.innerWidth - window.innerWidth / 17}
+                    height={window.innerHeight - window.innerHeight / 14}
+                />
+            </div>
+            <div>
+                {/* <div className="dataDiagram" style={dataDiagramStyle}> */}
+                <div id="controls"></div>
+                <div id="viz">
+                    <svg
+                        ref={svgMapRef}
+                        width={window.innerWidth - window.innerWidth / 8}
+                        height={window.innerHeight - window.innerHeight / 14}
+                    />
+                </div>
+                {/*  </div> */}
+            </div>
         </div>
     );
 };
@@ -1169,7 +1431,7 @@ export default function SelectGroup() {
                 </div>
                 <div style={dataStyle}>
                     <MyD3Component main_grupp={main} sub_grupp={sub} />
-                    <MapComponent />
+                    {/* <MapComponent /> */}
                 </div>
                 <div></div>
             </Box>
