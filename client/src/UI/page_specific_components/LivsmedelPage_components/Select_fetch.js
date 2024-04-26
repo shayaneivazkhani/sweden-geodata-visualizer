@@ -49,7 +49,9 @@ const MapComponent = () => {
         function createMap(platser) {
             // Define your custom color classes and corresponding colors
             const colorClasses = [
-                { range: [0, 50], color: "#edf960" },
+                { range: [-10, -1], color: "none" },
+                { range: [0, 10], color: "#ffffff" },
+                { range: [11, 50], color: "#edf960" },
                 { range: [51, 150], color: "#f6fcaf" },
                 { range: [151, 500], color: "#fdc066" },
                 { range: [501, 1000], color: "#fd9700" },
@@ -104,7 +106,7 @@ const MapComponent = () => {
                     }
                 }
                 // Default color if no match is found
-                return "white";
+                return "none";
             };
 
             var projection = d3.geoMercator().scale(100).translate([250, 250]);
@@ -280,7 +282,7 @@ const MapComponent = () => {
 };
 
 const MyD3Component = (props) => {
-/* Example working with JSON
+    /* Example working with JSON
     // Sample JSON data stored in a variable
     const jsonData = [
         { name: 'Stockholm', mengd: 100 },
@@ -306,7 +308,7 @@ const MyD3Component = (props) => {
     // Call the function and log the result
     console.log(getMengdForStockholm(jsonData, "Stockholm"));
     console.log(getMengdForKommun2(jsonData, "Stockholm"));
-*/  
+*/
 
     const svgBubbleRef = useRef();
     const [bubbleData, setBubbleData] = useState(null);
@@ -316,17 +318,31 @@ const MyD3Component = (props) => {
 
     // set Map data från GeoJSON
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const platserData = await d3.json(
-                    "/GeoJSON/kommuner_sverige.geojson",
-                );
-                setMapData(platserData);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
-        fetchData(); // Call fetchData to fetch data and setGraphData
+        const cachedData = localStorage.getItem(`platserData`);
+        // Check local storage for cached data
+        if (cachedData) {
+            setMapData(JSON.parse(cachedData));
+        } else {
+            fetch("/GeoJSON/kommuner_sverige.geojson")
+                .then((response) => {
+                    // Check if response is ok
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    // Parse JSON response
+                    return response.json();
+                })
+                .then((data) => {
+                    setMapData(platserData);
+                    localStorage.setItem(
+                        `platserData`,
+                        JSON.stringify(platserData),
+                    );
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                });
+        }
     }, []);
 
     // set data baserad på input i Main_group och Sub_group från USER och sedan fetch korrekt data från backend
@@ -349,12 +365,10 @@ const MyD3Component = (props) => {
             });
     }, [props.main_grupp, props.sub_grupp]); // The effect will re-run whenever props.main_grupp or props.sub_grupp change.
 
-
     // rita Map
     useEffect(() => {
-        const svgMap = d3
-            .select(svgMapRef.current)
-            /*.style("max-width", "100%")
+        const svgMap = d3.select(svgMapRef.current);
+        /*.style("max-width", "100%")
             .style("height", "auto")
             .style("display", "block")
             .style("margin", "-5 -1px")
@@ -364,17 +378,16 @@ const MyD3Component = (props) => {
             )
             .style("border-radius", "5px")
             .style("background", `var(--livsmedelPage-Diagram-BgColor1)`)
-            .style("cursor", "pointer")*/;
-
-
-        if (mapData && bubbleData) {
+            .style("cursor", "pointer")*/ if (mapData && bubbleData) {
             createMap(mapData);
         }
 
         function createMap(platser) {
             // Define your custom color classes and corresponding colors
             const colorClasses = [
-                { range: [0, 50], color: "#edf960" },
+                { range: [-10, -1], color: "none" },
+                { range: [0, 10], color: "#ffffff" },
+                { range: [11, 50], color: "#edf960" },
                 { range: [51, 150], color: "#f6fcaf" },
                 { range: [151, 500], color: "#fdc066" },
                 { range: [501, 1000], color: "#fd9700" },
@@ -416,19 +429,15 @@ const MyD3Component = (props) => {
                     }
                 }
                 // Default color if no match is found
-                return "white";
+                return "none";
             };
 
             var projection = d3.geoMercator().scale(100).translate([250, 250]);
 
             var geoPath = d3.geoPath().projection(projection);
-            var featureSize = d3.extent(platser.features, (d) =>
-                geoPath.area(d),
-            );
+            //var featureSize = d3.extent(platser.features, (d) => geoPath.area(d),);
             //var countryColor = d3.scaleQuantize().domain(featureSize).range(colorbrewer.YlGn[3]);
 
-            
-            
             function getMengdFor(data, kommunNamn) {
                 for (const obj of data) {
                     if (obj.place2 === kommunNamn) {
@@ -439,7 +448,7 @@ const MyD3Component = (props) => {
                 return -1;
             }
             function getMengdFor2(data, kommunNamn) {
-                const result = data.find(obj => obj.place2 === kommunNamn);
+                const result = data.find((obj) => obj.place2 === kommunNamn);
                 return result ? result.value : -1;
             }
             // Append paths for map features
@@ -451,7 +460,9 @@ const MyD3Component = (props) => {
                 .attr("d", geoPath)
                 .attr("class", "platser")
                 .style("fill", (d) =>
-                    getColor(getMengdFor2(bubbleData.children, d.properties.name)),
+                    getColor(
+                        getMengdFor2(bubbleData.children, d.properties.name),
+                    ),
                 )
                 .style("stroke", "black");
             //.style("fill", (d) => countryColor(geoPath.area(d)))
@@ -573,24 +584,21 @@ const MyD3Component = (props) => {
                     svgMap.selectAll("circle.centroid").remove();
                     svgMap.selectAll("rect.bbox").remove();
                 });
-
-            return () => {
-                svgMap.selectAll("*").remove();
-            };
         }
+        return () => {
+            svgMap.selectAll("*").remove();
+        };
     }, [bubbleData]);
-
 
     // rita Bubble
     useEffect(() => {
-        //const width = 850;
-        //const height = 600;
-        let height = window.innerHeight - window.innerHeight / 9;
-        let width = window.innerWidth - window.innerWidth / 13;
+        const width = 850;
+        const height = 600;
+        //let height = window.innerHeight - window.innerHeight / 9;
+        //let width = window.innerWidth - window.innerWidth / 13;
 
-        const svgBubble = d3
-            .select(svgBubbleRef.current)
-            /*.style("max-width", "100%")
+        const svgBubble = d3.select(svgBubbleRef.current);
+        /*.style("max-width", "100%")
             .style("height", "auto")
             //.style("display", "block")
             .style("margin", "-5 -1px")
@@ -601,9 +609,7 @@ const MyD3Component = (props) => {
             .style("border-radius", "5px")
             .style("background", `var(--livsmedelPage-Diagram-BgColor1)`)
             .style("cursor", "pointer");
-            //.style("padding-left", "3vw")*/;
-
-        if (bubbleData) {
+            //.style("padding-left", "3vw")*/ if (bubbleData) {
             const pack = d3
                 .pack()
                 .size([width - 40, height - 50])
@@ -621,7 +627,9 @@ const MyD3Component = (props) => {
 
             // Define your custom color classes and corresponding colors
             const colorClasses = [
-                { range: [0, 50], color: "#edf960" },
+                { range: [-10, -1], color: "none" },
+                { range: [0, 10], color: "#ffffff" },
+                { range: [11, 50], color: "#edf960" },
                 { range: [51, 150], color: "#f6fcaf" },
                 { range: [151, 500], color: "#fdc066" },
                 { range: [501, 1000], color: "#fd9700" },
@@ -663,7 +671,7 @@ const MyD3Component = (props) => {
                     }
                 }
                 // Default color if no match is found
-                return "white";
+                return "none";
             };
 
             const node = svgBubble
@@ -780,15 +788,13 @@ const MyD3Component = (props) => {
                 .style("font-family", "monospace") // Change the font family here
                 .style("font-size", "clamp(10px, 1vw, 20px)") // Change the font size here
                 .text((d) => (d.data.value ? d.data.value : ""));
-
-            return () => {
-                svgBubble.selectAll("*").remove();
-                d3.select(svgMapRef.current).selectAll("*").remove();
-            };
         }
+        return () => {
+            svgBubble.selectAll("*").remove();
+            d3.select(svgMapRef.current).selectAll("*").remove();
+        };
     }, [bubbleData]);
 
-  
     const dataDiagramStyle = {
         //minWidth: "900px",
         paddingRight: "10px",

@@ -48,8 +48,8 @@
 /*—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
 
 .mainpage_layout {
-  user-select: none;
-  min-width: 600px;
+  /*user-select: none;
+  min-width: 600px; */
 }
 
 .mainpage_layout a {

@@ -432,6 +432,8 @@ const Header = () => {
                         }}
                     >
                         <a href="/">
+
+
                             <picture>
                                 <source
                                     type="image/webp"
@@ -446,6 +448,9 @@ const Header = () => {
                                     alt="return to homepage"
                                 />
                             </picture>
+
+
+                            
                         </a>
                     </Box>
                 </div>

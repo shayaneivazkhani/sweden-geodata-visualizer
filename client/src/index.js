@@ -19,29 +19,67 @@ import Kevin from "./UI/pages/Kevin.js";
 import Lucas from "./UI/pages/Lucas.js";
 import Shayan from "./UI/pages/Shayan.js";
 
+import Header from "./UI/general_components/Header_NavBar/HeaderBar";
+import Footer from "./UI/general_components/Header_NavBar/Footer";
 
-ReactDOM.createRoot(document.querySelector("#root")).render(
-    <React.StrictMode>
-        <Router>
-            <Routes>
-                <Route path="/" element={<MainPage />} />
+const WebPage = () => {
+    const topFixedStyle = {
+        width: "100%",
+        position: "fixed",
+        zIndex: "1",
+    };
 
-                <Route path="/about" element={<AboutPage />} />
+    const scrollableStyle = {
+        width: "100%",
+        paddingTop: "85px",
+        zIndex: 0,
+    };
 
-                <Route path="/livsmedel" element={<LivsmedelPage />} />
-                <Route path="/ekologiskt" element={<EkologisktPage />} />
-                <Route path="/deals" element={<DealsPage />} />
+    const footer_style = {
+        width: "100%",
+    };
 
-                <Route path="/ali" element={<Ali />} />
-                <Route path="/ahmed" element={<Ahmed />} />
-                <Route path="/dilan" element={<Dilan />} />
-                <Route path="/daniel" element={<Daniel />} />
-                <Route path="/hassim" element={<Hassim />} />
-                <Route path="/kevin" element={<Kevin />} />
-                <Route path="/lucas" element={<Lucas />} />
-                <Route path="/shayan" element={<Shayan />} />
-                {/* Add routes for other components if needed */}
-            </Routes>
-        </Router>
-    </React.StrictMode>
-)
+    return (
+        <React.Fragment>
+            <div>
+                <div style={topFixedStyle}>
+                        <Header />
+                </div>
+                <div style={scrollableStyle}>
+                        <Router>
+                            <Routes>
+                                <Route path="/" element={<MainPage />} />
+
+                                <Route path="/about" element={<AboutPage />} />
+
+                                <Route
+                                    path="/livsmedel"
+                                    element={<LivsmedelPage />}
+                                />
+                                <Route
+                                    path="/ekologiskt"
+                                    element={<EkologisktPage />}
+                                />
+                                <Route path="/deals" element={<DealsPage />} />
+
+                                <Route path="/ali" element={<Ali />} />
+                                <Route path="/ahmed" element={<Ahmed />} />
+                                <Route path="/dilan" element={<Dilan />} />
+                                <Route path="/daniel" element={<Daniel />} />
+                                <Route path="/hassim" element={<Hassim />} />
+                                <Route path="/kevin" element={<Kevin />} />
+                                <Route path="/lucas" element={<Lucas />} />
+                                <Route path="/shayan" element={<Shayan />} />
+                                {/* Add routes for other components if needed */}
+                            </Routes>
+                        </Router>
+                    <div style={footer_style}>
+                        <Footer />
+                    </div>
+                </div>
+            </div>
+        </React.Fragment>
+    );
+};
+
+ReactDOM.createRoot(document.querySelector("#root")).render(<WebPage />);
