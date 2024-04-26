@@ -350,7 +350,7 @@ const MyD3Component = (props) => {
     }, [props.main_grupp, props.sub_grupp]); // The effect will re-run whenever props.main_grupp or props.sub_grupp change.
 
 
-
+    // rita Map
     useEffect(() => {
         const svgMap = d3
             .select(svgMapRef.current)
@@ -367,7 +367,7 @@ const MyD3Component = (props) => {
             .style("cursor", "pointer")*/;
 
 
-        if (mapData) {
+        if (mapData && bubbleData) {
             createMap(mapData);
         }
 
@@ -427,22 +427,8 @@ const MyD3Component = (props) => {
             );
             //var countryColor = d3.scaleQuantize().domain(featureSize).range(colorbrewer.YlGn[3]);
 
-            function stringToBinary(str) {
-                let binaryString = "";
-                for (let i = 0; i < str.length; i++) {
-                    // Get the Unicode value of each character
-                    let binaryChar = str.charCodeAt(i).toString(2);
-                    // Pad the binary representation to 8 bits if needed
-                    binaryChar = "0".repeat(8 - binaryChar.length) + binaryChar;
-                    binaryString += binaryChar;
-                }
-                // Convert the binary string to a number
-                return parseInt(binaryString, 2) % 10000;
-            }
-            function getValueForKommunIn(data, kommunNamn) {
-                const result = data.find(obj => obj.place2 === kommunNamn);
-                return result ? result.value : null;
-            }
+            
+            
             function getMengdFor(data, kommunNamn) {
                 for (const obj of data) {
                     if (obj.place2 === kommunNamn) {
@@ -450,7 +436,11 @@ const MyD3Component = (props) => {
                     }
                 }
                 // Return null if 'Stockholm' is not found
-                return 1;
+                return -1;
+            }
+            function getMengdFor2(data, kommunNamn) {
+                const result = data.find(obj => obj.place2 === kommunNamn);
+                return result ? result.value : -1;
             }
             // Append paths for map features
             svgMap
@@ -461,7 +451,7 @@ const MyD3Component = (props) => {
                 .attr("d", geoPath)
                 .attr("class", "platser")
                 .style("fill", (d) =>
-                    getColor(getMengdFor(bubbleData.children, d.properties.name)),
+                    getColor(getMengdFor2(bubbleData.children, d.properties.name)),
                 )
                 .style("stroke", "black");
             //.style("fill", (d) => countryColor(geoPath.area(d)))
@@ -591,8 +581,7 @@ const MyD3Component = (props) => {
     }, [bubbleData]);
 
 
-    /* Bubble ⬇︎  —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————🩸*/
-
+    // rita Bubble
     useEffect(() => {
         //const width = 850;
         //const height = 600;
@@ -601,7 +590,7 @@ const MyD3Component = (props) => {
 
         const svgBubble = d3
             .select(svgBubbleRef.current)
-            .style("max-width", "100%")
+            /*.style("max-width", "100%")
             .style("height", "auto")
             //.style("display", "block")
             .style("margin", "-5 -1px")
@@ -612,7 +601,7 @@ const MyD3Component = (props) => {
             .style("border-radius", "5px")
             .style("background", `var(--livsmedelPage-Diagram-BgColor1)`)
             .style("cursor", "pointer");
-        //.style("padding-left", "3vw");
+            //.style("padding-left", "3vw")*/;
 
         if (bubbleData) {
             const pack = d3
@@ -800,7 +789,6 @@ const MyD3Component = (props) => {
     }, [bubbleData]);
 
   
-
     const dataDiagramStyle = {
         //minWidth: "900px",
         paddingRight: "10px",
