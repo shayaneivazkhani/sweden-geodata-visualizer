@@ -41,6 +41,8 @@ const MyD3Component = (props) => {
     const svgMapRef = useRef(); // Ref for SVG element
     const [mapData, setMapData] = useState(null);
 
+    const [interactionReady, setInteractionReady] = useState("");
+
     // set Map data från GeoJSON
     useEffect(() => {
         const cachedData = localStorage.getItem("platserCachedData");
@@ -64,6 +66,179 @@ const MyD3Component = (props) => {
             };
             fetchData(); // Call fetchData to fetch data and setGraphData
         }
+    
+}, []);
+// After mapData is set, execute code dependent on mapData
+useEffect(() => {
+    if (mapData && mapData.features) {
+        const svgMap = d3.select(svgMapRef.current);
+
+        var projection = d3.geoMercator().scale(100).translate([250, 250]);
+
+        var geoPath = d3.geoPath().projection(projection);
+        //var featureSize = d3.extent(platser.features, (d) => geoPath.area(d),);
+        //var countryColor = d3.scaleQuantize().domain(featureSize).range(colorbrewer.YlGn[3]);
+
+        function getMengdFor(data, kommunNamn) {
+            for (const obj of data) {
+                if (obj.place2 === kommunNamn) {
+                    return parseInt(obj.value, 10);
+                }
+            }
+            // Return null if 'Stockholm' is not found
+            return -1;
+        }
+        function getMengdFor2(data, kommunNamn) {
+            const result = data.find((obj) => obj.place2 === kommunNamn);
+            return result ? result.value : -1;
+        }
+        // Append paths for map features
+        svgMap
+            .selectAll("path")
+            .data(mapData.features)
+            .enter()
+            .append("path")
+            .attr("d", geoPath)
+            .attr("class", (d) => "platser " + d.properties.name)
+            .style("fill", (d) => "#e1dde2")
+            .style("stroke", "black");
+        //.style("fill", (d) => countryColor(geoPath.area(d)))
+        //.style("stroke", (d) => d3.rgb(countryColor(geoPath.area(d))).darker(),);
+
+        // Define zoom behavior
+        const mapZoom = d3.zoom().on("zoom", function (event) {
+            projection
+                .translate([event.transform.x, event.transform.y])
+                .scale(event.transform.k);
+            d3.selectAll("path.platser").attr("d", geoPath);
+        });
+
+        // Initialize zoom settings
+        const zoomSettings = d3.zoomIdentity.translate(-290, 3590).scale(2100);
+
+            // Call zoom on SVG element and apply initial zoom
+            svgMap.call(mapZoom).call(mapZoom.transform, zoomSettings);
+
+            // Function to handle zooming in/out
+            function zoomButton(zoomDirection) {
+                const width = 50;
+                const height = 50;
+                let newZoom, newX, newY;
+                if (zoomDirection === "in") {
+                    newZoom = projection.scale() * 1.5;
+                    newX =
+                        (projection.translate()[0] - width / 2) * 1.5 +
+                        width / 2;
+                    newY =
+                        (projection.translate()[1] - height / 2) * 1.5 +
+                        height / 2;
+                } else if (zoomDirection === "out") {
+                    newZoom = projection.scale() * 0.75;
+                    newX =
+                        (projection.translate()[0] - width / 2) * 0.75 +
+                        width / 2;
+                    newY =
+                        (projection.translate()[1] - height / 2) * 0.75 +
+                        height / 2;
+                }
+
+                const newZoomSettings = d3.zoomIdentity
+                    .translate(newX, newY)
+                    .scale(newZoom);
+
+                svgMap
+                    .transition()
+                    .duration(100)
+                    .call(mapZoom.transform, newZoomSettings);
+            }
+// Append zoom buttons only if not already present
+if (svgMap.selectAll("#controls").empty()) {
+    const controlsContainer = d3.select("#controls");
+    controlsContainer
+        .append("button")
+        .on("click", () => zoomButton("in"))
+        .html("Zoom In");
+    controlsContainer
+        .append("button")
+        .on("click", () => zoomButton("out"))
+        .html("Zoom Out");
+}
+
+    // Append zoom buttons only if not already present
+    /* if (svgMap.selectAll("#controls").empty()) {
+        // FLyttat adda zoom knappar till en useEffect högre upp
+    }
+    */
+         // Add hover actions
+         d3.select(svgMapRef.current)
+         .selectAll("path")
+         .on("mouseover", function (event, d) {
+             if (!d || !d.properties || !geoPath(d)) {
+                 console.log("has no properties maybe");
+                 return;
+             }
+
+             const thisBounds = geoPath.bounds(d);
+             const thisCenter = geoPath.centroid(d);
+
+             // Check if the centroid coordinates are valid
+             if (isNaN(thisCenter[0]) || isNaN(thisCenter[1])) {
+                 console.log("has no centroid coordinates maybe");
+                 return;
+             }
+
+             // Display the name property if available
+             const name = d.properties.name || "NULL";
+
+             // Append a <g> (group) element to contain both <text> elements
+             const textMapGroup = svgMap
+                 .append("g")
+                 .attr("id", "mapGroup");
+
+             // Append the name as text
+             svgMap
+                 .append("text")
+                 .attr("class", "feature-name")
+                 .attr("x", thisCenter[0])
+                 .attr("y", thisCenter[1])
+                 .attr("dy", "-0.5em") // Offset the text slightly above the centroid
+                 .style("text-anchor", "middle") // Center the text horizontally
+                 .style("font-family", "monospace")
+                 .style("font-size", "clamp(10px, 0.85vw, 22px)")
+                 .text(name);
+
+             // Draw a rectangle to highlight the bounds
+             svgMap
+                 .append("rect")
+                 .attr("class", "bbox")
+                 .attr("x", thisBounds[0][0])
+                 .attr("y", thisBounds[0][1])
+                 .attr("width", thisBounds[1][0] - thisBounds[0][0])
+                 .attr("height", thisBounds[1][1] - thisBounds[0][1]);
+
+             // Draw a circle to mark the centroid
+             svgMap
+                 .append("circle")
+                 .attr("class", "centroid")
+                 .attr("r", 6)
+                 .attr("cx", thisCenter[0])
+                 .attr("cy", thisCenter[1]);
+
+             d3.select(this).on("mouseout", function () {
+                 svgMap.selectAll("text.feature-name").remove();
+                 svgMap.selectAll("circle.centroid").remove();
+                 svgMap.selectAll("rect.bbox").remove();
+             });
+         });
+    }
+}, [mapData]);
+
+    useEffect(() => {
+        return () => {};
+    }, []);
+
+    useEffect(() => {
+        return () => {};
     }, []);
 
     // set data baserad på input i Main_group och Sub_group från USER och sedan fetch korrekt data från backend
@@ -89,7 +264,7 @@ const MyD3Component = (props) => {
     // rita Bubble
     useEffect(() => {
         const colorClasses = [
-            { range: [-10, -1], color: "none" },
+            { range: [-10, -1], color: "#e1dde2" },
             { range: [0, 10], color: "#ffffff" },
             { range: [11, 20], color: "#ffffc0" },
             { range: [21, 50], color: "#fafdd7" },
@@ -135,14 +310,14 @@ const MyD3Component = (props) => {
                 }
             }
             // Default color if no match is found
-            return "none";
+            return "#e1dde2";
         };
 
-
-        const width = 850;
-        const height = 600;
-        //let height = window.innerHeight - window.innerHeight / 9;
-        //let width = window.innerWidth - window.innerWidth / 13;
+        //const width = 850;
+        //const height = 600;
+        let width =
+            window.innerWidth - window.innerWidth / 2 - window.innerWidth / 20;
+        let height = window.innerHeight - window.innerHeight / 4;
 
         const svgBubble = d3.select(svgBubbleRef.current);
         /*.style("max-width", "100%")
@@ -158,7 +333,6 @@ const MyD3Component = (props) => {
             .style("cursor", "pointer");
             //.style("padding-left", "3vw")*/
 
-
         const svgMap = d3.select(svgMapRef.current);
         /*.style("max-width", "100%")
             .style("height", "auto")
@@ -172,162 +346,42 @@ const MyD3Component = (props) => {
             .style("background", `var(--livsmedelPage-Diagram-BgColor1)`)
             .style("cursor", "pointer")*/
 
-        if (mapData) {
-            var projection = d3.geoMercator().scale(100).translate([250, 250]);
+        var projection = d3.geoMercator().scale(100).translate([250, 250]);
 
-            var geoPath = d3.geoPath().projection(projection);
-            //var featureSize = d3.extent(platser.features, (d) => geoPath.area(d),);
-            //var countryColor = d3.scaleQuantize().domain(featureSize).range(colorbrewer.YlGn[3]);
+        var geoPath = d3.geoPath().projection(projection);
+        //var featureSize = d3.extent(platser.features, (d) => geoPath.area(d),);
+        //var countryColor = d3.scaleQuantize().domain(featureSize).range(colorbrewer.YlGn[3]);
 
-            function getMengdFor(data, kommunNamn) {
-                for (const obj of data) {
-                    if (obj.place2 === kommunNamn) {
-                        return parseInt(obj.value, 10);
-                    }
+        function getMengdFor(data, kommunNamn) {
+            for (const obj of data) {
+                if (obj.place2 === kommunNamn) {
+                    return parseInt(obj.value, 10);
                 }
-                // Return null if 'Stockholm' is not found
-                return -1;
             }
-            function getMengdFor2(data, kommunNamn) {
-                const result = data.find((obj) => obj.place2 === kommunNamn);
-                return result ? result.value : -1;
-            }
-            // Append paths for map features
-            svgMap
-                .selectAll("path")
-                .data(mapData.features)
-                .enter()
-                .append("path")
-                .attr("d", geoPath)
-                .attr("class", (d) => "platser "+ d.properties.name)
-                .style("fill", (d) =>
-                    getColor(
-                        getMengdFor2(bubbleData.children, d.properties.name),
-                    ),
-                )
-                .style("stroke", "black");
-            //.style("fill", (d) => countryColor(geoPath.area(d)))
-            //.style("stroke", (d) => d3.rgb(countryColor(geoPath.area(d))).darker(),);
-
-            // Define zoom behavior
-            const mapZoom = d3.zoom().on("zoom", function (event) {
-                projection
-                    .translate([event.transform.x, event.transform.y])
-                    .scale(event.transform.k);
-                d3.selectAll("path.platser").attr("d", geoPath);
-            });
-
-            // Initialize zoom settings
-            const zoomSettings = d3.zoomIdentity
-                .translate(-290, 3590)
-                .scale(2100);
-
-            // Call zoom on SVG element and apply initial zoom
-            svgMap.call(mapZoom).call(mapZoom.transform, zoomSettings);
-
-            // Function to handle zooming in/out
-            function zoomButton(zoomDirection) {
-                const width = 50;
-                const height = 50;
-                let newZoom, newX, newY;
-                if (zoomDirection === "in") {
-                    newZoom = projection.scale() * 1.5;
-                    newX =
-                        (projection.translate()[0] - width / 2) * 1.5 +
-                        width / 2;
-                    newY =
-                        (projection.translate()[1] - height / 2) * 1.5 +
-                        height / 2;
-                } else if (zoomDirection === "out") {
-                    newZoom = projection.scale() * 0.75;
-                    newX =
-                        (projection.translate()[0] - width / 2) * 0.75 +
-                        width / 2;
-                    newY =
-                        (projection.translate()[1] - height / 2) * 0.75 +
-                        height / 2;
-                }
-
-                const newZoomSettings = d3.zoomIdentity
-                    .translate(newX, newY)
-                    .scale(newZoom);
-
-                svgMap
-                    .transition()
-                    .duration(100)
-                    .call(mapZoom.transform, newZoomSettings);
-            }
-
-            // Append zoom buttons only if not already present
-            if (svgMap.selectAll("#controls").empty()) {
-                const controlsContainer = d3.select("#controls");
-                controlsContainer
-                    .append("button")
-                    .on("click", () => zoomButton("in"))
-                    .html("Zoom In");
-                controlsContainer
-                    .append("button")
-                    .on("click", () => zoomButton("out"))
-                    .html("Zoom Out");
-            }
-
-            // Add hover actions
-            d3.selectAll("path")
-                .on("mouseover", function (event, d) {
-                    if (!d || !d.properties || !geoPath(d)) {
-                        console.log("has no properties maybe");
-                        return;
-                    }
-
-                    const thisBounds = geoPath.bounds(d);
-                    const thisCenter = geoPath.centroid(d);
-
-                    // Check if the centroid coordinates are valid
-                    if (isNaN(thisCenter[0]) || isNaN(thisCenter[1])) {
-                        console.log("has no centroid coordinates maybe");
-                        return;
-                    }
-
-                    // Display the name property if available
-                    const name = d.properties.name || "NULL";
-
-                    // Append the name as text
-                    svgMap
-                        .append("text")
-                        .attr("class", "feature-name")
-                        .attr("x", thisCenter[0])
-                        .attr("y", thisCenter[1])
-                        .attr("dy", "-0.5em") // Offset the text slightly above the centroid
-                        .style("text-anchor", "middle") // Center the text horizontally
-                        .style("font-family", "monospace")
-                        .style("font-size", "clamp(10px, 0.85vw, 22px)")
-                        .text(name);
-
-                    // Draw a rectangle to highlight the bounds
-                    svgMap
-                        .append("rect")
-                        .attr("class", "bbox")
-                        .attr("x", thisBounds[0][0])
-                        .attr("y", thisBounds[0][1])
-                        .attr("width", thisBounds[1][0] - thisBounds[0][0])
-                        .attr("height", thisBounds[1][1] - thisBounds[0][1]);
-
-                    // Draw a circle to mark the centroid
-                    svgMap
-                        .append("circle")
-                        .attr("class", "centroid")
-                        .attr("r", 5)
-                        .attr("cx", thisCenter[0])
-                        .attr("cy", thisCenter[1]);
-                })
-                .on("mouseout", function () {
-                    svgMap.selectAll("text.feature-name").remove();
-                    svgMap.selectAll("circle.centroid").remove();
-                    svgMap.selectAll("rect.bbox").remove();
-                });
+            // Return null if 'Stockholm' is not found
+            return -1;
         }
+        function getMengdFor2(data, kommunNamn) {
+            const result = data.find((obj) => obj.place2 === kommunNamn);
+            return result ? result.value : -1;
+        }
+        // Append paths for map features
+      
+           
+     
 
         if (bubbleData) {
+
+            svgMap
+            .selectAll("path")
+            .style("fill", (d) =>
+                getColor(
+                    getMengdFor2(bubbleData.children, d.properties.name),
+                ),
+            )
+            .style("stroke", "black");
+        //.style("fill", (d) => countryColor(geoPath.area(d)))
+        //.style("stroke", (d) => d3.rgb(countryColor(geoPath.area(d))).darker(),);
             const pack = d3
                 .pack()
                 .size([width - 40, height - 50])
@@ -352,7 +406,7 @@ const MyD3Component = (props) => {
                     "transform",
                     (d) => `translate(${d.x + 110},${d.y - 15})`,
                 ); // .attr("transform", (d) => translate(${d.x},${d.y})): This sets the transformation (position) of each g element based on the x and y coordinates of the corresponding data element. The translate() function is used to move the g element to the specified coordinates. d.x and d.y are properties of each data element (d), representing the coordinates where the node should be positioned within the SVG container.
-               
+
             node.append("circle")
                 .attr("r", (d) => {
                     if (d.data.value) {
@@ -361,7 +415,7 @@ const MyD3Component = (props) => {
                     } else {
                         return width / 2.95;
                     }
-                }) 
+                })
                 .attr("class", (d) => d.data.place2)
                 .attr("fill", (d) => {
                     if (d.data.value) {
@@ -391,13 +445,14 @@ const MyD3Component = (props) => {
                     var originalColor = d3.select(this).attr("fill"); // Store the original color
                     var originalClassName = d3.select(this).attr("class"); // Store the original color
 
-                    d3.select(svgMapRef.current).selectAll("path")
-                    .filter(function(d) {
-                        // Example condition: Change the fill of paths with certain names
-                        return d.properties.name === originalClassName;
-                    })
-                    .style("fill", "#4bc2a0"); // Update the fill attribute
-                  
+                    d3.select(svgMapRef.current)
+                        .selectAll("path")
+                        .filter(function (d) {
+                            // Example condition: Change the fill of paths with certain names
+                            return d.properties.name === originalClassName;
+                        })
+                        .style("fill", "#4bc2a0"); // Update the fill attribute
+
                     d3.select(this).attr("fill", (d) => {
                         if (d.data.value) {
                             // Use the getColor function to set the fill color of your circles
@@ -459,12 +514,13 @@ const MyD3Component = (props) => {
                         d3.select("#nodeValue3").remove();
                         d3.select("#nodeValue4").remove();
 
-                        d3.select(svgMapRef.current).selectAll("path")
-                        .filter(function(d) {
-                            // Example condition: Change the fill of paths with certain names
-                            return d.properties.name === originalClassName;
-                        })
-                        .style("fill", originalColor); // Update the fill attribute
+                        d3.select(svgMapRef.current)
+                            .selectAll("path")
+                            .filter(function (d) {
+                                // Example condition: Change the fill of paths with certain names
+                                return d.properties.name === originalClassName;
+                            })
+                            .style("fill", originalColor); // Update the fill attribute
                     });
                 });
 
@@ -477,15 +533,18 @@ const MyD3Component = (props) => {
         }
         return () => {
             svgBubble.selectAll("*").remove();
-            svgMap.selectAll("*").remove();
+            svgMap.selectAll("path").style("fill", (d) => "#e1dde2");
         };
-    }, [bubbleData]);
+    }, [bubbleData, mapData]);
 
     const dataDiagramStyle = {
         //minWidth: "900px",
         paddingRight: "10px",
         paddingTop: "0px",
         paddingLeft: "0px",
+        display: "flex",
+        flexDirection: "row", // Arrange children vertically
+        alignItems: "center", // Center items horizontally
         //backgroundColor: "rgba(0, 90, 90, 0.18)",
         //backgroundColor: "rgba(0, 0, 70, 0.18)",
     };
@@ -495,18 +554,30 @@ const MyD3Component = (props) => {
             <div className="dataDiagram" style={dataDiagramStyle}>
                 <svg
                     ref={svgBubbleRef}
-                    width={window.innerWidth - window.innerWidth / 3}
+                    width={
+                        window.innerWidth -
+                        window.innerWidth / 2 -
+                        window.innerWidth / 35
+                    }
                     height={window.innerHeight - window.innerHeight / 4}
                 />
+                <svg
+                    ref={svgMapRef}
+                    width={
+                        window.innerWidth -
+                        window.innerWidth / 2 -
+                        window.innerWidth / 4
+                    }
+                    height={window.innerHeight - window.innerHeight / 4}
+                    style={{ paddingLeft: "20px" }}
+                />
             </div>
+
             <div>
-                <div id="controls"></div>
                 <div id="viz">
-                    <svg
-                        ref={svgMapRef}
-                        width={600}
-                        height={window.innerHeight - window.innerHeight / 4}
-                    />
+                    <div id="controls">
+                        <div class="controls"></div>
+                    </div>
                 </div>
                 {/*  </div> */}
             </div>
