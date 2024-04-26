@@ -99,8 +99,14 @@ const MyD3Component = (props) => {
                 .append("path")
                 .attr("d", geoPath)
                 .attr("class", (d) => "platser " + d.properties.name)
-                .style("fill", (d) => "var(--livsmedelPage-Map-uunmappedPlaces)")
-                .style("stroke", (d) =>  "var(--livsmedelPage-Map-Places-Border)");
+                .style(
+                    "fill",
+                    (d) => "var(--livsmedelPage-Map-uunmappedPlaces)",
+                )
+                .style(
+                    "stroke",
+                    (d) => "var(--livsmedelPage-Map-Places-Border)",
+                );
             //.style("fill", (d) => countryColor(geoPath.area(d)))
             //.style("stroke", (d) => d3.rgb(countryColor(geoPath.area(d))).darker(),);
 
@@ -109,8 +115,7 @@ const MyD3Component = (props) => {
                 projection
                     .translate([event.transform.x, event.transform.y])
                     .scale(event.transform.k);
-                d3.selectAll("path.platser")
-                    .attr("d", geoPath);
+                d3.selectAll("path.platser").attr("d", geoPath);
             });
 
             // Initialize zoom settings
@@ -214,7 +219,6 @@ const MyD3Component = (props) => {
                         .attr("width", thisBounds[1][0] - thisBounds[0][0])
                         .attr("height", thisBounds[1][1] - thisBounds[0][1])
                         .attr("fill", "none");
-                        
 
                     // Draw a circle to mark the centroid
                     svgMap
@@ -265,7 +269,10 @@ const MyD3Component = (props) => {
     // rita Bubble
     useEffect(() => {
         const colorClasses = [
-            { range: [-10, -1], color: "var(--livsmedelPage-Map-uunmappedPlaces)" },
+            {
+                range: [-10, -1],
+                color: "var(--livsmedelPage-Map-uunmappedPlaces)",
+            },
             { range: [0, 10], color: "#ffffff" },
             { range: [11, 20], color: "#ffffc0" },
             { range: [21, 50], color: "#fafdd7" },
@@ -376,7 +383,10 @@ const MyD3Component = (props) => {
                         getMengdFor2(bubbleData.children, d.properties.name),
                     ),
                 )
-                .style("stroke", (d) =>  "var(--livsmedelPage-Map-Places-Border)");
+                .style(
+                    "stroke",
+                    (d) => "var(--livsmedelPage-Map-Places-Border)",
+                );
             //.style("fill", (d) => countryColor(geoPath.area(d)))
             //.style("stroke", (d) => d3.rgb(countryColor(geoPath.area(d))).darker(),);
             const pack = d3
@@ -426,7 +436,7 @@ const MyD3Component = (props) => {
                 .attr("fill-opacity", 0.68)
                 .style("stroke", (d) => {
                     if (d.data.value) {
-                        return  "var(--livsmedelPage-Map-Places-Border)";
+                        return "var(--livsmedelPage-Map-Places-Border)";
                     } else {
                         return "none"; // Or any default color for circles without data values
                     }
@@ -483,7 +493,6 @@ const MyD3Component = (props) => {
                         .style("font-size", "clamp(10px, 0.80vw, 18px)")
                         .attr("fill", "var(--mainPage--textColor1)");
 
-
                     textGroup
                         .append("text") // Append the second <text> element
                         .attr("id", "nodeValue3") // Adjusted ID to make it unique
@@ -494,7 +503,6 @@ const MyD3Component = (props) => {
                         .style("font-size", "clamp(10px, 0.80vw, 18px)")
                         .attr("fill", "var(--mainPage--textColor1)");
 
-
                     textGroup
                         .append("text") // Append the second <text> element
                         .attr("id", "nodeValue4") // Adjusted ID to make it unique
@@ -504,7 +512,6 @@ const MyD3Component = (props) => {
                         .style("font-family", "monospace")
                         .style("font-size", "clamp(10px, 0.80vw, 18px)")
                         .attr("fill", "var(--mainPage--textColor1)");
-
 
                     d3.select(this).on("mouseout", function () {
                         // Restore the original color when the mouse leaves
@@ -1144,7 +1151,7 @@ export default function SelectGroup() {
             <Box
                 sx={{
                     flexGrow: 1,
-                    margin: "3%",
+                    margin: "1%",
 
                     borderRadius: 1,
 
@@ -1152,7 +1159,7 @@ export default function SelectGroup() {
                     paddingLeft: "60px",
                     paddingRight: "55px",
                     paddingBottom: "40px",
-                    backgroundColor: "rgba(0, 0, 70, 0.18)",
+                    backgroundColor: "var(--livsmedelPage-BgColor1)",
                     boxShadow: "inset 0 1px 10px 0 #050307",
                 }}
             >
@@ -1162,7 +1169,13 @@ export default function SelectGroup() {
                             display: "flex",
                             flexDirection: "row",
                             alignItems: "center",
-                            paddingRight: "15px",
+                            borderRadius: 4,
+                            background:
+                                "var(--livsmedelPage-SelectAttributes-BgColor1)",
+                            paddingRight: "1px",
+                            paddingLeft: "1px",
+                            paddingBottom: "2px",
+                            paddingTop: "7px",
                         }}
                     >
                         <SelectMainGroup
@@ -1177,7 +1190,6 @@ export default function SelectGroup() {
                 </div>
                 <div style={dataStyle}>
                     <MyD3Component main_grupp={main} sub_grupp={sub} />
-                    {/* <MapComponent /> */}
                 </div>
                 <div></div>
             </Box>
