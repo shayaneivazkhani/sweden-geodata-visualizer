@@ -5,281 +5,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Box } from "@mui/material";
 import { useRef } from "react";
 import * as d3 from "d3";
-import * as topojson from "topojson";
-import { geoMercator } from "d3-geo-projection";
-import { positions } from "@mui/system";
-
-const MapComponent = () => {
-    const svgMapRef = useRef(); // Ref for SVG element
-    const [mapData, setMapData] = useState(null);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const platserData = await d3.json(
-                    "/GeoJSON/kommuner_sverige.geojson",
-                );
-                setMapData(platserData);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
-        fetchData(); // Call fetchData to fetch data and setGraphData
-    }, []);
-
-    useEffect(() => {
-        const svgMap = d3
-            .select(svgMapRef.current)
-            //.style("max-width", "100%")
-            .style("height", "auto")
-            //.style("display", "block")
-            .style("margin", "-5 -1px")
-            .style(
-                "border",
-                "1px solid var(--livsmedelPage-Diagram-BorderColor1)",
-            )
-            .style("border-radius", "5px")
-            .style("background", `var(--livsmedelPage-Diagram-BgColor1)`)
-            .style("cursor", "pointer");
-
-        if (mapData) {
-            createMap(mapData);
-        }
-
-        function createMap(platser) {
-            // Define your custom color classes and corresponding colors
-            const colorClasses = [
-                { range: [-10, -1], color: "none" },
-                { range: [0, 10], color: "#ffffff" },
-                { range: [11, 50], color: "#edf960" },
-                { range: [51, 150], color: "#f6fcaf" },
-                { range: [151, 500], color: "#fdc066" },
-                { range: [501, 1000], color: "#fd9700" },
-                { range: [1001, 2000], color: "#fd9132" },
-                { range: [2001, 3000], color: "#fd7600" },
-                { range: [3001, 4000], color: "#fd7e32" },
-                { range: [4001, 5000], color: "#fd5f00" },
-                { range: [5001, 6000], color: "#fd6432" },
-                { range: [6001, 8000], color: "#fd3e00" },
-                { range: [8001, 10000], color: "#fd196e" },
-                { range: [10001, 30000], color: "#e30054" },
-                { range: [30001, 40000], color: "#fd4cd5" },
-                { range: [40001, 50000], color: "#ca009c" },
-                { range: [50001, 60000], color: "#d332fd" },
-                { range: [60001, 70000], color: "#b400e3" },
-                { range: [70001, 80000], color: "#b94cfd" },
-                { range: [80001, 90000], color: "#b94cfd" },
-                { range: [90001, 100000], color: "#9b00fd" },
-                { range: [100001, 110000], color: "#9b00fd" },
-                { range: [110001, 120000], color: "#a14cfd" },
-                { range: [120001, 130000], color: "#a14cfd" },
-                { range: [130001, 140000], color: "#8619fd" },
-                { range: [140001, 150000], color: "#8619fd" },
-                { range: [150001, 160000], color: "#7900fd" },
-                { range: [160001, 170000], color: "#7900fd" },
-                { range: [170001, 180000], color: "#6c00e3" },
-                { range: [180001, 190000], color: "#6c00e3" },
-                { range: [190001, 200000], color: "#6c00e3" },
-                { range: [200001, 1000000], color: "#6c00e3" },
-
-                // Add more ranges and colors as needed
-            ];
-
-            function stringToBinary(str) {
-                let binaryString = "";
-                for (let i = 0; i < str.length; i++) {
-                    // Get the Unicode value of each character
-                    let binaryChar = str.charCodeAt(i).toString(2);
-                    // Pad the binary representation to 8 bits if needed
-                    binaryChar = "0".repeat(8 - binaryChar.length) + binaryChar;
-                    binaryString += binaryChar;
-                }
-                // Convert the binary string to a number
-                return parseInt(binaryString, 2) % 10000;
-            }
-
-            // Create a function to map a value to its corresponding color based on the defined classes
-            const getColor = (value) => {
-                for (const { range, color } of colorClasses) {
-                    if (value >= range[0] && value <= range[1]) {
-                        return color;
-                    }
-                }
-                // Default color if no match is found
-                return "none";
-            };
-
-            var projection = d3.geoMercator().scale(100).translate([250, 250]);
-
-            var geoPath = d3.geoPath().projection(projection);
-            var featureSize = d3.extent(platser.features, (d) =>
-                geoPath.area(d),
-            );
-
-            //var countryColor = d3.scaleQuantize().domain(featureSize).range(colorbrewer.YlGn[3]);
-
-            // Append paths for map features
-            svgMap
-                .selectAll("path")
-                .data(platser.features)
-                .enter()
-                .append("path")
-                .attr("d", geoPath)
-                .attr("class", "platser")
-                .style("fill", (d) =>
-                    getColor(stringToBinary(d.properties.name)),
-                )
-                .style("stroke", "black");
-            //.style("fill", (d) => countryColor(geoPath.area(d)))
-            //.style("stroke", (d) => d3.rgb(countryColor(geoPath.area(d))).darker(),);
-
-            // Define zoom behavior
-            const mapZoom = d3.zoom().on("zoom", function (event) {
-                projection
-                    .translate([event.transform.x, event.transform.y])
-                    .scale(event.transform.k);
-                d3.selectAll("path.platser").attr("d", geoPath);
-            });
-
-            // Initialize zoom settings
-            const zoomSettings = d3.zoomIdentity
-                .translate(-250, 3510)
-                .scale(2100);
-
-            // Call zoom on SVG element and apply initial zoom
-            svgMap.call(mapZoom).call(mapZoom.transform, zoomSettings);
-
-            // Function to handle zooming in/out
-            function zoomButton(zoomDirection) {
-                const width = 50;
-                const height = 50;
-                let newZoom, newX, newY;
-                if (zoomDirection === "in") {
-                    newZoom = projection.scale() * 1.5;
-                    newX =
-                        (projection.translate()[0] - width / 2) * 1.5 +
-                        width / 2;
-                    newY =
-                        (projection.translate()[1] - height / 2) * 1.5 +
-                        height / 2;
-                } else if (zoomDirection === "out") {
-                    newZoom = projection.scale() * 0.75;
-                    newX =
-                        (projection.translate()[0] - width / 2) * 0.75 +
-                        width / 2;
-                    newY =
-                        (projection.translate()[1] - height / 2) * 0.75 +
-                        height / 2;
-                }
-
-                const newZoomSettings = d3.zoomIdentity
-                    .translate(newX, newY)
-                    .scale(newZoom);
-
-                svgMap
-                    .transition()
-                    .duration(100)
-                    .call(mapZoom.transform, newZoomSettings);
-            }
-
-            // Append zoom buttons only if not already present
-            if (svgMap.selectAll("#controls").empty()) {
-                const controlsContainer = d3.select("#controls");
-                controlsContainer
-                    .append("button")
-                    .on("click", () => zoomButton("in"))
-                    .html("Zoom In");
-                controlsContainer
-                    .append("button")
-                    .on("click", () => zoomButton("out"))
-                    .html("Zoom Out");
-            }
-
-            // Add hover actions
-            d3.selectAll("path")
-                .on("mouseover", function (event, d) {
-                    if (!d || !d.properties || !geoPath(d)) {
-                        console.log("has no properties maybe");
-                        return;
-                    }
-
-                    const thisBounds = geoPath.bounds(d);
-                    const thisCenter = geoPath.centroid(d);
-
-                    // Check if the centroid coordinates are valid
-                    if (isNaN(thisCenter[0]) || isNaN(thisCenter[1])) {
-                        console.log("has no centroid coordinates maybe");
-                        return;
-                    }
-
-                    // Display the name property if available
-                    const name = d.properties.name || "NULL";
-
-                    // Append the name as text
-                    svgMap
-                        .append("text")
-                        .attr("class", "feature-name")
-                        .attr("x", thisCenter[0])
-                        .attr("y", thisCenter[1])
-                        .attr("dy", "-0.5em") // Offset the text slightly above the centroid
-                        .style("text-anchor", "middle") // Center the text horizontally
-                        .style("font-family", "monospace")
-                        .style("font-size", "clamp(10px, 0.85vw, 22px)")
-                        .text(name);
-
-                    // Draw a rectangle to highlight the bounds
-                    svgMap
-                        .append("rect")
-                        .attr("class", "bbox")
-                        .attr("x", thisBounds[0][0])
-                        .attr("y", thisBounds[0][1])
-                        .attr("width", thisBounds[1][0] - thisBounds[0][0])
-                        .attr("height", thisBounds[1][1] - thisBounds[0][1]);
-
-                    // Draw a circle to mark the centroid
-                    svgMap
-                        .append("circle")
-                        .attr("class", "centroid")
-                        .attr("r", 5)
-                        .attr("cx", thisCenter[0])
-                        .attr("cy", thisCenter[1]);
-                })
-                .on("mouseout", function () {
-                    svgMap.selectAll("text.feature-name").remove();
-                    svgMap.selectAll("circle.centroid").remove();
-                    svgMap.selectAll("rect.bbox").remove();
-                });
-
-            return () => {
-                d3.selectAll("").remove();
-            };
-        }
-    }, [mapData]);
-
-    const dataDiagramStyle = {
-        //minWidth: "900px",
-        paddingRight: "10px",
-        paddingTop: "0px",
-        paddingLeft: "10px",
-        //backgroundColor: "rgba(0, 90, 90, 0.18)",
-        //backgroundColor: "rgba(0, 0, 70, 0.18)",
-    };
-
-    return (
-        <div>
-            {/* <div className="dataDiagram" style={dataDiagramStyle}> */}
-            <div id="controls"></div>
-            <div id="viz">
-                <svg
-                    ref={svgMapRef}
-                    width={window.innerWidth - window.innerWidth / 8}
-                    height={window.innerHeight - window.innerHeight / 14}
-                />
-            </div>
-            {/*  </div> */}
-        </div>
-    );
-};
 
 const MyD3Component = (props) => {
     /* Example working with JSON
@@ -323,21 +48,21 @@ const MyD3Component = (props) => {
         if (cachedData) {
             setMapData(JSON.parse(cachedData));
         } else {
-         const fetchData = async () => {
+            const fetchData = async () => {
                 try {
                     const platserData = await d3.json(
-                    "/GeoJSON/kommuner_sverige.geojson",
+                        "/GeoJSON/kommuner_sverige.geojson",
                     );
                     setMapData(platserData);
                     localStorage.setItem(
-                      `platserCachedData`,
-                       JSON.stringify(platserData),
+                        `platserCachedData`,
+                        JSON.stringify(platserData),
                     );
                 } catch (error) {
-                    console.error ("Error fetching data:", error);
+                    console.error("Error fetching data:", error);
                 }
             };
-                fetchData(); // Call fetchData to fetch data and setGraphData
+            fetchData(); // Call fetchData to fetch data and setGraphData
         }
     }, []);
 
@@ -361,8 +86,78 @@ const MyD3Component = (props) => {
             });
     }, [props.main_grupp, props.sub_grupp]); // The effect will re-run whenever props.main_grupp or props.sub_grupp change.
 
-    // rita Map
+    // rita Bubble
     useEffect(() => {
+        const colorClasses = [
+            { range: [-10, -1], color: "none" },
+            { range: [0, 10], color: "#ffffff" },
+            { range: [11, 20], color: "#ffffc0" },
+            { range: [21, 50], color: "#edf960" },
+            { range: [51, 150], color: "#f6fcaf" },
+            { range: [151, 500], color: "#fdc066" },
+            { range: [501, 1000], color: "#fd9700" },
+            { range: [1001, 2000], color: "#fd9132" },
+            { range: [2001, 3000], color: "#fd7600" },
+            { range: [3001, 4000], color: "#fd7e32" },
+            { range: [4001, 5000], color: "#fd5f00" },
+            { range: [5001, 6000], color: "#fd6432" },
+            { range: [6001, 8000], color: "#fd3e00" },
+            { range: [8001, 10000], color: "#fd196e" },
+            { range: [10001, 30000], color: "#e30054" },
+            { range: [30001, 40000], color: "#fd4cd5" },
+            { range: [40001, 50000], color: "#ca009c" },
+            { range: [50001, 60000], color: "#d332fd" },
+            { range: [60001, 70000], color: "#b400e3" },
+            { range: [70001, 80000], color: "#b94cfd" },
+            { range: [80001, 90000], color: "#b94cfd" },
+            { range: [90001, 100000], color: "#9b00fd" },
+            { range: [100001, 110000], color: "#9b00fd" },
+            { range: [110001, 120000], color: "#a14cfd" },
+            { range: [120001, 130000], color: "#a14cfd" },
+            { range: [130001, 140000], color: "#8619fd" },
+            { range: [140001, 150000], color: "#8619fd" },
+            { range: [150001, 160000], color: "#7900fd" },
+            { range: [160001, 170000], color: "#7900fd" },
+            { range: [170001, 180000], color: "#6c00e3" },
+            { range: [180001, 190000], color: "#6c00e3" },
+            { range: [190001, 200000], color: "#6c00e3" },
+            { range: [200001, 10000000], color: "#6c00e3" },
+
+            // Add more ranges and colors as needed
+        ];
+
+        // Create a function to map a value to its corresponding color based on the defined classes
+        const getColor = (value) => {
+            for (const { range, color } of colorClasses) {
+                if (value >= range[0] && value <= range[1]) {
+                    return color;
+                }
+            }
+            // Default color if no match is found
+            return "none";
+        };
+
+
+        const width = 850;
+        const height = 600;
+        //let height = window.innerHeight - window.innerHeight / 9;
+        //let width = window.innerWidth - window.innerWidth / 13;
+
+        const svgBubble = d3.select(svgBubbleRef.current);
+        /*.style("max-width", "100%")
+            .style("height", "auto")
+            //.style("display", "block")
+            .style("margin", "-5 -1px")
+            .style(
+                "border",
+                "1px solid var(--livsmedelPage-Diagram-BorderColor1)",
+            )
+            .style("border-radius", "5px")
+            .style("background", `var(--livsmedelPage-Diagram-BgColor1)`)
+            .style("cursor", "pointer");
+            //.style("padding-left", "3vw")*/
+
+
         const svgMap = d3.select(svgMapRef.current);
         /*.style("max-width", "100%")
             .style("height", "auto")
@@ -374,58 +169,9 @@ const MyD3Component = (props) => {
             )
             .style("border-radius", "5px")
             .style("background", `var(--livsmedelPage-Diagram-BgColor1)`)
-            .style("cursor", "pointer")*/ 
-        
+            .style("cursor", "pointer")*/
+
         if (mapData) {
-             // Define your custom color classes and corresponding colors
-             const colorClasses = [
-                { range: [-10, -1], color: "none" },
-                { range: [0, 10], color: "#ffffff" },
-                { range: [11, 50], color: "#edf960" },
-                { range: [51, 150], color: "#f6fcaf" },
-                { range: [151, 500], color: "#fdc066" },
-                { range: [501, 1000], color: "#fd9700" },
-                { range: [1001, 2000], color: "#fd9132" },
-                { range: [2001, 3000], color: "#fd7600" },
-                { range: [3001, 4000], color: "#fd7e32" },
-                { range: [4001, 5000], color: "#fd5f00" },
-                { range: [5001, 6000], color: "#fd6432" },
-                { range: [6001, 8000], color: "#fd3e00" },
-                { range: [8001, 10000], color: "#fd196e" },
-                { range: [10001, 30000], color: "#e30054" },
-                { range: [30001, 40000], color: "#fd4cd5" },
-                { range: [40001, 50000], color: "#ca009c" },
-                { range: [50001, 60000], color: "#d332fd" },
-                { range: [60001, 70000], color: "#b400e3" },
-                { range: [70001, 80000], color: "#b94cfd" },
-                { range: [80001, 90000], color: "#b94cfd" },
-                { range: [90001, 100000], color: "#9b00fd" },
-                { range: [100001, 110000], color: "#9b00fd" },
-                { range: [110001, 120000], color: "#a14cfd" },
-                { range: [120001, 130000], color: "#a14cfd" },
-                { range: [130001, 140000], color: "#8619fd" },
-                { range: [140001, 150000], color: "#8619fd" },
-                { range: [150001, 160000], color: "#7900fd" },
-                { range: [160001, 170000], color: "#7900fd" },
-                { range: [170001, 180000], color: "#6c00e3" },
-                { range: [180001, 190000], color: "#6c00e3" },
-                { range: [190001, 200000], color: "#6c00e3" },
-                { range: [200001, 1000000], color: "#6c00e3" },
-
-                // Add more ranges and colors as needed
-            ];
-
-            // Create a function to map a value to its corresponding color based on the defined classes
-            const getColor = (value) => {
-                for (const { range, color } of colorClasses) {
-                    if (value >= range[0] && value <= range[1]) {
-                        return color;
-                    }
-                }
-                // Default color if no match is found
-                return "none";
-            };
-
             var projection = d3.geoMercator().scale(100).translate([250, 250]);
 
             var geoPath = d3.geoPath().projection(projection);
@@ -452,7 +198,7 @@ const MyD3Component = (props) => {
                 .enter()
                 .append("path")
                 .attr("d", geoPath)
-                .attr("class", "platser")
+                .attr("class", (d) => "platser "+ d.properties.name)
                 .style("fill", (d) =>
                     getColor(
                         getMengdFor2(bubbleData.children, d.properties.name),
@@ -580,31 +326,7 @@ const MyD3Component = (props) => {
                 });
         }
 
-        return () => {
-            svgMap.selectAll("*").remove();
-        };
-    }, [bubbleData]);
-
-    // rita Bubble
-    useEffect(() => {
-        const width = 850;
-        const height = 600;
-        //let height = window.innerHeight - window.innerHeight / 9;
-        //let width = window.innerWidth - window.innerWidth / 13;
-
-        const svgBubble = d3.select(svgBubbleRef.current);
-        /*.style("max-width", "100%")
-            .style("height", "auto")
-            //.style("display", "block")
-            .style("margin", "-5 -1px")
-            .style(
-                "border",
-                "1px solid var(--livsmedelPage-Diagram-BorderColor1)",
-            )
-            .style("border-radius", "5px")
-            .style("background", `var(--livsmedelPage-Diagram-BgColor1)`)
-            .style("cursor", "pointer");
-            //.style("padding-left", "3vw")*/ if (bubbleData) {
+        if (bubbleData) {
             const pack = d3
                 .pack()
                 .size([width - 40, height - 50])
@@ -620,55 +342,6 @@ const MyD3Component = (props) => {
             // const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
             //const colorScale = d3.scaleSequential().domain([0, 500]).interpolator(d3.interpolateYlOrRd);
 
-            // Define your custom color classes and corresponding colors
-            const colorClasses = [
-                { range: [-10, -1], color: "none" },
-                { range: [0, 10], color: "#ffffff" },
-                { range: [11, 50], color: "#edf960" },
-                { range: [51, 150], color: "#f6fcaf" },
-                { range: [151, 500], color: "#fdc066" },
-                { range: [501, 1000], color: "#fd9700" },
-                { range: [1001, 2000], color: "#fd9132" },
-                { range: [2001, 3000], color: "#fd7600" },
-                { range: [3001, 4000], color: "#fd7e32" },
-                { range: [4001, 5000], color: "#fd5f00" },
-                { range: [5001, 6000], color: "#fd6432" },
-                { range: [6001, 8000], color: "#fd3e00" },
-                { range: [8001, 10000], color: "#fd196e" },
-                { range: [10001, 30000], color: "#e30054" },
-                { range: [30001, 40000], color: "#fd4cd5" },
-                { range: [40001, 50000], color: "#ca009c" },
-                { range: [50001, 60000], color: "#d332fd" },
-                { range: [60001, 70000], color: "#b400e3" },
-                { range: [70001, 80000], color: "#b94cfd" },
-                { range: [80001, 90000], color: "#b94cfd" },
-                { range: [90001, 100000], color: "#9b00fd" },
-                { range: [100001, 110000], color: "#9b00fd" },
-                { range: [110001, 120000], color: "#a14cfd" },
-                { range: [120001, 130000], color: "#a14cfd" },
-                { range: [130001, 140000], color: "#8619fd" },
-                { range: [140001, 150000], color: "#8619fd" },
-                { range: [150001, 160000], color: "#7900fd" },
-                { range: [160001, 170000], color: "#7900fd" },
-                { range: [170001, 180000], color: "#6c00e3" },
-                { range: [180001, 190000], color: "#6c00e3" },
-                { range: [190001, 200000], color: "#6c00e3" },
-                { range: [200001, 1000000], color: "#6c00e3" },
-
-                // Add more ranges and colors as needed
-            ];
-
-            // Create a function to map a value to its corresponding color based on the defined classes
-            const getColor = (value) => {
-                for (const { range, color } of colorClasses) {
-                    if (value >= range[0] && value <= range[1]) {
-                        return color;
-                    }
-                }
-                // Default color if no match is found
-                return "none";
-            };
-
             const node = svgBubble
                 .selectAll("g")
                 .data(packedData.descendants()) // This binds the data to the selection. packedData.descendants() returns an array of all nodes in the hierarchy, including the root node and its descendants. Each node represents a circle in the pack layout.
@@ -678,7 +351,7 @@ const MyD3Component = (props) => {
                     "transform",
                     (d) => `translate(${d.x + 110},${d.y - 15})`,
                 ); // .attr("transform", (d) => translate(${d.x},${d.y})): This sets the transformation (position) of each g element based on the x and y coordinates of the corresponding data element. The translate() function is used to move the g element to the specified coordinates. d.x and d.y are properties of each data element (d), representing the coordinates where the node should be positioned within the SVG container.
-
+               
             node.append("circle")
                 .attr("r", (d) => {
                     if (d.data.value) {
@@ -687,7 +360,8 @@ const MyD3Component = (props) => {
                     } else {
                         return width / 2.95;
                     }
-                })
+                }) 
+                .attr("class", (d) => d.data.place2)
                 .attr("fill", (d) => {
                     if (d.data.value) {
                         // Use the getColor function to set the fill color of your circles
@@ -714,6 +388,15 @@ const MyD3Component = (props) => {
                 })
                 .on("mouseover", function (event, d) {
                     var originalColor = d3.select(this).attr("fill"); // Store the original color
+                    var originalClassName = d3.select(this).attr("class"); // Store the original color
+
+                    d3.select(svgMapRef.current).selectAll("path")
+                    .filter(function(d) {
+                        // Example condition: Change the fill of paths with certain names
+                        return d.properties.name === originalClassName;
+                    })
+                    .style("fill", "#4bc2a0"); // Update the fill attribute
+                  
                     d3.select(this).attr("fill", (d) => {
                         if (d.data.value) {
                             // Use the getColor function to set the fill color of your circles
@@ -774,6 +457,13 @@ const MyD3Component = (props) => {
                         d3.select("#nodeValue2").remove();
                         d3.select("#nodeValue3").remove();
                         d3.select("#nodeValue4").remove();
+
+                        d3.select(svgMapRef.current).selectAll("path")
+                        .filter(function(d) {
+                            // Example condition: Change the fill of paths with certain names
+                            return d.properties.name === originalClassName;
+                        })
+                        .style("fill", originalColor); // Update the fill attribute
                     });
                 });
 
@@ -786,7 +476,7 @@ const MyD3Component = (props) => {
         }
         return () => {
             svgBubble.selectAll("*").remove();
-            d3.select(svgMapRef.current).selectAll("*").remove();
+            svgMap.selectAll("*").remove();
         };
     }, [bubbleData]);
 
@@ -1376,10 +1066,6 @@ export default function SelectGroup() {
     /*function handleChangeSubSub(newInputValue) {
         setSub_sub(newInputValue);
     }*/
-
-    React.useEffect(() => {
-        localStorage.setItem("main-grupp", JSON.stringify(""));
-    }, []);
 
     return (
         <React.Fragment>
