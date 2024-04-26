@@ -3,6 +3,7 @@ import React from "react";
 import "../styles/pageStyles/DealsPage.css";
 
 const Deals = () => {
+    
     const body_style = {
         height: "90vh",
     };

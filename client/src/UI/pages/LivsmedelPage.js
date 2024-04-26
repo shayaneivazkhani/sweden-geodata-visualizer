@@ -7,6 +7,7 @@ import SelectFetch from "../page_specific_components/LivsmedelPage_components/Se
 import "../styles/pageStyles/LivsmedelPage.css";
 
 const Livsmedel = () => {
+    
     const TextTypography = styled(Typography)(() => ({
         color: "var(--mainPage-Content2-textColor1)",
         fontFamily: "var(--mainpage--content2-font1)",

@@ -318,30 +318,26 @@ const MyD3Component = (props) => {
 
     // set Map data från GeoJSON
     useEffect(() => {
-        const cachedData = localStorage.getItem(`platserData`);
+        const cachedData = localStorage.getItem("platserCachedData");
         // Check local storage for cached data
         if (cachedData) {
             setMapData(JSON.parse(cachedData));
         } else {
-            fetch("/GeoJSON/kommuner_sverige.geojson")
-                .then((response) => {
-                    // Check if response is ok
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok");
-                    }
-                    // Parse JSON response
-                    return response.json();
-                })
-                .then((data) => {
+         const fetchData = async () => {
+                try {
+                    const platserData = await d3.json(
+                    "/GeoJSON/kommuner_sverige.geojson",
+                    );
                     setMapData(platserData);
                     localStorage.setItem(
-                        `platserData`,
-                        JSON.stringify(platserData),
+                      `platserCachedData`,
+                       JSON.stringify(platserData),
                     );
-                })
-                .catch((error) => {
-                    console.error("Error fetching data:", error);
-                });
+                } catch (error) {
+                    console.error ("Error fetching data:", error);
+                }
+            };
+                fetchData(); // Call fetchData to fetch data and setGraphData
         }
     }, []);
 
@@ -378,13 +374,11 @@ const MyD3Component = (props) => {
             )
             .style("border-radius", "5px")
             .style("background", `var(--livsmedelPage-Diagram-BgColor1)`)
-            .style("cursor", "pointer")*/ if (mapData && bubbleData) {
-            createMap(mapData);
-        }
-
-        function createMap(platser) {
-            // Define your custom color classes and corresponding colors
-            const colorClasses = [
+            .style("cursor", "pointer")*/ 
+        
+        if (mapData) {
+             // Define your custom color classes and corresponding colors
+             const colorClasses = [
                 { range: [-10, -1], color: "none" },
                 { range: [0, 10], color: "#ffffff" },
                 { range: [11, 50], color: "#edf960" },
@@ -454,7 +448,7 @@ const MyD3Component = (props) => {
             // Append paths for map features
             svgMap
                 .selectAll("path")
-                .data(platser.features)
+                .data(mapData.features)
                 .enter()
                 .append("path")
                 .attr("d", geoPath)
@@ -585,6 +579,7 @@ const MyD3Component = (props) => {
                     svgMap.selectAll("rect.bbox").remove();
                 });
         }
+
         return () => {
             svgMap.selectAll("*").remove();
         };
@@ -814,7 +809,6 @@ const MyD3Component = (props) => {
                 />
             </div>
             <div>
-                {/* <div className="dataDiagram" style={dataDiagramStyle}> */}
                 <div id="controls"></div>
                 <div id="viz">
                     <svg

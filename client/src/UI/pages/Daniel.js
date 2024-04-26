@@ -1,6 +1,7 @@
 import React from "react";
 
 const Daniel = () => {
+    
     const body_style = {
         height: "90vh",
     };
