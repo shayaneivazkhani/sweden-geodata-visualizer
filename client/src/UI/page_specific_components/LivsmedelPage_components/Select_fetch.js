@@ -66,55 +66,57 @@ const MyD3Component = (props) => {
             };
             fetchData(); // Call fetchData to fetch data and setGraphData
         }
-    
-}, []);
-// After mapData is set, execute code dependent on mapData
-useEffect(() => {
-    if (mapData && mapData.features) {
-        const svgMap = d3.select(svgMapRef.current);
+    }, []);
+    // After mapData is set, execute code dependent on mapData
+    useEffect(() => {
+        if (mapData && mapData.features) {
+            const svgMap = d3.select(svgMapRef.current);
 
-        var projection = d3.geoMercator().scale(100).translate([250, 250]);
+            var projection = d3.geoMercator().scale(100).translate([250, 250]);
 
-        var geoPath = d3.geoPath().projection(projection);
-        //var featureSize = d3.extent(platser.features, (d) => geoPath.area(d),);
-        //var countryColor = d3.scaleQuantize().domain(featureSize).range(colorbrewer.YlGn[3]);
+            var geoPath = d3.geoPath().projection(projection);
+            //var featureSize = d3.extent(platser.features, (d) => geoPath.area(d),);
+            //var countryColor = d3.scaleQuantize().domain(featureSize).range(colorbrewer.YlGn[3]);
 
-        function getMengdFor(data, kommunNamn) {
-            for (const obj of data) {
-                if (obj.place2 === kommunNamn) {
-                    return parseInt(obj.value, 10);
+            function getMengdFor(data, kommunNamn) {
+                for (const obj of data) {
+                    if (obj.place2 === kommunNamn) {
+                        return parseInt(obj.value, 10);
+                    }
                 }
+                // Return null if 'Stockholm' is not found
+                return -1;
             }
-            // Return null if 'Stockholm' is not found
-            return -1;
-        }
-        function getMengdFor2(data, kommunNamn) {
-            const result = data.find((obj) => obj.place2 === kommunNamn);
-            return result ? result.value : -1;
-        }
-        // Append paths for map features
-        svgMap
-            .selectAll("path")
-            .data(mapData.features)
-            .enter()
-            .append("path")
-            .attr("d", geoPath)
-            .attr("class", (d) => "platser " + d.properties.name)
-            .style("fill", (d) => "#e1dde2")
-            .style("stroke", "black");
-        //.style("fill", (d) => countryColor(geoPath.area(d)))
-        //.style("stroke", (d) => d3.rgb(countryColor(geoPath.area(d))).darker(),);
+            function getMengdFor2(data, kommunNamn) {
+                const result = data.find((obj) => obj.place2 === kommunNamn);
+                return result ? result.value : -1;
+            }
+            // Append paths for map features
+            svgMap
+                .selectAll("path")
+                .data(mapData.features)
+                .enter()
+                .append("path")
+                .attr("d", geoPath)
+                .attr("class", (d) => "platser " + d.properties.name)
+                .style("fill", (d) => "var(--livsmedelPage-Map-uunmappedPlaces)")
+                .style("stroke", (d) =>  "var(--livsmedelPage-Map-Places-Border)");
+            //.style("fill", (d) => countryColor(geoPath.area(d)))
+            //.style("stroke", (d) => d3.rgb(countryColor(geoPath.area(d))).darker(),);
 
-        // Define zoom behavior
-        const mapZoom = d3.zoom().on("zoom", function (event) {
-            projection
-                .translate([event.transform.x, event.transform.y])
-                .scale(event.transform.k);
-            d3.selectAll("path.platser").attr("d", geoPath);
-        });
+            // Define zoom behavior
+            const mapZoom = d3.zoom().on("zoom", function (event) {
+                projection
+                    .translate([event.transform.x, event.transform.y])
+                    .scale(event.transform.k);
+                d3.selectAll("path.platser")
+                    .attr("d", geoPath);
+            });
 
-        // Initialize zoom settings
-        const zoomSettings = d3.zoomIdentity.translate(-190, 1780).scale(1050);
+            // Initialize zoom settings
+            const zoomSettings = d3.zoomIdentity
+                .translate(-190, 1780)
+                .scale(1050);
 
             // Call zoom on SVG element and apply initial zoom
             svgMap.call(mapZoom).call(mapZoom.transform, zoomSettings);
@@ -151,87 +153,86 @@ useEffect(() => {
                     .duration(100)
                     .call(mapZoom.transform, newZoomSettings);
             }
-// Append zoom buttons only if not already present
-if (svgMap.selectAll("#controls").empty()) {
-    const controlsContainer = d3.select("#controls");
-    controlsContainer
-        .append("button")
-        .on("click", () => zoomButton("in"))
-        .html("Zoom In");
-    controlsContainer
-        .append("button")
-        .on("click", () => zoomButton("out"))
-        .html("Zoom Out");
-}
+            // Append zoom buttons only if not already present
+            if (svgMap.selectAll("#controls").empty()) {
+                const controlsContainer = d3.select("#controls");
+                controlsContainer
+                    .append("button")
+                    .on("click", () => zoomButton("in"))
+                    .html("Zoom In");
+                controlsContainer
+                    .append("button")
+                    .on("click", () => zoomButton("out"))
+                    .html("Zoom Out");
+            }
 
-    // Append zoom buttons only if not already present
-    /* if (svgMap.selectAll("#controls").empty()) {
+            // Append zoom buttons only if not already present
+            /* if (svgMap.selectAll("#controls").empty()) {
         // FLyttat adda zoom knappar till en useEffect högre upp
     }
     */
-         // Add hover actions
-         d3.select(svgMapRef.current)
-         .selectAll("path")
-         .on("mouseover", function (event, d) {
-             if (!d || !d.properties || !geoPath(d)) {
-                 console.log("has no properties maybe");
-                 return;
-             }
+            // Add hover actions
+            d3.select(svgMapRef.current)
+                .selectAll("path")
+                .on("mouseover", function (event, d) {
+                    if (!d || !d.properties || !geoPath(d)) {
+                        console.log("has no properties maybe");
+                        return;
+                    }
 
-             const thisBounds = geoPath.bounds(d);
-             const thisCenter = geoPath.centroid(d);
+                    const thisBounds = geoPath.bounds(d);
+                    const thisCenter = geoPath.centroid(d);
 
-             // Check if the centroid coordinates are valid
-             if (isNaN(thisCenter[0]) || isNaN(thisCenter[1])) {
-                 console.log("has no centroid coordinates maybe");
-                 return;
-             }
+                    // Check if the centroid coordinates are valid
+                    if (isNaN(thisCenter[0]) || isNaN(thisCenter[1])) {
+                        console.log("has no centroid coordinates maybe");
+                        return;
+                    }
 
-             // Display the name property if available
-             const name = d.properties.name || "NULL";
+                    // Display the name property if available
+                    const name = d.properties.name || "NULL";
 
-             // Append a <g> (group) element to contain both <text> elements
-             const textMapGroup = svgMap
-                 .append("g")
-                 .attr("id", "mapGroup");
+                    // Append the name as text
+                    svgMap
+                        .append("text")
+                        .attr("id", "feature-name")
+                        .attr("x", thisCenter[0])
+                        .attr("y", thisCenter[1])
+                        .attr("dy", "-0.5em") // Offset the text slightly above the centroid
+                        .style("text-anchor", "middle") // Center the text horizontally
+                        .style("font-family", "monospace")
+                        .style("font-size", "clamp(12px, 0.95vw, 22px)")
+                        .text(name)
+                        .attr("fill", "var(--mainPage--textColor2)");
 
-             // Append the name as text
-             svgMap
-                 .append("text")
-                 .attr("class", "feature-name")
-                 .attr("x", thisCenter[0])
-                 .attr("y", thisCenter[1])
-                 .attr("dy", "-0.5em") // Offset the text slightly above the centroid
-                 .style("text-anchor", "middle") // Center the text horizontally
-                 .style("font-family", "monospace")
-                 .style("font-size", "clamp(10px, 0.85vw, 22px)")
-                 .text(name);
+                    // Draw a rectangle to highlight the bounds
+                    svgMap
+                        .append("rect")
+                        .attr("id", "bbox")
+                        .attr("x", thisBounds[0][0])
+                        .attr("y", thisBounds[0][1])
+                        .attr("width", thisBounds[1][0] - thisBounds[0][0])
+                        .attr("height", thisBounds[1][1] - thisBounds[0][1])
+                        .attr("fill", "none");
+                        
 
-             // Draw a rectangle to highlight the bounds
-             svgMap
-                 .append("rect")
-                 .attr("class", "bbox")
-                 .attr("x", thisBounds[0][0])
-                 .attr("y", thisBounds[0][1])
-                 .attr("width", thisBounds[1][0] - thisBounds[0][0])
-                 .attr("height", thisBounds[1][1] - thisBounds[0][1]);
+                    // Draw a circle to mark the centroid
+                    svgMap
+                        .append("circle")
+                        .attr("id", "centroid")
+                        .attr("r", 5)
+                        .attr("cx", thisCenter[0])
+                        .attr("cy", thisCenter[1])
+                        .attr("fill", "var(--mainPage--textColor3)");
 
-             // Draw a circle to mark the centroid
-             svgMap
-                 .append("circle")
-                 .attr("class", "centroid")
-                 .attr("r", 6)
-                 .attr("cx", thisCenter[0])
-                 .attr("cy", thisCenter[1]);
-
-             d3.select(this).on("mouseout", function () {
-                 svgMap.selectAll("text.feature-name").remove();
-                 svgMap.selectAll("circle.centroid").remove();
-                 svgMap.selectAll("rect.bbox").remove();
-             });
-         });
-    }
-}, [mapData]);
+                    d3.select(this).on("mouseout", function () {
+                        svgMap.selectAll("#feature-name").remove();
+                        svgMap.selectAll("#centroid").remove();
+                        svgMap.selectAll("#bbox").remove();
+                    });
+                });
+        }
+    }, [mapData]);
 
     useEffect(() => {
         return () => {};
@@ -264,7 +265,7 @@ if (svgMap.selectAll("#controls").empty()) {
     // rita Bubble
     useEffect(() => {
         const colorClasses = [
-            { range: [-10, -1], color: "#e1dde2" },
+            { range: [-10, -1], color: "var(--livsmedelPage-Map-uunmappedPlaces)" },
             { range: [0, 10], color: "#ffffff" },
             { range: [11, 20], color: "#ffffc0" },
             { range: [21, 50], color: "#fafdd7" },
@@ -310,7 +311,7 @@ if (svgMap.selectAll("#controls").empty()) {
                 }
             }
             // Default color if no match is found
-            return "#e1dde2";
+            return "white";
         };
 
         //const width = 850;
@@ -366,22 +367,18 @@ if (svgMap.selectAll("#controls").empty()) {
             return result ? result.value : -1;
         }
         // Append paths for map features
-      
-           
-     
 
         if (bubbleData) {
-
             svgMap
-            .selectAll("path")
-            .style("fill", (d) =>
-                getColor(
-                    getMengdFor2(bubbleData.children, d.properties.name),
-                ),
-            )
-            .style("stroke", "black");
-        //.style("fill", (d) => countryColor(geoPath.area(d)))
-        //.style("stroke", (d) => d3.rgb(countryColor(geoPath.area(d))).darker(),);
+                .selectAll("path")
+                .style("fill", (d) =>
+                    getColor(
+                        getMengdFor2(bubbleData.children, d.properties.name),
+                    ),
+                )
+                .style("stroke", (d) =>  "var(--livsmedelPage-Map-Places-Border)");
+            //.style("fill", (d) => countryColor(geoPath.area(d)))
+            //.style("stroke", (d) => d3.rgb(countryColor(geoPath.area(d))).darker(),);
             const pack = d3
                 .pack()
                 .size([width - 40, height - 50])
@@ -429,7 +426,7 @@ if (svgMap.selectAll("#controls").empty()) {
                 .attr("fill-opacity", 0.68)
                 .style("stroke", (d) => {
                     if (d.data.value) {
-                        return "black";
+                        return  "var(--livsmedelPage-Map-Places-Border)";
                     } else {
                         return "none"; // Or any default color for circles without data values
                     }
@@ -470,41 +467,44 @@ if (svgMap.selectAll("#controls").empty()) {
                         .append("text") // Append the first <text> element
                         .attr("id", "nodeValue1")
                         .attr("x", 5)
-                        .attr("y", 25)
+                        .attr("y", 15)
                         .text(d.data.place)
                         .style("font-family", "monospace")
-                        .style("font-size", "clamp(10px, 0.85vw, 22px)")
-                        .attr("fill", "#2a2828");
+                        .style("font-size", "clamp(10px, 0.80vw, 18px)")
+                        .attr("fill", "var(--mainPage--textColor1)");
 
                     textGroup
                         .append("text") // Append the second <text> element
                         .attr("id", "nodeValue2") // Adjusted ID to make it unique
                         .attr("x", 5)
-                        .attr("y", 65)
+                        .attr("y", 37)
                         .text(d.data.name)
                         .style("font-family", "monospace")
-                        .style("font-size", "clamp(10px, 0.85vw, 22px)")
-                        .attr("fill", "#2a2828");
+                        .style("font-size", "clamp(10px, 0.80vw, 18px)")
+                        .attr("fill", "var(--mainPage--textColor1)");
+
 
                     textGroup
                         .append("text") // Append the second <text> element
                         .attr("id", "nodeValue3") // Adjusted ID to make it unique
                         .attr("x", 5)
-                        .attr("y", 105)
+                        .attr("y", 57)
                         .text(d.data.mengd)
                         .style("font-family", "monospace")
-                        .style("font-size", "clamp(10px, 0.85vw, 22px)")
-                        .attr("fill", "#2a2828");
+                        .style("font-size", "clamp(10px, 0.80vw, 18px)")
+                        .attr("fill", "var(--mainPage--textColor1)");
+
 
                     textGroup
                         .append("text") // Append the second <text> element
                         .attr("id", "nodeValue4") // Adjusted ID to make it unique
                         .attr("x", 5)
-                        .attr("y", 145)
+                        .attr("y", 78)
                         .text(d.data.andel_sverige)
                         .style("font-family", "monospace")
-                        .style("font-size", "clamp(10px, 0.85vw, 22px)")
-                        .attr("fill", "#2a2828");
+                        .style("font-size", "clamp(10px, 0.80vw, 18px)")
+                        .attr("fill", "var(--mainPage--textColor1)");
+
 
                     d3.select(this).on("mouseout", function () {
                         // Restore the original color when the mouse leaves
@@ -533,7 +533,7 @@ if (svgMap.selectAll("#controls").empty()) {
         }
         return () => {
             svgBubble.selectAll("*").remove();
-            svgMap.selectAll("path").style("fill", (d) => "#e1dde2");
+            svgMap.selectAll("path").style("fill", (d) => "#706e71");
         };
     }, [bubbleData, mapData]);
 

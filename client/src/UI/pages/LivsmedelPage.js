@@ -9,7 +9,7 @@ import "../styles/pageStyles/LivsmedelPage.css";
 const Livsmedel = () => {
     
     const TextTypography = styled(Typography)(() => ({
-        color: "var(--mainPage-Content2-textColor1)",
+        color: "var(--mainPage--textColor1)",
         fontFamily: "var(--mainpage--content2-font1)",
         fontSize: "clamp(15px, 2.5vw, 60px)",
         fontWeight: 400,
