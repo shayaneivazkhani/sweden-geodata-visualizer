@@ -114,7 +114,7 @@ useEffect(() => {
         });
 
         // Initialize zoom settings
-        const zoomSettings = d3.zoomIdentity.translate(-290, 3590).scale(2100);
+        const zoomSettings = d3.zoomIdentity.translate(-190, 1780).scale(1050);
 
             // Call zoom on SVG element and apply initial zoom
             svgMap.call(mapZoom).call(mapZoom.transform, zoomSettings);
