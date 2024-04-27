@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const duckdb = require("duckdb");
+const path = require('path');
 
 const app = express();
 const port = 3001;
@@ -89,6 +90,37 @@ async function initializeduck() {
 }
 
 /* 🩸 DEL 4... – set up endpoints */
+
+/* ⬇︎ endpoint to get images to be cached in browser optimizing LCP ——————————————————————————————————————————————————————————————————————————————*/
+
+/*
+    •  'path': This is the built-in Node.js module path', which provides utilities for working with file
+        and directory paths.
+    •   __dirname': This is a special variable in Node js that represents the directory name of the
+    current module (i.e., the directory in which the current script resides).
+    •   'images' : This is a string representing the name of the directory we want to access relative to
+        __dirname'. In this case, it's the directory named "images".
+*/
+// Define the directory where your images are stored
+const imagesDirectory = path.join(__dirname, 'images');
+
+// Endpoint to serve .webp image
+app.get('/images/:name', (req, res) => {
+    const imageName = req.params.name;
+    const imagePath = path.join(imagesDirectory, imageName);
+
+    // Set cache control header to allow caching for 1 year
+    res.set('Cache-Control', 'max-age=31536000');
+
+    // Set content type for .webp images
+    res.type('image/webp');
+
+    // Send the image file
+    res.sendFile(imagePath);
+});
+
+
+/* ⬇︎ Other endpoints to get data from DUCK ———————————————————————————————————————————————————————————————————————————————————————————————————————*/
 
 // Endpooint to handle GET requests
 app.get("/api/column", async (req, res) => {
@@ -718,7 +750,7 @@ app.get("/api/getid_database", async (req, res) => {
     }
 });
 
-/* START THE SERVER —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
+/* 🩸 DEL 5... – START THE SERVER —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

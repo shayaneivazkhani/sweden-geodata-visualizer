@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -11,7 +11,6 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import AssessmentSharpIcon from "@mui/icons-material/AssessmentSharp";
-import { border } from "@mui/system";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 60,
@@ -181,7 +180,8 @@ function StatisticSubpageMenu() {
                         <ListItemText
                             primary={item.label}
                             primaryTypographyProps={{
-                                fontFamily: "var(--secondary-font), Arial, sans-serif",
+                                fontFamily:
+                                    "var(--secondary-font), Arial, sans-serif",
                                 fontSize: 16,
                                 fontWeight: 400,
                             }}
@@ -303,7 +303,8 @@ function BuildMenu() {
                         <ListItemText
                             primary={item.label}
                             primaryTypographyProps={{
-                                fontFamily: "var(--secondary-font), Arial, sans-serif",
+                                fontFamily:
+                                    "var(--secondary-font), Arial, sans-serif",
                                 fontSize: 16,
                                 fontWeight: 400,
                             }}
@@ -346,6 +347,75 @@ function BuildMenu() {
     );
 }
 
+function HomepagePictureLink() {
+    const [isHovered, setIsHovered] = useState(false);
+
+    // Function to handle image loading
+    const loadImage = () => {
+        const image = new Image();
+        image.src = "./images/project_logo_no_background.jpg";
+        image.onload = () => {
+            // Image loaded successfully, set the state to trigger re-render
+            setIsLoaded(true);
+        };
+        image.onerror = () => {
+            // Handle error
+            console.error("Failed to load image");
+        };
+    };
+
+    // Call the function to load the image when component mounts
+    useEffect(() => {
+        loadImage();
+    }, []);
+
+    const homepage_pictureLinkStyle = {
+        width: "90px",
+        marginTop: "10px",
+        marginLeft: "10px",
+        marginRight: "10px",
+    };
+
+    return (
+        <div
+            className="Homepage_picture_link"
+            onMouseEnter={() => setIsHovered(true)} // Handle mouse enter event
+            onMouseLeave={() => setIsHovered(false)} // Handle mouse leave event
+            style={homepage_pictureLinkStyle}
+        >
+            <Box
+                sx={{
+                    borderRadius: 1,
+                    height: "50px",
+                    "& a": {
+                        // style the <a> element inside Box
+                        display: "block",
+                        width: "115px",
+                        height: "75px",
+                        backgroundColor: "rgba(0, 0, 0, 0.00)",
+                        transition: "transform 0.4s",
+                        transform: isHovered ? "scale(1.1)" : "scale(1)",
+                        "& img": {
+                            // style the <img> element inside <a>
+                            width: "100%", // make the image width fill the container
+                            height: "100%", // make the image height fill the container
+                        },
+                    },
+                }}
+            >
+                {isLoaded && (
+                    <a href="/">
+                        <img
+                            src="./images/project_logo_no_background.webp"
+                            alt="return to homepage"
+                        />
+                    </a>
+                )}
+            </Box>
+        </div>
+    );
+}
+
 const Header = () => {
     const [isHovered, setIsHovered] = useState(false);
 
@@ -365,6 +435,7 @@ const Header = () => {
         marginTop: "10px",
         marginLeft: "10px",
         marginRight: "10px",
+        //fontSize: "clamp(10px, 0.9vw, 30px)",
     };
 
     const navLinkStyle = {
@@ -432,8 +503,7 @@ const Header = () => {
                         }}
                     >
                         <a href="/">
-
-
+                            {/*
                             <picture>
                                 <source
                                     type="image/webp"
@@ -448,9 +518,11 @@ const Header = () => {
                                     alt="return to homepage"
                                 />
                             </picture>
-
-
-                            
+                            */}
+                            <img
+                                src="http://localhost:3001/images/project_logo_no_background.webp"
+                                alt="return to homepage"
+                            />
                         </a>
                     </Box>
                 </div>
@@ -542,4 +614,4 @@ const Header = () => {
     );
 };
 
-export default Header;
+export default memo(Header);

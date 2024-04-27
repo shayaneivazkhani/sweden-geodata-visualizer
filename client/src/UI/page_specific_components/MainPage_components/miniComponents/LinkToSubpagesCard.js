@@ -1,5 +1,5 @@
 import React from "react";
-import { Suspense } from "react";
+import { Suspense, memo } from "react";
 import {
     Card,
     CardActionArea,
@@ -100,11 +100,11 @@ const CustomCard = ({ color, imageWEBp, imageJPG, title, subtitle }) => (
                 >
                     <picture>
                         {/* Provide alternative image formats using source tags */}
-                        <source type="image/webp" srcSet={imageWEBp} />
-                        <source type="image/jpeg" srcSet={imageJPG} />
+                            {/* <source type="image/webp" srcSet={imageWEBp} /> */}
+                            {/* <source type="image/jpeg" srcSet={imageJPG} /> */}
                         {/* Fallback image for browsers that don't support source tags */}
                         <img
-                            src={imageJPG}
+                            src={imageWEBp}
                             alt="Custom Card Image"
                         />
                     </picture>
@@ -118,7 +118,7 @@ const CustomCard = ({ color, imageWEBp, imageJPG, title, subtitle }) => (
     </CardActionAreaActionArea>
 );
 
-export default function SubPagesCard() {
+function SubPagesCard() {
     const animation = {
         loop: true,
         autoplay: true,
@@ -196,7 +196,7 @@ export default function SubPagesCard() {
                                             "Review comprehensive statistics on reported food sales from municipalities across Sweden during year 2023"
                                         }
                                         imageWEBp={
-                                            "/images/livsmedel_card_img.webp"
+                                            "http://localhost:3001/images/livsmedel_card_img.webp"
                                         }
                                         imageJPG={
                                             "/images/livsmedel_card_img.jpg"
@@ -217,7 +217,7 @@ export default function SubPagesCard() {
                                             "Explore the proportion of organic food sales within these municipalities across Sweden during year 2023"
                                         }
                                         imageWEBp={
-                                            "/images/ekologiskt_card_img.webp"
+                                            "http://localhost:3001/images/ekologiskt_card_img.webp"
                                         }
                                         imageJPG={
                                             "/images/ekologiskt_card_img.jpg"
@@ -236,7 +236,7 @@ export default function SubPagesCard() {
                                             "Statistics revealing the profitability of deals made by each municipality with food vendors in 2023."
                                         }
                                         imageWEBp={
-                                            "/images/deals_card_img.webp"
+                                            "http://localhost:3001/images/deals_card_img.webp"
                                         }
                                         imageJPG={"/images/deals_card_img.jpg"}
                                     />
@@ -256,6 +256,8 @@ export default function SubPagesCard() {
         </React.Fragment>
     );
 }
+
+export default memo(SubPagesCard);
 
 /*
 const CustomCardFaster = ({ color, imageJPG, imageWEBp, title, subtitle }) => (
