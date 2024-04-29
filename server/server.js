@@ -3,6 +3,8 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const duckdb = require("duckdb");
 const path = require("path");
+const fs = require('fs');
+var compression = require('compression')
 
 const app = express();
 const port = 3001;
@@ -63,12 +65,31 @@ const logger2 = (req, res, next) => {
 // Register a custom middleware for logging incoming requests
 app.use(logger2);
 
-/* 🩸 DEL 2 – set up server to handle JSON */
+/* 🩸 DEL 2.1 – set up server to handle JSON */
 
 /* Middleware to parse JSON bodies — Express doesn't automatically parse POST HTTP body (a string) into a JavaScript object (a JSON).
   The bodyParser.json() middleware does exactly that—it parses the incoming request body as JSON and exposes it on req.body property of the request object.
 */
 app.use(bodyParser.json());
+
+/* 🩸 DEL 2.2 – set up server to compress responses leading to faster loads at Client-Side */
+
+/* A compression middleware for handeling gzip compression. 
+ checking whether the client has included a header named 'x-no-compression' in the request. 
+ If this header is present and has a truthy value (such as 'true', '1', etc.), 
+ the function returns false, indicating that compression should not be applied to the response.
+*/
+app.use(compression({ filter: shouldCompress }))
+
+function shouldCompress (req, res) {
+    if (req.headers['x-no-compression']) {
+      // don't compress responses with this request header
+      return false
+    }
+  
+    // fallback to standard filter function
+    return compression.filter(req, res)
+  }
 
 /* 🩸 DEL 3 – set up database */
 
@@ -91,6 +112,7 @@ async function initializeduck() {
 
 /* 🩸 DEL 4... – set up endpoints */
 
+
 /* ⬇︎ endpoint to get images to be cached in browser optimizing LCP ——————————————————————————————————————————————————————————————————————————————*/
 
 /*
@@ -109,8 +131,8 @@ app.get("/images/:name", (req, res) => {
     const imageName = req.params.name;
     const imagePath = path.join(imagesDirectory, imageName);
 
-    // Set cache control header to allow caching for 1 year
-    res.set("Cache-Control", "max-age=31536000");
+    // Set cache control header to allow caching for 5 hours
+    res.set("Cache-Control", "max-age=18000");
 
     // Set status code to 200 (OK)
     //res.status(200);
@@ -126,22 +148,44 @@ app.get("/images/:name", (req, res) => {
 const fontsDirectory = path.join(__dirname, "fonts");
 
 // Middleware to serve font files
-app.get("/fonts/:name", (req, res) => {
+app.get('/fonts/:name', (req, res) => {
     const fontName = req.params.name;
     const fontFilePath = path.join(fontsDirectory, fontName);
-
+  
     // Set cache control header to allow caching for 1 year
-    res.set("Cache-Control", "max-age=31536000");
-
-    // Set status code to 200 (OK)
-    //res.status(200);
-
+    res.set('Cache-Control', 'max-age=31536000');
+  
+    // Set Expires header to one year from now
+    const oneYearInSeconds = 31536000;
+    const expiresDate = new Date(Date.now() + oneYearInSeconds * 1000);
+    res.set('Expires', expiresDate.toUTCString());
+  
+    // Set ETag header based on font file's modified time
+    const stat = fs.statSync(fontFilePath);
+    const lastModified = stat.mtime.toUTCString();
+    const etag = '"' + lastModified + '"';
+    res.set('ETag', etag);
+  
+    // If the client's request includes an If-None-Match header with the same ETag value,
+    // and the font file hasn't been modified since the ETag was generated,
+    // return a 304 Not Modified response without sending the file again.
+    if (req.headers['if-none-match'] === etag) {
+      return res.status(304).end();
+    }
+  
+    // If the client's request includes an If-Modified-Since header with a date equal to or
+    // later than the font file's last modified time, return a 304 Not Modified response.
+    const ifModifiedSince = req.headers['if-modified-since'];
+    if (ifModifiedSince && new Date(ifModifiedSince) >= stat.mtime) {
+      return res.status(304).end();
+    }
+  
     // Set content type to 'font/ttf'
-    res.type("font/ttf");
-
+    res.type('font/ttf');
+  
     // Serve the font file
     res.sendFile(fontFilePath);
-});
+  });
 
 /* ⬇︎ Other endpoints to get data from DUCK ———————————————————————————————————————————————————————————————————————————————————————————————————————*/
 

@@ -33,9 +33,6 @@ const WebPage = () => {
         width: "100%",
         paddingTop: "85px",
         zIndex: 0,
-
-        maxWidth: "1300px",
-        margin: "0 auto",
     };
 
     const footer_style = {

@@ -15,6 +15,7 @@ const MainPage = () => {
 
     const body_style = {
         width: "90vw",
+        margin: "0 auto",
         maxWidth: "1200px",
     };
 
