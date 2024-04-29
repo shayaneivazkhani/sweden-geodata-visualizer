@@ -49,7 +49,7 @@ const Content3 = () => {
     const text_Style = {
         color: "var(--mainPage-Content2-textColor1)",
         fontFamily: "var(--mainpage--content2-font1)",
-        fontSize: "clamp(15px, 1.5vw, 40px)",
+        fontSize: "var(--mainpage--content23--font--size)",
         fontWeight: 400,
         textAlign: "left", 
         textTransform: "uppercase"

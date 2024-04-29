@@ -9,26 +9,26 @@ import Content5 from "../page_specific_components/MainPage_components/Content5";
 //import Content7 from '../components/MainPage_components/Content7'
 //import Content8 from '../components/MainPage_components/Content8'
 
-import "../styles/pageStyles/MainPage.css";
-import zIndex from "@mui/material/styles/zIndex";
+import "../styles/pageStyles/MainPage.css"; 
 
 const MainPage = () => {
 
     const body_style = {
-        //height: "90vh",
+        width: "90vw",
+        maxWidth: "1200px",
     };
 
     return (
         <React.Fragment>
             <div style={body_style}>
                 <div className="mainpage_layout">
-                    <div className="content2 centered">
+                    <div className="content2">
                         <Content2 />
                     </div>
-                    <div className="content3 centered">
+                    <div className="content3">
                         <Content3 />
                     </div>
-                    <div className="content4 centered">
+                    <div className="content4">
                         <Content4 />
                     </div>
                 </div>

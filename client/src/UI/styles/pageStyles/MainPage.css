@@ -53,7 +53,7 @@
 }
 
 .mainpage_layout a {
-  text-decoration: none; /* Remove underline from <a> elements inside mainpage_layout div */
+  text-decoration: none; 
 }
 
 .centered {
@@ -70,7 +70,9 @@
 }
 
 .content2 {
+    width: 100%;
     grid-area: content2;
+    padding-right: 80px;
 }
 
 .content3 {

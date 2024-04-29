@@ -11,8 +11,6 @@ import "./MainPage_Content1To8_styles/MainPage_content2.css";
 const Content2 = () => {
     
     const bodyStyle = {
-        width: "100%",
-        borderBottom: "1px solid var(--doc-divider-horisontal-Color)" // Add a white border at the bottom
     };
 
     const animation = {
@@ -25,13 +23,12 @@ const Content2 = () => {
     };
 
 
-    const TextTypography = styled(Typography)(() => ({
+    const TextTypographyStyle = {
         color: "var(--mainPage-Content2-textColor1)",
         fontFamily: "var(--mainpage--content2-font1)",
-        fontSize: "clamp(15px, 1.5vw, 40px)",
-        fontWeight: 400,
+        fontSize: "var(--mainpage--content23--font--size)",
         textAlign: "left", 
-    }));
+    };
 
 
     return (
@@ -42,16 +39,15 @@ const Content2 = () => {
                         <Lottie options={animation} height={220} width={220} />
                     </div>
 
-                    <div className="text">
-                        <TextTypography>
+                    <div className="text" style={TextTypographyStyle}>
                             Each month, municipalities across Sweden submit
-                            their food sales data <br></br>
+                            their food sales data 
                             to the Tendmills database. Our project involves
-                            processing this data and <br></br>
+                            processing this data and 
                             extract useful information from it, organize it into
-                            three distinct pages <br></br>
+                            three distinct pages 
                             for easy navigation.
-                        </TextTypography>
+                    
                     </div>
                 </div>
                 <div className="content2_main_inner_body">

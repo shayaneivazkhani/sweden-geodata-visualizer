@@ -1,17 +1,56 @@
 .content2_main_inner_body {
   margin-top: 20px;
   margin-left: 10%;
+  border-radius: 1rem;
+  background-color: #4158D0;
+  background-image: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
+  box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
 }
-
 /*
 @media only screen and (min-width: 600px) {
   .content2_main_inner_body {
     margin-top: 20px;
     margin-left: 10%;
   }
-
+.first_column {
+  max-width: 900px;
+  margin: 0 auto;
+  gap: 13px;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  }
 }
 */
+
+/* ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————— */
+
+.first_column {
+   display: flex;
+   flex-wrap: wrap;
+   margin-left: 35px;
+}
+.second_column {
+   margin-right: 500px;
+}
+
+.first_card {
+  margin-top: 20px;
+  margin-right: 20px;
+  flex: 1 1 120px;
+}
+
+.second_card {
+  margin-right: 20px;
+  margin-top: 20px;
+  flex: 2 1 120px;
+}
+
+.third_card {
+  margin-right: 0px;
+  margin-top: 20px;
+  flex: 3 1 120px;
+}
+
+/* ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————— */
 
 .text_and_animation {
   display: flex;

@@ -19,8 +19,8 @@ import Kevin from "./UI/pages/Kevin.js";
 import Lucas from "./UI/pages/Lucas.js";
 import Shayan from "./UI/pages/Shayan.js";
 
-import Header from "./UI/general_components/Header_NavBar/HeaderBar";
-import Footer from "./UI/general_components/Header_NavBar/Footer";
+import Header from "./UI/general_components/HeaderBar";
+import Footer from "./UI/general_components/Footer";
 
 const WebPage = () => {
     const topFixedStyle = {
@@ -33,6 +33,9 @@ const WebPage = () => {
         width: "100%",
         paddingTop: "85px",
         zIndex: 0,
+
+        maxWidth: "1300px",
+        margin: "0 auto",
     };
 
     const footer_style = {
@@ -73,10 +76,11 @@ const WebPage = () => {
                                 {/* Add routes for other components if needed */}
                             </Routes>
                         </Router>
-                    <div style={footer_style}>
+                    
+                </div>
+                <div style={footer_style}>
                         <Footer />
                     </div>
-                </div>
             </div>
         </React.Fragment>
     );

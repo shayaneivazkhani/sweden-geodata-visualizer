@@ -3,18 +3,11 @@ import { Suspense, memo } from "react";
 import {
     Card,
     CardActionArea,
-    CardContent,
-    Typography,
-    Grid,
     Box,
-    ThemeProvider,
-    CardMedia,
     Link,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import CircularProgress from "@mui/material/CircularProgress";
-import Stack from "@mui/system/Stack";
-import Color from "color";
 import Lottie from "react-lottie";
 
 // Lazy loading CardMedia component
@@ -31,7 +24,8 @@ const CardActionAreaActionArea = styled(CardActionArea)(() => ({
         transform: "scale(1.02)",
     },
 }));
-const StyledCard = styled(Card)(({ color }) => ({
+
+const StyledCard = styled(Card)(() => ({
     width: "220px",
     height: "300px",
     borderRadius: 1,
@@ -43,33 +37,25 @@ const StyledCard = styled(Card)(({ color }) => ({
         boxShadow: "0 4px 20px 0 rgb(0, 0, 0)",
     },
 }));
-const CardContentContent = styled(CardContent)(({ color }) => {
-    return {
-        backgroundColor: color,
-        padding: "1.5rem 1rem 1.5rem",
-    };
-});
 
-const TypographyTitle = styled(Typography)(() => ({
+const TypographyTitleStyle = {
     fontFamily: "var(--mainpage--content2-3card-font1)",
-    fontSize: "25px",
     color: "var(--mainPage-3CardLinks-Title-Color1)",
-    fontWeight: 500,
-    fontSize: 26,
+    fontSize: 25,
     //textTransform: "uppercase"
-}));
-const TypographySubtitle = styled(Typography)(() => ({
+};
+const TypographySubtitleStyle = {
+    marginTop:"5px",
     fontFamily: "var(--mainpage--content2-3card-font2)",
     color: "var(--mainPage-3CardLinks-subTitle-Color1)",
-    opacity: 0.87,
+    opacity: 0.80,
     // marginTop: "1rem",
-    fontWeight: 400,
-    fontSize: 11,
-}));
+    fontSize: 13,
+};
 
 const CustomCard = ({ color, imageWEBp, imageJPG, title, subtitle }) => (
     <CardActionAreaActionArea>
-        <StyledCard color={color}>
+        <StyledCard>
             <Suspense
                 fallback={
                     <Box
@@ -87,7 +73,7 @@ const CustomCard = ({ color, imageWEBp, imageJPG, title, subtitle }) => (
             >
                 <Box
                     sx={{
-                        height: "55%",
+                        height: "50%",
                         backgroundColor: "rgba(0,0,0,0.08)",
                         boxShadow: "0 0px 5px 0 rgb(0, 0, 0)",
                         transition: "0.15s",
@@ -100,20 +86,23 @@ const CustomCard = ({ color, imageWEBp, imageJPG, title, subtitle }) => (
                 >
                     <picture>
                         {/* Provide alternative image formats using source tags */}
-                            {/* <source type="image/webp" srcSet={imageWEBp} /> */}
-                            {/* <source type="image/jpeg" srcSet={imageJPG} /> */}
+                        {/* <source type="image/webp" srcSet={imageWEBp} /> */}
+                        {/* <source type="image/jpeg" srcSet={imageJPG} /> */}
                         {/* Fallback image for browsers that don't support source tags */}
-                        <img
-                            src={imageWEBp}
-                            alt="Custom Card Image"
-                        />
+                        <img src={imageWEBp} alt="Custom Card Image" />
                     </picture>
                 </Box>
             </Suspense>
-            <CardContentContent color={color}>
-                <TypographyTitle variant={"h2"}>{title}</TypographyTitle>
-                <TypographySubtitle>{subtitle}</TypographySubtitle>
-            </CardContentContent>
+            <div
+                style={{
+                    backgroundColor: color,
+                    height: "40%",
+                    padding: "25px 13px 30px",
+                }}
+            >
+                <div style={TypographyTitleStyle}>{title}</div>
+                <div style={TypographySubtitleStyle}>{subtitle}</div>
+            </div>
         </StyledCard>
     </CardActionAreaActionArea>
 );
@@ -129,15 +118,18 @@ function SubPagesCard() {
     };
 
     const containerStyle = {
+        maxWidth: "1300px",
+        margin: "0 auto",
         display: "flex",
         alignItems: "center", // Center items horizontally
-        justifyContent: "flex-end", // Center items vertically
+        justifyContent: "center", // Center items vertically
     };
 
     const firstColumnStyle = {
-        display: "flex",
+        /*display: "flex",
         flexDirection: "row",
-        justifyContent: "center", // Center items vertically
+        justifyContent: "center", // Center items vertically 
+        */
     };
 
     const secondColumnStyle = {
@@ -146,110 +138,93 @@ function SubPagesCard() {
         flexDirection: "column",
         alignItems: "center", // Center items horizontally
         justifyContent: "center", // Center items vertically
-        paddingLeft: "30px",
     };
 
-    const cardStyle = {
-        paddingRight: "40px",
-    };
+    const cardStyle = {};
 
-    const TypographyTitle = styled(Typography)(() => ({
+    const TypographyTextStyle = {
         color: "var(--accent_color2)",
         fontFamily: "var(--accent-font1)",
         fontSize: 14,
-        fontWeight: 400,
         textAlign: "left",
         textTransform: "uppercase",
-    }));
-
-    const Item = styled("div")(({ theme }) => ({
-        padding: theme.spacing(1),
-        textAlign: "left",
-        borderRadius: 0,
-    }));
+    };
 
     return (
         <React.Fragment>
             <Box
                 sx={{
-                    flexGrow: 1,
-                    borderRadius: 1,
+                    borderRadius: "1rem",
                     paddingTop: "35px",
                     paddingBottom: "35px",
-                    paddingLeft: "55px",
-                    paddingRight: "55px", // Add padding for both sides
                     backgroundColor: "rgba(0, 0, 70, 0.18)",
                     boxShadow: "0 0px 18px 0 rgba(162,155,254,0.28)",
                 }}
             >
                 <div style={containerStyle}>
                     <div className="first_column" style={firstColumnStyle}>
-                        <Item>
-                            <div className="first_card" style={cardStyle}>
-                                <Link href="/livsmedel" underline="none">
-                                    <CustomCard
-                                        color={
-                                            "var(--mainPage-3CardLinks-BgColor1)"
-                                        }
-                                        title={"Food sales"}
-                                        subtitle={
-                                            "Review comprehensive statistics on reported food sales from municipalities across Sweden during year 2023"
-                                        }
-                                        imageWEBp={
-                                            "http://localhost:3001/images/livsmedel_card_img.webp"
-                                        }
-                                        imageJPG={
-                                            "/images/livsmedel_card_img.jpg"
-                                        }
-                                    />
-                                </Link>
-                            </div>
-                        </Item>
-                        <Item>
-                            <div className="second_card" style={cardStyle}>
-                                <Link href="/ekologiskt" underline="none">
-                                    <CustomCard
-                                        color={
-                                            "var(--mainPage-3CardLinks-BgColor1)"
-                                        }
-                                        title={"Organic sales"}
-                                        subtitle={
-                                            "Explore the proportion of organic food sales within these municipalities across Sweden during year 2023"
-                                        }
-                                        imageWEBp={
-                                            "http://localhost:3001/images/ekologiskt_card_img.webp"
-                                        }
-                                        imageJPG={
-                                            "/images/ekologiskt_card_img.jpg"
-                                        }
-                                    />
-                                </Link>
-                            </div>
-                        </Item>
-                        <Item>
-                            <div className="third_card" style={cardStyle}>
-                                <Link href="/deals" underline="none">
-                                    <CustomCard
-                                        color="var(--mainPage-3CardLinks-BgColor1)"
-                                        title={"Deals Made"}
-                                        subtitle={
-                                            "Statistics revealing the profitability of deals made by each municipality with food vendors in 2023."
-                                        }
-                                        imageWEBp={
-                                            "http://localhost:3001/images/deals_card_img.webp"
-                                        }
-                                        imageJPG={"/images/deals_card_img.jpg"}
-                                    />
-                                </Link>
-                            </div>
-                        </Item>
+                        <div className="first_card" style={cardStyle}>
+                            <Link href="/livsmedel" underline="none">
+                                <CustomCard
+                                    color={
+                                        "var(--mainPage-3CardLinks-BgColor1)"
+                                    }
+                                    title={"Food sales"}
+                                    subtitle={
+                                        "Review comprehensive statistics on reported food sales across Sweden during year 2023"
+                                    }
+                                    imageWEBp={
+                                        "http://localhost:3001/images/livsmedel_card_img.webp"
+                                    }
+                                    imageJPG={"/images/livsmedel_card_img.jpg"}
+                                />
+                            </Link>
+                        </div>
+
+                        <div className="second_card" style={cardStyle}>
+                            <Link href="/ekologiskt" underline="none">
+                                <CustomCard
+                                    color={
+                                        "var(--mainPage-3CardLinks-BgColor1)"
+                                    }
+                                    title={"Organic sales"}
+                                    subtitle={
+                                        "Explore the proportion of organic food sales within these municipalities across Sweden during year 2023"
+                                    }
+                                    imageWEBp={
+                                        "http://localhost:3001/images/ekologiskt_card_img.webp"
+                                    }
+                                    imageJPG={"/images/ekologiskt_card_img.jpg"}
+                                />
+                            </Link>
+                        </div>
+
+                        <div className="third_card" style={cardStyle}>
+                            <Link href="/deals" underline="none">
+                                <CustomCard
+                                    color="var(--mainPage-3CardLinks-BgColor1)"
+                                    title={"Deals Made"}
+                                    subtitle={
+                                        "Statistics revealing the profitability of deals made by each municipality with food vendors in 2023"
+                                    }
+                                    imageWEBp={
+                                        "http://localhost:3001/images/deals_card_img.webp"
+                                    }
+                                    imageJPG={"/images/deals_card_img.jpg"}
+                                />
+                            </Link>
+                        </div>
                     </div>
 
                     <div className="second_column" style={secondColumnStyle}>
-                        <Lottie options={animation} height={220} width={220} />
-                        <TypographyTitle>
-                            ⬅︎ Navigate to these sections
-                        </TypographyTitle>
+                        <Lottie
+                            options={animation}
+                            height={"min(150px, 300px)"}
+                            width={"min(150px, 560px)"}
+                        />
+                        <div style={TypographyTextStyle}>
+                          ⬅︎  Navigate to these sections
+                        </div>
                     </div>
                 </div>
             </Box>

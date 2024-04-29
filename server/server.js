@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const duckdb = require("duckdb");
-const path = require('path');
+const path = require("path");
 
 const app = express();
 const port = 3001;
@@ -102,23 +102,46 @@ async function initializeduck() {
         __dirname'. In this case, it's the directory named "images".
 */
 // Define the directory where your images are stored
-const imagesDirectory = path.join(__dirname, 'images');
+const imagesDirectory = path.join(__dirname, "images");
 
 // Endpoint to serve .webp image
-app.get('/images/:name', (req, res) => {
+app.get("/images/:name", (req, res) => {
     const imageName = req.params.name;
     const imagePath = path.join(imagesDirectory, imageName);
 
     // Set cache control header to allow caching for 1 year
-    res.set('Cache-Control', 'max-age=31536000');
+    res.set("Cache-Control", "max-age=31536000");
+
+    // Set status code to 200 (OK)
+    //res.status(200);
 
     // Set content type for .webp images
-    res.type('image/webp');
+    res.type("image/webp");
 
     // Send the image file
     res.sendFile(imagePath);
 });
 
+// Define the directory where your font files are stored
+const fontsDirectory = path.join(__dirname, "fonts");
+
+// Middleware to serve font files
+app.get("/fonts/:name", (req, res) => {
+    const fontName = req.params.name;
+    const fontFilePath = path.join(fontsDirectory, fontName);
+
+    // Set cache control header to allow caching for 1 year
+    res.set("Cache-Control", "max-age=31536000");
+
+    // Set status code to 200 (OK)
+    //res.status(200);
+
+    // Set content type to 'font/ttf'
+    res.type("font/ttf");
+
+    // Serve the font file
+    res.sendFile(fontFilePath);
+});
 
 /* ⬇︎ Other endpoints to get data from DUCK ———————————————————————————————————————————————————————————————————————————————————————————————————————*/
 
@@ -344,7 +367,7 @@ app.get("/api/column/D3Result", async (req, res) => {
                               constellation_name,
                               total_units`;
         */
-       const query = `SELECT
+        const query = `SELECT
                               'Område:  ' || constellation_name AS place,
                                constellation_name AS place2,
                               'Livsmedel: ' || '${livsmedel}' AS name,
@@ -362,7 +385,6 @@ app.get("/api/column/D3Result", async (req, res) => {
                            GROUP BY
                                constellation_name,
                                total_units`;
-                      
 
         db.all(query, function (err, queryres) {
             if (err) {

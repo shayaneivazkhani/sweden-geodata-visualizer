@@ -10,7 +10,7 @@ const Livsmedel = () => {
     
     const TextTypography = styled(Typography)(() => ({
         color: "var(--mainPage--textColor1)",
-        fontFamily: "var(--mainpage--content2-font1)",
+        fontFamily: "var(--third-font)",
         fontSize: "clamp(15px, 2.5vw, 60px)",
         fontWeight: 400,
         textAlign: "center",

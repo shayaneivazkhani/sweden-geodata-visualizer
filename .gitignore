@@ -1,7 +1,7 @@
 node_modules
 yarn.lock
 
-# ignore jävla databasfilen ifall de e inte zipped
+# ignore databasfilen ifall den e inte zipped
 /server/database.db
 
 # ignore filen som skapas i mac
@@ -9,8 +9,6 @@ yarn.lock
 
 # ignore directory— https://github.com/harlan-zw/unlighthouse
 .unlighthouse
-
-
 
 
 # Logs

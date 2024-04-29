@@ -10,7 +10,7 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import AssessmentSharpIcon from "@mui/icons-material/AssessmentSharp";
+import { minWidth } from "@mui/system";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 60,
@@ -104,13 +104,13 @@ function DarkLightModeSwitch() {
 }
 
 const data = [
-    { icon: <AssessmentSharpIcon />, label: "Food Sales", link: "/livsmedel" },
+    { icon: "📊", label: "Food Sales", link: "/livsmedel" },
     {
-        icon: <AssessmentSharpIcon />,
+        icon: "📊",
         label: "Organic Sales",
         link: "/ekologiskt",
     },
-    { icon: <AssessmentSharpIcon />, label: "Deals Made", link: "/deals" },
+    { icon: "📊", label: "Deals Made", link: "/deals" },
 ];
 
 function StatisticSubpageMenu() {
@@ -194,7 +194,7 @@ function StatisticSubpageMenu() {
 
     const TypographyText = styled(Typography)(() => ({
         color: "var(--accent_color1)",
-        fontFamily: "var(--secondary-font), Arial, sans-serif",
+        fontFamily: "var(--secondary-font)",
         fontSize: 20,
         fontWeight: 500,
         //textTransform: "uppercase"
@@ -226,14 +226,14 @@ function StatisticSubpageMenu() {
 }
 
 const data2 = [
-    { icon: <AssessmentSharpIcon />, label: "Ali", link: "/ali" },
-    { icon: <AssessmentSharpIcon />, label: "Ahmed", link: "/ahmed" },
-    { icon: <AssessmentSharpIcon />, label: "Dilan", link: "/dilan" },
-    { icon: <AssessmentSharpIcon />, label: "Daniel", link: "/daniel" },
-    { icon: <AssessmentSharpIcon />, label: "Hassim", link: "/hassim" },
-    { icon: <AssessmentSharpIcon />, label: "Kevin", link: "/kevin" },
-    { icon: <AssessmentSharpIcon />, label: "Lucas", link: "/lucas" },
-    { icon: <AssessmentSharpIcon />, label: "Shayan", link: "/shayan" },
+    { icon: "📊", label: "Ali", link: "/ali" },
+    { icon: "📊", label: "Ahmed", link: "/ahmed" },
+    { icon: "📊", label: "Dilan", link: "/dilan" },
+    { icon: "📊", label: "Daniel", link: "/daniel" },
+    { icon: "📊", label: "Hassim", link: "/hassim" },
+    { icon: "📊", label: "Kevin", link: "/kevin" },
+    { icon: "📊", label: "Lucas", link: "/lucas" },
+    { icon: "📊", label: "Shayan", link: "/shayan" },
 ];
 
 function BuildMenu() {
@@ -347,95 +347,73 @@ function BuildMenu() {
     );
 }
 
-function HomepagePictureLink() {
+const HoverDropdownButton = () => {
     const [isHovered, setIsHovered] = useState(false);
-
-    // Function to handle image loading
-    const loadImage = () => {
-        const image = new Image();
-        image.src = "./images/project_logo_no_background.jpg";
-        image.onload = () => {
-            // Image loaded successfully, set the state to trigger re-render
-            setIsLoaded(true);
-        };
-        image.onerror = () => {
-            // Handle error
-            console.error("Failed to load image");
-        };
+  
+    const handleMouseEnter = () => {
+      setIsHovered(true);
     };
-
-    // Call the function to load the image when component mounts
-    useEffect(() => {
-        loadImage();
-    }, []);
-
-    const homepage_pictureLinkStyle = {
-        width: "90px",
-        marginTop: "10px",
-        marginLeft: "10px",
-        marginRight: "10px",
+  
+    const handleMouseLeave = () => {
+      setIsHovered(false);
     };
-
+  
     return (
-        <div
-            className="Homepage_picture_link"
-            onMouseEnter={() => setIsHovered(true)} // Handle mouse enter event
-            onMouseLeave={() => setIsHovered(false)} // Handle mouse leave event
-            style={homepage_pictureLinkStyle}
+      <div style={{ position: 'relative', display: 'inline-block' }}>
+        <button 
+          onMouseEnter={handleMouseEnter} 
+          onMouseLeave={handleMouseLeave}
         >
-            <Box
-                sx={{
-                    borderRadius: 1,
-                    height: "50px",
-                    "& a": {
-                        // style the <a> element inside Box
-                        display: "block",
-                        width: "115px",
-                        height: "75px",
-                        backgroundColor: "rgba(0, 0, 0, 0.00)",
-                        transition: "transform 0.4s",
-                        transform: isHovered ? "scale(1.1)" : "scale(1)",
-                        "& img": {
-                            // style the <img> element inside <a>
-                            width: "100%", // make the image width fill the container
-                            height: "100%", // make the image height fill the container
-                        },
-                    },
-                }}
-            >
-                {isLoaded && (
-                    <a href="/">
-                        <img
-                            src="./images/project_logo_no_background.webp"
-                            alt="return to homepage"
-                        />
-                    </a>
-                )}
-            </Box>
-        </div>
+          Hover me!
+        </button>
+        {isHovered && (
+          <div 
+            style={{
+              position: 'absolute',
+              top: '100%',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: '#fff',
+              border: '1px solid #ccc',
+              padding: '10px',
+              borderRadius: '5px',
+              boxShadow: '0 0 5px rgba(0,0,0,0.3)',
+              zIndex: 1000,
+            }}
+          >
+            <p>This button will...</p>
+            <ul>
+              <li>Do something awesome!</li>
+              <li>Perform an action when clicked.</li>
+              <li>Change the world.</li>
+            </ul>
+          </div>
+        )}
+      </div>
     );
-}
+  };
+  
 
 const Header = () => {
     const [isHovered, setIsHovered] = useState(false);
 
-    const headerStyle = {
+    const header_container_Style = {
         width: "100%",
         height: "55px",
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "space-between",
+        
         backgroundColor: "var(--header-NavBar-Color)",
         borderBottom: "1px solid var(--doc-divider-horisontal-Color)", // Add a white border at the bottom
         boxShadow: "0 3px 20px 0 rgba(162,155,254,0.68)",
     };
 
-    const homepage_pictureLinkStyle = {
-        width: "90px",
-        marginTop: "10px",
-        marginLeft: "10px",
-        marginRight: "10px",
-        //fontSize: "clamp(10px, 0.9vw, 30px)",
+    const headerStyle = {
+        width: "100%",
+        maxWidth: "1300px",
+        minWidth: "600px",
+        margin: "0 auto",
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
     };
 
     const navLinkStyle = {
@@ -446,16 +424,14 @@ const Header = () => {
         width: "115px",
         height: "75px",
         backgroundColor: "rgba(0,0,0,0.00)",
-        display: "block", // Ensure proper display of the image
         transition: "transform 0.4s", // Add transition for smoother effect
         transform: isHovered ? "scale(1.1)" : "scale(1)", // Apply transform based on hover state
     };
 
     const TypographyText = styled(Typography)(() => ({
-        fontFamily: "Copperplate",
+        fontFamily: "Cope",
         fontSize: "25px",
         color: "var(--accent_color1)",
-        fontWeight: 500,
         fontSize: 20,
         textTransform: "uppercase",
         paddingTop: "var(--padding-top-text-navbar)",
@@ -473,37 +449,38 @@ const Header = () => {
 
     return (
         <React.Fragment>
-            <div className="header_row" style={headerStyle}>
-                <div
-                    className="Homepage_picture_link"
-                    onMouseEnter={() => setIsHovered(true)} // Handle mouse enter event
-                    onMouseLeave={() => setIsHovered(false)} // Handle mouse leave event
-                    style={homepage_pictureLinkStyle}
-                >
-                    <Box
-                        sx={{
-                            borderRadius: 1,
-                            height: "50px",
-                            "& a": {
-                                // style the <a> element inside Box
-                                display: "block",
-                                width: "115px",
-                                height: "75px",
-                                backgroundColor: "rgba(0, 0, 0, 0.00)",
-                                transition: "transform 0.4s",
-                                transform: isHovered
-                                    ? "scale(1.1)"
-                                    : "scale(1)",
-                                "& img": {
-                                    // style the <img> element inside <a>
-                                    width: "100%", // make the image width fill the container
-                                    height: "100%", // make the image height fill the container
-                                },
-                            },
-                        }}
+            <div
+                className="header_row_container"
+                style={header_container_Style}
+            >
+                <div className="header_row" style={headerStyle}>
+                    <div
+                        className="Homepage_picture_link"
+                        onMouseEnter={() => setIsHovered(true)} // Handle mouse enter event
+                        onMouseLeave={() => setIsHovered(false)} // Handle mouse leave event
                     >
-                        <a href="/">
-                            {/*
+                        <Box
+                            sx={{
+                                borderRadius: 1,
+                                marginTop: "15px",
+                                marginLeft: "0px",
+                                "& a": {
+                                    // style the <a> element inside Box
+                                    backgroundColor: "rgba(0, 0, 0, 0.00)",
+                                    "& img": {
+                                        // style the <img> element inside <a>
+                                        width: "148px",
+                                        height: "58px",
+                                        transition: "transform 0.4s",
+                                        transform: isHovered
+                                            ? "scale(1.1)"
+                                            : "scale(1)",
+                                    },
+                                },
+                            }}
+                        >
+                            <a href="/">
+                                {/*
                             <picture>
                                 <source
                                     type="image/webp"
@@ -519,95 +496,100 @@ const Header = () => {
                                 />
                             </picture>
                             */}
-                            <img
-                                src="http://localhost:3001/images/project_logo_no_background.webp"
-                                alt="return to homepage"
-                            />
-                        </a>
-                    </Box>
-                </div>
+                                <img
+                                    src="http://localhost:3001/images/project_logo_no_background.webp"
+                                    alt="return to homepage"
+                                />
+                            </a>
+                        </Box>
+                    </div>
+                    
+                    <HoverDropdownButton/>
 
-                <div
-                    className="Section_with_navigation_link"
-                    style={navLinkStyle}
-                >
-                    <Box
-                        sx={{
-                            borderRadius: 1,
-                            height: "50px",
-                            width: "400px",
-                            paddingLeft: "55px",
-                            paddingRight: "30px",
-                            backgroundColor: "rgba(0, 0, 70, 0.0)",
-                        }}
+                    <div
+                        className="Section_with_navigation_link"
+                        style={navLinkStyle}
                     >
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "space-between",
+                        <Box
+                            sx={{
+                                borderRadius: 1,
+                                height: "50px",
+                                width: "400px",
+                                paddingLeft: "55px",
+                                paddingRight: "30px",
+                                backgroundColor: "rgba(0, 0, 70, 0.0)",
                             }}
                         >
                             <div
                                 style={{
-                                    paddingTop: "1px",
-                                    marginBottom: "20px",
-
-                                    "&:hover": {
-                                        // Apply border styles on hover
-                                        border: `0.7px solid var(--mainPage-3CardLinks-Border-Color1)`, // Change border color on hover
-                                    },
+                                    display: "flex",
+                                    justifyContent: "space-between",
                                 }}
                             >
-                                <DarkLightModeSwitch />
+                                <div
+                                    style={{
+                                        paddingTop: "1px",
+                                        marginBottom: "20px",
+
+                                        "&:hover": {
+                                            // Apply border styles on hover
+                                            border: `0.7px solid var(--mainPage-3CardLinks-Border-Color1)`, // Change border color on hover
+                                        },
+                                    }}
+                                >
+                                    <DarkLightModeSwitch />
+                                </div>
+
+                                <div
+                                    style={{
+                                        borderRight: "0.1px solid #5b5958",
+                                        marginTop: "10px",
+                                        marginLeft: "1px",
+                                        marginRight: "12px",
+                                        height: "35px",
+                                    }}
+                                ></div>
+
+                                <div style={buttonStyle}>
+                                    <StatisticSubpageMenu />
+                                </div>
+
+                                <div
+                                    style={{
+                                        borderRight: "0.1px solid #5b5958",
+                                        marginTop: "10px",
+                                        marginLeft: "12px",
+                                        marginRight: "12px",
+                                        height: "35px",
+                                    }}
+                                ></div>
+
+                                <div style={buttonStyle}>
+                                    <a href="/about">
+                                        <Button>
+                                            <TypographyText>
+                                                About
+                                            </TypographyText>
+                                        </Button>
+                                    </a>
+                                </div>
+
+                                <div
+                                    style={{
+                                        borderRight: "0.1px solid #5b5958",
+                                        marginTop: "10px",
+                                        marginLeft: "12px",
+                                        marginRight: "12px",
+                                        height: "35px",
+                                    }}
+                                ></div>
+
+                                <div style={buttonStyle}>
+                                    <BuildMenu />
+                                </div>
                             </div>
-
-                            <div
-                                style={{
-                                    borderRight: "0.1px solid #5b5958",
-                                    marginTop: "10px",
-                                    marginLeft: "1px",
-                                    marginRight: "12px",
-                                    height: "35px",
-                                }}
-                            ></div>
-
-                            <div style={buttonStyle}>
-                                <StatisticSubpageMenu />
-                            </div>
-
-                            <div
-                                style={{
-                                    borderRight: "0.1px solid #5b5958",
-                                    marginTop: "10px",
-                                    marginLeft: "12px",
-                                    marginRight: "12px",
-                                    height: "35px",
-                                }}
-                            ></div>
-
-                            <div style={buttonStyle}>
-                                <a href="/about">
-                                    <Button>
-                                        <TypographyText>About</TypographyText>
-                                    </Button>
-                                </a>
-                            </div>
-
-                            <div
-                                style={{
-                                    borderRight: "0.1px solid #5b5958",
-                                    marginTop: "10px",
-                                    marginLeft: "12px",
-                                    marginRight: "12px",
-                                    height: "35px",
-                                }}
-                            ></div>
-
-                            <div style={buttonStyle}>
-                                <BuildMenu />
-                            </div>
-                        </div>
-                    </Box>
+                        </Box>
+                    </div>
                 </div>
             </div>
         </React.Fragment>
