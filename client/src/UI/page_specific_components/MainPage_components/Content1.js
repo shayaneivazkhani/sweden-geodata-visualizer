@@ -5,7 +5,6 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import Switch from "@mui/material/Switch";
-
 import StatisticSubpageMenu from "./miniComponents/ThreeSubpagesMenu.js";
 import BuildMenu from "./miniComponents/BuildMenu.js";
 
@@ -101,6 +100,9 @@ function DarkLightModeSwitch() {
         </div>
     );
 }
+
+
+
 
 const Content1 = () => {
     const [isHovered, setIsHovered] = useState(false);

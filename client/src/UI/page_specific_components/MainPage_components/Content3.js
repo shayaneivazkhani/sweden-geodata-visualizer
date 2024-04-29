@@ -65,84 +65,93 @@ const Content3 = () => {
 
     return (
         <React.Fragment>
-            <div className="content3_main_outer_body" style={outerBodyStyle}>
+            <div class="">
                 <div
-                    className="content3_main_inner_body"
-                    style={innerBodyStyle}
+                    className="content3_main_outer_body"
+                    style={outerBodyStyle}
                 >
-                    <div className="content3_text" style={text_Style}>
-                        See a quick example
-                    </div>
-
-                    <Box
-                        sx={{
-                            borderRadius: 1,
-
-                            paddingTop: "20px",
-                            paddingLeft: "60px",
-                            paddingRight: "55px",
-                            paddingBottom: "40px",
-                            backgroundColor: "rgba(0, 0, 70, 0.18)",
-                            boxShadow: "inset 0 1px 10px 0 #050307",
-                        }}
+                    <div
+                        className="content3_main_inner_body"
+                        style={innerBodyStyle}
                     >
-                        <div
-                            className="content3_tabs_head"
-                            style={tabs_headStyle}
-                        >
-                            <Tabs
-                                value={tabIndex}
-                                onChange={(e, index) => setTabIndex(index)}
+                        <div className="content3_text" style={text_Style}>
+                            See a quick example
+                        </div>
+                        <div className="content3_main_inner_body card-inner">
+                            <Box
                                 sx={{
-                                    width: "700px",
-                                    paddingBottom: "10px",
-                                    [`& .${tabsClasses.indicator}`]: {
-                                        display: "none",
-                                    },
+                                    borderRadius: 1,
+
+                                    paddingTop: "20px",
+                                    paddingLeft: "60px",
+                                    paddingRight: "55px",
+                                    paddingBottom: "40px",
+                                    backgroundColor: "rgba(0, 0, 70, 0.18)",
+                                    boxShadow: "inset 0 1px 10px 0 #050307",
                                 }}
                             >
-                                {/* <TabItem disableRipple label={"Meatball Sales"} />*/}
-                                <TabItem label={"Meatball Sales"} />
-                                <TabItem label={"Apple Sales"} />
-                                <TabItem label={"Salt Sales"} />
-                            </Tabs>
+                                <div className="circle"></div>
+                                <div className="circle"></div>
+                                <div
+                                    className="content3_tabs_head"
+                                    style={tabs_headStyle}
+                                >
+                                    <Tabs
+                                        value={tabIndex}
+                                        onChange={(e, index) =>
+                                            setTabIndex(index)
+                                        }
+                                        sx={{
+                                            width: "700px",
+                                            paddingBottom: "10px",
+                                            [`& .${tabsClasses.indicator}`]: {
+                                                display: "none",
+                                            },
+                                        }}
+                                    >
+                                        {/* <TabItem disableRipple label={"Meatball Sales"} />*/}
+                                        <TabItem label={"Meatball Sales"} />
+                                        <TabItem label={"Apple Sales"} />
+                                        <TabItem label={"Salt Sales"} />
+                                    </Tabs>
+                                </div>
+                                <div
+                                    className="content3_tabs_body"
+                                    style={tabs_bodyStyle}
+                                >
+                                    {/* Content for Food Sales tab */}
+                                    {tabIndex === 0 && (
+                                        <StyledEngineProvider injectFirst>
+                                            <Table__meatball2_sweden
+                                                sub_group="0"
+                                                produkt="Köttbullar"
+                                            />
+                                        </StyledEngineProvider>
+                                    )}
+
+                                    {/* Content for Organic Sales tab */}
+                                    {tabIndex === 1 && (
+                                        <StyledEngineProvider injectFirst>
+                                            <Table__meatball2_sweden
+                                                sub_group="1"
+                                                produkt="Äpplen"
+                                            />
+                                        </StyledEngineProvider>
+                                    )}
+
+                                    {/* Content for Deals Made tab */}
+                                    {tabIndex === 2 && (
+                                        <StyledEngineProvider injectFirst>
+                                            <Table__meatball2_sweden
+                                                sub_group="1"
+                                                produkt="Salt"
+                                            />
+                                        </StyledEngineProvider>
+                                    )}
+                                </div>
+                            </Box>
                         </div>
-
-                        <div
-                            className="content3_tabs_body"
-                            style={tabs_bodyStyle}
-                        >
-                            {/* Content for Food Sales tab */}
-                            {tabIndex === 0 && (
-                                <StyledEngineProvider injectFirst>
-                                    <Table__meatball2_sweden
-                                        sub_group="0"
-                                        produkt="Köttbullar"
-                                    />
-                                </StyledEngineProvider>
-                            )}
-
-                            {/* Content for Organic Sales tab */}
-                            {tabIndex === 1 && (
-                                <StyledEngineProvider injectFirst>
-                                    <Table__meatball2_sweden
-                                        sub_group="1"
-                                        produkt="Äpplen"
-                                    />
-                                </StyledEngineProvider>
-                            )}
-
-                            {/* Content for Deals Made tab */}
-                            {tabIndex === 2 && (
-                                <StyledEngineProvider injectFirst>
-                                    <Table__meatball2_sweden
-                                        sub_group="1"
-                                        produkt="Salt"
-                                    />
-                                </StyledEngineProvider>
-                            )}
-                        </div>
-                    </Box>
+                    </div>
                 </div>
             </div>
         </React.Fragment>

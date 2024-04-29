@@ -12,6 +12,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { minWidth } from "@mui/system";
 
+
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 60,
     height: 34,
@@ -361,14 +362,6 @@ function DropdownMenu({ text, children }) {
         paddingTop: "var(--padding-top-text-navbar)",
         transform: isHovered ? "scale(1.03)" : "scale(1)", // Apply transform conditionally based on hover state
     };
-    const TypographyText = {
-        fontFamily: "Cope",
-        fontSize: "25px",
-        color: "var(--accent_color1)",
-        fontSize: 20,
-        textTransform: "uppercase",
-        paddingTop: "var(--padding-top-text-navbar)",
-    };
 
     return (
         <div style={{ position: "relative", display: "inline-block" }}>
@@ -388,7 +381,9 @@ function DropdownMenu({ text, children }) {
                     style={{
                         position: "absolute",
                         top: "50px", // Adjust top position to account for border thickness
-                        left: `calc(50% - 90px)`, // Adjust left position dynamically
+                        //left: `calc(-40px)`, // Adjust left position dynamically
+                        left: `calc(-${window.innerWidth}px + 99vw)`, 
+                        //left: "-40px",
                         transform: "translateX(-50%)",
                         border: "2px solid var(--doc-divider-horisontal-Color)", // Add a white border at the bottom
                         padding: "10px",
@@ -504,6 +499,7 @@ const Header = () => {
                 className="header_row_container"
                 style={header_container_Style}
             >
+               
                 <div className="header_row" style={headerStyle}>
                     <div
                         className="Homepage_picture_link"
@@ -554,7 +550,7 @@ const Header = () => {
                             </a>
                         </Box>
                     </div>
-
+   
                     <div
                         className="Section_with_navigation_link"
                         style={navLinkStyle}
