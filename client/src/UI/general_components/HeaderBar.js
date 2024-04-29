@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -103,16 +103,6 @@ function DarkLightModeSwitch() {
     );
 }
 
-const data = [
-    { icon: "📊", label: "Food Sales", link: "/livsmedel" },
-    {
-        icon: "📊",
-        label: "Organic Sales",
-        link: "/ekologiskt",
-    },
-    { icon: "📊", label: "Deals Made", link: "/deals" },
-];
-
 function StatisticSubpageMenu() {
     const [state, setState] = React.useState({
         top: false,
@@ -180,8 +170,7 @@ function StatisticSubpageMenu() {
                         <ListItemText
                             primary={item.label}
                             primaryTypographyProps={{
-                                fontFamily:
-                                    "var(--secondary-font), Arial, sans-serif",
+                                fontFamily: "var(--secondary-font)",
                                 fontSize: 16,
                                 fontWeight: 400,
                             }}
@@ -224,17 +213,6 @@ function StatisticSubpageMenu() {
         </div>
     );
 }
-
-const data2 = [
-    { icon: "📊", label: "Ali", link: "/ali" },
-    { icon: "📊", label: "Ahmed", link: "/ahmed" },
-    { icon: "📊", label: "Dilan", link: "/dilan" },
-    { icon: "📊", label: "Daniel", link: "/daniel" },
-    { icon: "📊", label: "Hassim", link: "/hassim" },
-    { icon: "📊", label: "Kevin", link: "/kevin" },
-    { icon: "📊", label: "Lucas", link: "/lucas" },
-    { icon: "📊", label: "Shayan", link: "/shayan" },
-];
 
 function BuildMenu() {
     const [state, setState] = React.useState({
@@ -347,52 +325,110 @@ function BuildMenu() {
     );
 }
 
-const HoverDropdownButton = () => {
+function DropdownMenu({ text, children }) {
     const [isHovered, setIsHovered] = useState(false);
-  
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
     const handleMouseEnter = () => {
-      setIsHovered(true);
+        setIsHovered(true);
     };
-  
+
     const handleMouseLeave = () => {
-      setIsHovered(false);
+        setIsHovered(false);
     };
-  
+
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
+
+    const FinalTypographyText = styled(Typography)(() => ({
+        color: "var(--accent_color1)",
+        fontFamily: "var(--secondary-font)",
+        fontSize: 20,
+        //textTransform: "uppercase"
+        paddingTop: "var(--padding-top-text-navbar)",
+        transition: "0.10s",
+        "&:hover": {
+            transform: "scale(1.03)",
+        },
+    }));
+    const TypographyButton = {
+        fontFamily: "Cope",
+        fontSize: "25px",
+        color: "var(--accent_color1)",
+        fontSize: 20,
+        textTransform: "uppercase",
+        paddingTop: "var(--padding-top-text-navbar)",
+        transform: isHovered ? "scale(1.03)" : "scale(1)", // Apply transform conditionally based on hover state
+    };
+    const TypographyText = {
+        fontFamily: "Cope",
+        fontSize: "25px",
+        color: "var(--accent_color1)",
+        fontSize: 20,
+        textTransform: "uppercase",
+        paddingTop: "var(--padding-top-text-navbar)",
+    };
+
     return (
-      <div style={{ position: 'relative', display: 'inline-block' }}>
-        <button 
-          onMouseEnter={handleMouseEnter} 
-          onMouseLeave={handleMouseLeave}
-        >
-          Hover me!
-        </button>
-        {isHovered && (
-          <div 
-            style={{
-              position: 'absolute',
-              top: '100%',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              background: '#fff',
-              border: '1px solid #ccc',
-              padding: '10px',
-              borderRadius: '5px',
-              boxShadow: '0 0 5px rgba(0,0,0,0.3)',
-              zIndex: 1000,
-            }}
-          >
-            <p>This button will...</p>
-            <ul>
-              <li>Do something awesome!</li>
-              <li>Perform an action when clicked.</li>
-              <li>Change the world.</li>
-            </ul>
-          </div>
-        )}
-      </div>
+        <div style={{ position: "relative", display: "inline-block" }}>
+            <div
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onClick={toggleDropdown}
+                style={TypographyButton}
+            >
+                <FinalTypographyText>{text}</FinalTypographyText>
+                {/* Apply TypographyText style to this div */}
+            </div>
+            {(isHovered || isDropdownOpen) && (
+                <div
+                    onMouseEnter={() => setIsDropdownOpen(true)}
+                    onMouseLeave={() => setIsDropdownOpen(false)}
+                    style={{
+                        position: "absolute",
+                        top: "50px", // Adjust top position to account for border thickness
+                        left: `calc(50% - 90px)`, // Adjust left position dynamically
+                        transform: "translateX(-50%)",
+                        border: "2px solid var(--doc-divider-horisontal-Color)", // Add a white border at the bottom
+                        padding: "10px",
+                        borderRadius: "5px",
+                        backgroundColor: "var(--header-NavBar-Color)",
+                        boxShadow: "5 0 10px rgba(0,0,0,0.99)",
+                        width: "300px",
+                        zIndex: 1001,
+                    }}
+                >
+                    {children}
+                    {/* Render the passed component inside the dropdown */}
+                </div>
+            )}
+        </div>
     );
-  };
-  
+}
+
+const data = [
+    { icon: "📊", label: "Food Sales", link: "/livsmedel" },
+    {
+        icon: "📊",
+        label: "Organic Sales",
+        link: "/ekologiskt",
+    },
+    { icon: "📊", label: "Deals Made", link: "/deals" },
+];
+
+const data2 = [{ icon: "📊", label: "About", link: "/about" }];
+
+const data3 = [
+    { icon: "📊", label: "Ali", link: "/ali" },
+    { icon: "📊", label: "Ahmed", link: "/ahmed" },
+    { icon: "📊", label: "Dilan", link: "/dilan" },
+    { icon: "📊", label: "Daniel", link: "/daniel" },
+    { icon: "📊", label: "Hassim", link: "/hassim" },
+    { icon: "📊", label: "Kevin", link: "/kevin" },
+    { icon: "📊", label: "Lucas", link: "/lucas" },
+    { icon: "📊", label: "Shayan", link: "/shayan" },
+];
 
 const Header = () => {
     const [isHovered, setIsHovered] = useState(false);
@@ -400,7 +436,7 @@ const Header = () => {
     const header_container_Style = {
         width: "100%",
         height: "55px",
-        
+
         backgroundColor: "var(--header-NavBar-Color)",
         borderBottom: "1px solid var(--doc-divider-horisontal-Color)", // Add a white border at the bottom
         boxShadow: "0 3px 20px 0 rgba(162,155,254,0.68)",
@@ -440,6 +476,14 @@ const Header = () => {
         },
     }));
 
+    const TypographyTitle = styled(Typography)(() => ({
+        color: "var(--accent_color2)",
+        fontFamily: "var(--accent-font1)",
+        fontSize: 16,
+        fontWeight: 400,
+        textAlign: "left",
+        textTransform: "uppercase",
+    }));
     const buttonStyle = {
         height: "100%",
         display: "flex",
@@ -447,6 +491,13 @@ const Header = () => {
         alignItems: "center", // Center items horizontally
     };
 
+    const listItemStyle = {
+        color: "var(--accent_color1)",
+        "&:hover": {
+            backgroundColor: "#ffffff",
+            color: "var(--accent_color3)",
+        },
+    };
     return (
         <React.Fragment>
             <div
@@ -503,8 +554,6 @@ const Header = () => {
                             </a>
                         </Box>
                     </div>
-                    
-                    <HoverDropdownButton/>
 
                     <div
                         className="Section_with_navigation_link"
@@ -514,8 +563,7 @@ const Header = () => {
                             sx={{
                                 borderRadius: 1,
                                 height: "50px",
-                                width: "400px",
-                                paddingLeft: "55px",
+                                width: "200px",
                                 paddingRight: "30px",
                                 backgroundColor: "rgba(0, 0, 70, 0.0)",
                             }}
@@ -549,44 +597,187 @@ const Header = () => {
                                         height: "35px",
                                     }}
                                 ></div>
+                                <DropdownMenu text={"Navigate"}>
+                                    <TypographyTitle>
+                                        3 sub-pages with statistics
+                                    </TypographyTitle>
 
-                                <div style={buttonStyle}>
-                                    <StatisticSubpageMenu />
-                                </div>
+                                    <List>
+                                        {data.map((item) => (
+                                            <Box
+                                                sx={{
+                                                    color: "var(--accent_color1)",
+                                                    "&:hover": {
+                                                        color: "var(--header-NavBar-DropDown--List--Color)",
+                                                        bgcolor:
+                                                            "var(--header-NavBar-DropDown--List--bgColor--hover)",
+                                                        transform:
+                                                            "scale(1.03)",
+                                                    },
+                                                }}
+                                            >
+                                                <ListItemButton
+                                                    component="a"
+                                                    href={item.link}
+                                                    key={item.label}
+                                                    sx={{
+                                                        py: 0,
+                                                        marginLeft: "7px",
+                                                        minHeight: 36,
+                                                    }}
+                                                    style={{}}
+                                                >
+                                                    <ListItemIcon
+                                                        sx={{
+                                                            color: "inherit",
+                                                            minWidth: "auto",
+                                                            marginRight: "10px",
+                                                        }}
+                                                    >
+                                                        {item.icon}
+                                                    </ListItemIcon>
+                                                    <ListItemText
+                                                        primary={item.label}
+                                                        primaryTypographyProps={{
+                                                            fontFamily:
+                                                                "var(--secondary-font)",
+                                                            fontSize: 16,
+                                                            fontWeight: 400,
+                                                        }}
+                                                    />
+                                                </ListItemButton>
+                                            </Box>
+                                        ))}
+                                    </List>
 
-                                <div
-                                    style={{
-                                        borderRight: "0.1px solid #5b5958",
-                                        marginTop: "10px",
-                                        marginLeft: "12px",
-                                        marginRight: "12px",
-                                        height: "35px",
-                                    }}
-                                ></div>
+                                    <div
+                                        style={{
+                                            borderBottom: "0.1px solid #ffffff",
+                                            marginTop: "10px",
+                                            marginBottom: "8px",
+                                            marginLeft: "1px",
+                                            marginRight: "1px",
+                                            height: "2px",
+                                            width: "100%",
+                                        }}
+                                    ></div>
+                                    <TypographyTitle>
+                                        Page about this project
+                                    </TypographyTitle>
+                                    <div style={{ listItemStyle }}>
+                                        <List>
+                                            {data2.map((item) => (
+                                                <Box
+                                                    sx={{
+                                                        color: "var(--accent_color1)",
+                                                        "&:hover": {
+                                                            color: "var(--header-NavBar-DropDown--List--Color)",
+                                                            bgcolor:
+                                                                "var(--header-NavBar-DropDown--List--bgColor--hover)",
+                                                            transform:
+                                                                "scale(1.03)",
+                                                        },
+                                                    }}
+                                                >
+                                                    <ListItemButton
+                                                        component="a"
+                                                        href={item.link}
+                                                        key={item.label}
+                                                        sx={{
+                                                            py: 0,
+                                                            marginLeft: "7px",
+                                                            minHeight: 36,
+                                                        }}
+                                                        style={{}}
+                                                    >
+                                                        <ListItemIcon
+                                                            sx={{
+                                                                color: "inherit",
+                                                                minWidth:
+                                                                    "auto",
+                                                                marginRight:
+                                                                    "10px",
+                                                            }}
+                                                        >
+                                                            {item.icon}
+                                                        </ListItemIcon>
+                                                        <ListItemText
+                                                            primary={item.label}
+                                                            primaryTypographyProps={{
+                                                                fontFamily:
+                                                                    "var(--secondary-font)",
+                                                                fontSize: 16,
+                                                                fontWeight: 400,
+                                                            }}
+                                                        />
+                                                    </ListItemButton>
+                                                </Box>
+                                            ))}
+                                        </List>
+                                    </div>
 
-                                <div style={buttonStyle}>
-                                    <a href="/about">
-                                        <Button>
-                                            <TypographyText>
-                                                About
-                                            </TypographyText>
-                                        </Button>
-                                    </a>
-                                </div>
-
-                                <div
-                                    style={{
-                                        borderRight: "0.1px solid #5b5958",
-                                        marginTop: "10px",
-                                        marginLeft: "12px",
-                                        marginRight: "12px",
-                                        height: "35px",
-                                    }}
-                                ></div>
-
-                                <div style={buttonStyle}>
-                                    <BuildMenu />
-                                </div>
+                                    <div
+                                        style={{
+                                            borderBottom: "0.1px solid #ffffff",
+                                            marginTop: "10px",
+                                            marginBottom: "8px",
+                                            marginLeft: "1px",
+                                            marginRight: "1px",
+                                            height: "2px",
+                                            width: "100%",
+                                        }}
+                                    ></div>
+                                    <TypographyTitle>
+                                        Individual custom subpages
+                                    </TypographyTitle>
+                                    <List>
+                                        {data3.map((item) => (
+                                            <Box
+                                                sx={{
+                                                    color: "var(--accent_color1)",
+                                                    "&:hover": {
+                                                        color: "var(--header-NavBar-DropDown--List--Color)",
+                                                        bgcolor:
+                                                            "var(--header-NavBar-DropDown--List--bgColor--hover)",
+                                                        transform:
+                                                            "scale(1.03)",
+                                                    },
+                                                }}
+                                            >
+                                                <ListItemButton
+                                                    component="a"
+                                                    href={item.link}
+                                                    key={item.label}
+                                                    sx={{
+                                                        py: 0,
+                                                        marginLeft: "7px",
+                                                        minHeight: 36,
+                                                    }}
+                                                    style={{}}
+                                                >
+                                                    <ListItemIcon
+                                                        sx={{
+                                                            color: "inherit",
+                                                            minWidth: "auto",
+                                                            marginRight: "10px",
+                                                        }}
+                                                    >
+                                                        {item.icon}
+                                                    </ListItemIcon>
+                                                    <ListItemText
+                                                        primary={item.label}
+                                                        primaryTypographyProps={{
+                                                            fontFamily:
+                                                                "var(--secondary-font)",
+                                                            fontSize: 16,
+                                                            fontWeight: 400,
+                                                        }}
+                                                    />
+                                                </ListItemButton>
+                                            </Box>
+                                        ))}
+                                    </List>
+                                </DropdownMenu>
                             </div>
                         </Box>
                     </div>

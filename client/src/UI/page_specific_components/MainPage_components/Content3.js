@@ -20,13 +20,15 @@ const TabItem = styled(Tab)(({ theme }) => ({
     height: "auto",
     margin: "10px 0",
     float: "none",
+    color: "var(--accent_color4)",
+    fontFamily: "var(--fifth-font)",
     fontSize: "12px",
     fontWeight: "500",
     [theme.breakpoints.up("md")]: {
         minWidth: 120,
     },
     [`&.${tabClasses.selected}, &:hover`]: {
-        color: "#FFFFFF",
+        color: "var(--accent_color5)",
         backgroundColor: "#00acc1",
         boxShadow: "0 7px 10px -5px rgba(76, 175, 80, 0.4)",
     },
@@ -51,8 +53,8 @@ const Content3 = () => {
         fontFamily: "var(--mainpage--content2-font1)",
         fontSize: "var(--mainpage--content23--font--size)",
         fontWeight: 400,
-        textAlign: "left", 
-        textTransform: "uppercase"
+        textAlign: "left",
+        textTransform: "uppercase",
     };
     const tabs_headStyle = {
         width: "100%",
@@ -68,7 +70,9 @@ const Content3 = () => {
                     className="content3_main_inner_body"
                     style={innerBodyStyle}
                 >
-                    <div className="content3_text" style={text_Style}>See a quick example</div>
+                    <div className="content3_text" style={text_Style}>
+                        See a quick example
+                    </div>
 
                     <Box
                         sx={{
@@ -107,36 +111,37 @@ const Content3 = () => {
                         <div
                             className="content3_tabs_body"
                             style={tabs_bodyStyle}
-                        ></div>
-                        {/* Content for Food Sales tab */}
-                        {tabIndex === 0 && (
-                            <StyledEngineProvider injectFirst>
-                                <Table__meatball2_sweden
-                                    sub_group="0"
-                                    produkt="Köttbullar"
-                                />
-                            </StyledEngineProvider>
-                        )}
+                        >
+                            {/* Content for Food Sales tab */}
+                            {tabIndex === 0 && (
+                                <StyledEngineProvider injectFirst>
+                                    <Table__meatball2_sweden
+                                        sub_group="0"
+                                        produkt="Köttbullar"
+                                    />
+                                </StyledEngineProvider>
+                            )}
 
-                        {/* Content for Organic Sales tab */}
-                        {tabIndex === 1 && (
-                            <StyledEngineProvider injectFirst>
-                                <Table__meatball2_sweden
-                                    sub_group="1"
-                                    produkt="Äpplen"
-                                />
-                            </StyledEngineProvider>
-                        )}
+                            {/* Content for Organic Sales tab */}
+                            {tabIndex === 1 && (
+                                <StyledEngineProvider injectFirst>
+                                    <Table__meatball2_sweden
+                                        sub_group="1"
+                                        produkt="Äpplen"
+                                    />
+                                </StyledEngineProvider>
+                            )}
 
-                        {/* Content for Deals Made tab */}
-                        {tabIndex === 2 && (
-                            <StyledEngineProvider injectFirst>
-                                <Table__meatball2_sweden
-                                    sub_group="1"
-                                    produkt="Salt"
-                                />
-                            </StyledEngineProvider>
-                        )}
+                            {/* Content for Deals Made tab */}
+                            {tabIndex === 2 && (
+                                <StyledEngineProvider injectFirst>
+                                    <Table__meatball2_sweden
+                                        sub_group="1"
+                                        produkt="Salt"
+                                    />
+                                </StyledEngineProvider>
+                            )}
+                        </div>
                     </Box>
                 </div>
             </div>
