@@ -7,46 +7,16 @@ import { useRef } from "react";
 import * as d3 from "d3";
 
 const MyD3Component = (props) => {
-    /* Example working with JSON
-    // Sample JSON data stored in a variable
-    const jsonData = [
-        { name: 'Stockholm', mengd: 100 },
-        { name: 'Gothenburg', mengd: 200 },
-        { name: 'Malmo', mengd: 150 }
-    ];
-
-    // Function to search for 'Stockholm' and return its 'mengd' property
-    function getMengdForStockholm(data, kommunNamn) {
-        for (const obj of data) {
-            if (obj.name === kommunNamn) {
-                return obj.mengd;
-            }
-        }
-        // Return null if 'Stockholm' is not found
-        return null;
-    }
-    function getMengdForKommun2(data, kommunNamn) {
-        const result = data.find(obj => obj.name === kommunNamn);
-        return result ? result.mengd : null;
-    }
-
-    // Call the function and log the result
-    console.log(getMengdForStockholm(jsonData, "Stockholm"));
-    console.log(getMengdForKommun2(jsonData, "Stockholm"));
-*/
-
     const svgBubbleRef = useRef();
     const [bubbleData, setBubbleData] = useState(null);
 
     const svgMapRef = useRef(); // Ref for SVG element
     const [mapData, setMapData] = useState(null);
 
-    const [interactionReady, setInteractionReady] = useState("");
-
     // set Map data från GeoJSON
     useEffect(() => {
         const cachedData = localStorage.getItem("platserCachedData");
-        // Check local storage for cached data
+        
         if (cachedData) {
             setMapData(JSON.parse(cachedData));
         } else {
@@ -64,10 +34,10 @@ const MyD3Component = (props) => {
                     console.error("Error fetching data:", error);
                 }
             };
-            fetchData(); // Call fetchData to fetch data and setGraphData
+            fetchData(); 
         }
     }, []);
-    // After mapData is set, execute code dependent on mapData
+
     useEffect(() => {
         if (mapData && mapData.features) {
             const svgMap = d3.select(svgMapRef.current);
@@ -75,8 +45,6 @@ const MyD3Component = (props) => {
             var projection = d3.geoMercator().scale(100).translate([250, 250]);
 
             var geoPath = d3.geoPath().projection(projection);
-            //var featureSize = d3.extent(platser.features, (d) => geoPath.area(d),);
-            //var countryColor = d3.scaleQuantize().domain(featureSize).range(colorbrewer.YlGn[3]);
 
             function getMengdFor(data, kommunNamn) {
                 for (const obj of data) {
@@ -84,14 +52,13 @@ const MyD3Component = (props) => {
                         return parseInt(obj.value, 10);
                     }
                 }
-                // Return null if 'Stockholm' is not found
                 return -1;
             }
             function getMengdFor2(data, kommunNamn) {
                 const result = data.find((obj) => obj.place2 === kommunNamn);
                 return result ? result.value : -1;
             }
-            // Append paths for map features
+         
             svgMap
                 .selectAll("path")
                 .data(mapData.features)
@@ -107,8 +74,6 @@ const MyD3Component = (props) => {
                     "stroke",
                     (d) => "var(--livsmedelPage-Map-Places-Border)",
                 );
-            //.style("fill", (d) => countryColor(geoPath.area(d)))
-            //.style("stroke", (d) => d3.rgb(countryColor(geoPath.area(d))).darker(),);
 
             // Define zoom behavior
             const mapZoom = d3.zoom().on("zoom", function (event) {
@@ -158,7 +123,7 @@ const MyD3Component = (props) => {
                     .duration(100)
                     .call(mapZoom.transform, newZoomSettings);
             }
-            // Append zoom buttons only if not already present
+            // Append zoom buttons
             if (svgMap.selectAll("#controls").empty()) {
                 const controlsContainer = d3.select("#controls");
                 controlsContainer
@@ -171,11 +136,6 @@ const MyD3Component = (props) => {
                     .html("Zoom Out");
             }
 
-            // Append zoom buttons only if not already present
-            /* if (svgMap.selectAll("#controls").empty()) {
-        // FLyttat adda zoom knappar till en useEffect högre upp
-    }
-    */
             // Add hover actions
             d3.select(svgMapRef.current)
                 .selectAll("path")
@@ -238,14 +198,6 @@ const MyD3Component = (props) => {
         }
     }, [mapData]);
 
-    useEffect(() => {
-        return () => {};
-    }, []);
-
-    useEffect(() => {
-        return () => {};
-    }, []);
-
     // set data baserad på input i Main_group och Sub_group från USER och sedan fetch korrekt data från backend
     useEffect(() => {
         fetch(
@@ -266,7 +218,6 @@ const MyD3Component = (props) => {
             });
     }, [props.main_grupp, props.sub_grupp]); // The effect will re-run whenever props.main_grupp or props.sub_grupp change.
 
-    // rita Bubble
     useEffect(() => {
         const colorClasses = [
             {
@@ -310,55 +261,25 @@ const MyD3Component = (props) => {
             // Add more ranges and colors as needed
         ];
 
-        // Create a function to map a value to its corresponding color based on the defined classes
         const getColor = (value) => {
             for (const { range, color } of colorClasses) {
                 if (value >= range[0] && value <= range[1]) {
                     return color;
                 }
             }
-            // Default color if no match is found
             return "white";
         };
 
-        //const width = 850;
-        //const height = 600;
-        let width =
-            window.innerWidth - window.innerWidth / 2 - window.innerWidth / 20;
+        let width = window.innerWidth - window.innerWidth / 2 - window.innerWidth / 20;
         let height = window.innerHeight - window.innerHeight / 4;
 
         const svgBubble = d3.select(svgBubbleRef.current);
-        /*.style("max-width", "100%")
-            .style("height", "auto")
-            //.style("display", "block")
-            .style("margin", "-5 -1px")
-            .style(
-                "border",
-                "1px solid var(--livsmedelPage-Diagram-BorderColor1)",
-            )
-            .style("border-radius", "5px")
-            .style("background", `var(--livsmedelPage-Diagram-BgColor1)`)
-            .style("cursor", "pointer");
-            //.style("padding-left", "3vw")*/
-
+      
         const svgMap = d3.select(svgMapRef.current);
-        /*.style("max-width", "100%")
-            .style("height", "auto")
-            .style("display", "block")
-            .style("margin", "-5 -1px")
-            .style(
-                "border",
-                "1px solid var(--livsmedelPage-Diagram-BorderColor1)",
-            )
-            .style("border-radius", "5px")
-            .style("background", `var(--livsmedelPage-Diagram-BgColor1)`)
-            .style("cursor", "pointer")*/
 
         var projection = d3.geoMercator().scale(100).translate([250, 250]);
 
         var geoPath = d3.geoPath().projection(projection);
-        //var featureSize = d3.extent(platser.features, (d) => geoPath.area(d),);
-        //var countryColor = d3.scaleQuantize().domain(featureSize).range(colorbrewer.YlGn[3]);
 
         function getMengdFor(data, kommunNamn) {
             for (const obj of data) {
@@ -366,14 +287,12 @@ const MyD3Component = (props) => {
                     return parseInt(obj.value, 10);
                 }
             }
-            // Return null if 'Stockholm' is not found
             return -1;
         }
         function getMengdFor2(data, kommunNamn) {
             const result = data.find((obj) => obj.place2 === kommunNamn);
             return result ? result.value : -1;
         }
-        // Append paths for map features
 
         if (bubbleData) {
             svgMap
@@ -387,8 +306,7 @@ const MyD3Component = (props) => {
                     "stroke",
                     (d) => "var(--livsmedelPage-Map-Places-Border)",
                 );
-            //.style("fill", (d) => countryColor(geoPath.area(d)))
-            //.style("stroke", (d) => d3.rgb(countryColor(geoPath.area(d))).darker(),);
+
             const pack = d3
                 .pack()
                 .size([width - 40, height - 50])
@@ -399,25 +317,22 @@ const MyD3Component = (props) => {
                 .sum((d) => d.value)
                 .sort((a, b) => b.value - a.value);
 
-            const packedData = pack(root);
-
-            // const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-            //const colorScale = d3.scaleSequential().domain([0, 500]).interpolator(d3.interpolateYlOrRd);
+            const packedData = pack(root);;
 
             const node = svgBubble
                 .selectAll("g")
-                .data(packedData.descendants()) // This binds the data to the selection. packedData.descendants() returns an array of all nodes in the hierarchy, including the root node and its descendants. Each node represents a circle in the pack layout.
-                .enter() // This enters the data and creates placeholders for each data element that doesn't have a corresponding element in the selection. This prepares to append new g elements for data elements that are not yet represented in the SVG.
-                .append("g") //.append("g"): This appends a g element for each data element that doesn't have a corresponding element in the selection. Each g element will represent a node in the pack layout and serve as a container for the circle and its associated text.
+                .data(packedData.descendants())
+                .enter()
+                .append("g")
                 .attr(
                     "transform",
                     (d) => `translate(${d.x + 110},${d.y - 15})`,
-                ); // .attr("transform", (d) => translate(${d.x},${d.y})): This sets the transformation (position) of each g element based on the x and y coordinates of the corresponding data element. The translate() function is used to move the g element to the specified coordinates. d.x and d.y are properties of each data element (d), representing the coordinates where the node should be positioned within the SVG container.
+                );
 
             node.append("circle")
                 .attr("r", (d) => {
                     if (d.data.value) {
-                        const minValue = 15; // Adjust this to your minimum value
+                        const minValue = 15;
                         return d.value <= minValue ? minValue : d.r + 16;
                     } else {
                         return width / 2.95;
@@ -426,55 +341,50 @@ const MyD3Component = (props) => {
                 .attr("class", (d) => d.data.place2)
                 .attr("fill", (d) => {
                     if (d.data.value) {
-                        // Use the getColor function to set the fill color of your circles
-                        return getColor(d.data.value); // Use the getColor function to set the fill color of circles with data values
+                        return getColor(d.data.value);
                     } else {
-                        return "none"; // Or any default color for circles without data values
+                        return "none";
                     }
                 })
-                //attr("fill", d => colorScale(d.data.value))
                 .attr("fill-opacity", 0.68)
                 .style("stroke", (d) => {
                     if (d.data.value) {
                         return "var(--livsmedelPage-Map-Places-Border)";
                     } else {
-                        return "none"; // Or any default color for circles without data values
+                        return "none"; 
                     }
                 })
                 .style("stroke-width", (d) => {
                     if (d.data.value) {
                         return 0.6;
                     } else {
-                        return 0; // Or any default color for circles without data values
+                        return 0;
                     }
                 })
                 .on("mouseover", function (event, d) {
-                    var originalColor = d3.select(this).attr("fill"); // Store the original color
-                    var originalClassName = d3.select(this).attr("class"); // Store the original color
+                    var originalColor = d3.select(this).attr("fill");
+                    var originalClassName = d3.select(this).attr("class");
 
                     d3.select(svgMapRef.current)
                         .selectAll("path")
                         .filter(function (d) {
-                            // Example condition: Change the fill of paths with certain names
                             return d.properties.name === originalClassName;
                         })
-                        .style("fill", "#4bc2a0"); // Update the fill attribute
+                        .style("fill", "#4bc2a0");
 
                     d3.select(this).attr("fill", (d) => {
                         if (d.data.value) {
-                            // Use the getColor function to set the fill color of your circles
-                            return "#4bc2a0"; // Use the getColor function to set the fill color of circles with data values
+                            return "#4bc2a0"; 
                         } else {
-                            return "none"; // Or any default color for circles without data values
+                            return "none"; 
                         }
                     });
-                    // Append a <g> (group) element to contain both <text> elements
                     const textGroup = svgBubble
                         .append("g")
                         .attr("id", "nodeGroup");
 
                     textGroup
-                        .append("text") // Append the first <text> element
+                        .append("text") 
                         .attr("id", "nodeValue1")
                         .attr("x", 5)
                         .attr("y", 15)
@@ -484,8 +394,8 @@ const MyD3Component = (props) => {
                         .attr("fill", "var(--mainPage--textColor1)");
 
                     textGroup
-                        .append("text") // Append the second <text> element
-                        .attr("id", "nodeValue2") // Adjusted ID to make it unique
+                        .append("text") 
+                        .attr("id", "nodeValue2")
                         .attr("x", 5)
                         .attr("y", 37)
                         .text(d.data.name)
@@ -494,8 +404,8 @@ const MyD3Component = (props) => {
                         .attr("fill", "var(--mainPage--textColor1)");
 
                     textGroup
-                        .append("text") // Append the second <text> element
-                        .attr("id", "nodeValue3") // Adjusted ID to make it unique
+                        .append("text")
+                        .attr("id", "nodeValue3") 
                         .attr("x", 5)
                         .attr("y", 57)
                         .text(d.data.mengd)
@@ -504,8 +414,8 @@ const MyD3Component = (props) => {
                         .attr("fill", "var(--mainPage--textColor1)");
 
                     textGroup
-                        .append("text") // Append the second <text> element
-                        .attr("id", "nodeValue4") // Adjusted ID to make it unique
+                        .append("text") 
+                        .attr("id", "nodeValue4") 
                         .attr("x", 5)
                         .attr("y", 78)
                         .text(d.data.andel_sverige)
@@ -524,10 +434,9 @@ const MyD3Component = (props) => {
                         d3.select(svgMapRef.current)
                             .selectAll("path")
                             .filter(function (d) {
-                                // Example condition: Change the fill of paths with certain names
                                 return d.properties.name === originalClassName;
                             })
-                            .style("fill", originalColor); // Update the fill attribute
+                            .style("fill", originalColor)
                     });
                 });
 
@@ -545,15 +454,12 @@ const MyD3Component = (props) => {
     }, [bubbleData, mapData]);
 
     const dataDiagramStyle = {
-        //minWidth: "900px",
         paddingRight: "10px",
         paddingTop: "0px",
         paddingLeft: "0px",
         display: "flex",
         flexDirection: "row", // Arrange children vertically
         alignItems: "center", // Center items horizontally
-        //backgroundColor: "rgba(0, 90, 90, 0.18)",
-        //backgroundColor: "rgba(0, 0, 70, 0.18)",
     };
 
     return (
@@ -591,189 +497,6 @@ const MyD3Component = (props) => {
         </div>
     );
 };
-
-/*
-
-const MyD3Component = () => {
-    const svgRef = useRef();
-    const [graphData, setGraphData] = useState(null);
-
-    useEffect(() => {
-        //const width = window.innerWidth;
-        //const height = window.innerHeight;
-        const width = 600;
-        const height = 600;
-
-        const svg = d3.select(svgRef.current);
-
-        if (graphData) {
-            const nodesMap = {};
-            graphData.nodes.forEach((node) => {
-                nodesMap[node.name] = node;
-            });
-
-            graphData.links.forEach((link) => {
-                link.source = nodesMap[link.source];
-                link.target = nodesMap[link.target];
-            });
-
-            const simulation = d3
-                .forceSimulation(graphData.nodes)
-                .force("charge", d3.forceManyBody().strength(300))
-                .force("center", d3.forceCenter(width, height))
-                .force("collide", d3.forceCollide(40).strength(0.5))
-                .force(
-                    "link",
-                    d3.forceLink(graphData.links).id((d) => d.name),
-                )
-                .on("tick", ticked);
-
-            const links = svg
-                .append("g")
-                .selectAll("line")
-                .data(graphData.links)
-                .enter()
-                .append("line")
-                .attr("stroke-width", 3)
-                .style("stroke", "blue");
-
-            const drag = d3
-                .drag()
-                .on("start", dragstarted)
-                .on("drag", dragged)
-                .on("end", dragended);
-
-            const textsAndNodes = svg
-                .append("g")
-                .selectAll("g")
-                .data(graphData.nodes)
-                .enter()
-                .append("g")
-                .call(drag);
-
-            const colorScale = d3
-                .scaleSequential()
-                .domain([0, 50])
-                .interpolator(d3.interpolateYlOrRd);
-
-            var circles = textsAndNodes
-                .append("circle")
-                .attr("r", function (d) {
-                    return d.value; // Set the radius to the value of d.value
-                })
-                .attr("fill", function (d) {
-                    d.originalColor = colorScale(d.value); // Store the original color in a custom property
-                    return d.originalColor; // Set the fill color based on d.value
-                })
-                .text(function (d) {
-                    return d.value;
-                })
-                .on("mouseover", function (event, d) {
-                    var originalColor = d3.select(this).attr("fill"); // Store the original color
-                    d3.select(this).attr("fill", "white"); // Change the fill color to blue upon mouseover
-                    svg.append("text")
-                        .attr("id", "nodeValue")
-                        .attr("x", d.x + 20)
-                        .attr("y", d.y - 20)
-                        .text("value: " + d.value);
-                    // Restore the original color when the mouse leaves
-                    d3.select(this).on("mouseout", function () {
-                        d3.select(this).attr("fill", originalColor);
-                        d3.select("#nodeValue").remove();
-                    });
-                });
-
-            const texts = textsAndNodes.append("text").text((d) => d.name);
-
-            function ticked() {
-                textsAndNodes.attr("transform", (d) => `translate(${d.x},${d.y})`);
-
-                links
-                    .attr("x1", (d) => d.source.x)
-                    .attr("y1", (d) => d.source.y)
-                    .attr("x2", (d) => d.target.x)
-                    .attr("y2", (d) => d.target.y);
-            }
-
-            function dragstarted(event, d) {
-                if (!event.active) {
-                    simulation.alphaTarget(0.3).restart();
-                }
-                d.fx = d.x;
-                d.fy = d.y;
-            }
-
-            function dragged(event, d) {
-                d.fx = event.x;
-                d.fy = event.y;
-            }
-
-            function dragended(event, d) {
-                if (!event.active) {
-                    simulation.alphaTarget(0);
-                }
-                d.fx = null;
-                d.fy = null;
-            }
-
-            return () => {
-                // Clean up any d3-related resources here if needed // Clean up any d3-related resources here if needed
-                svg.selectAll("*").remove(); // Remove all elements added by D3
-                simulation.stop(); // Stop the D3 simulation
-            };
-        }
-    }, [graphData]);
-
-    useEffect(() => {
-
-        // Fetch data from the API endpoint
-        fetch('http://localhost:3001/api/column/D3Result?livsmedel=Köttbullar')
-            .then(response => response.json())
-            .then(data => {
-                // Process fetched data and assign it to graphData
-                const processedData = {
-                    nodes: data.map(item => ({
-                        name: item.name,
-                        value: parseFloat(item.value), // Convert value to a float
-                        x: parseFloat(item.x), // Convert x-coordinate to a float
-                        y: parseFloat(item.y), // Convert y-coordinate to a float
-                    })),
-                    links: [],
-                };
-
-                // Add links based on the nodes data
-                // Example: connect nodes sequentially
-                for (let i = 0; i < processedData.nodes.length - 1; i++) {
-                    processedData.links.push({ source: processedData.nodes[i].name, target: processedData.nodes[i + 1].name });
-                }
-
-                setGraphData(processedData);
-            });
-    }, []);
-
-    const d3componentStyle = {
-        zIndex: 0,
-    };
-    return (
-        <div className="ropiojw" style={d3componentStyle}>
-            <svg ref={svgRef} width="100%" height="90vw" />
-        </div>
-    );
-};
-
-*/
-
-/*
-var H1BGraph = () => {
-    return (
-        <div className="row">
-            <div className="col-md-12">
-                <svg width="700" height="500"></svg>{" "}
-            </div>{" "}
-        </div>
-    );
-};
-*/
 
 function sleep(duration) {
     return new Promise((resolve) => {
@@ -1003,114 +726,9 @@ function SelectSubGroup({ main, onChange }) {
     );
 }
 
-function SelectSubSubGroup({ main, sub, onChange }) {
-    const [inputValue, setInputValue] = useState("");
-    const [open, setOpen] = useState(false);
-    const [options, setOptions] = useState([]);
-    const loading = open && options.length === 0;
-
-    useEffect(() => {
-        let active = true;
-
-        if (!loading) {
-            return undefined;
-        }
-
-        (async () => {
-            await sleep(1e1); // For demo purposes.
-
-            if (active) {
-                const response = await fetch(
-                    `http://localhost:3001/api/column/sub_sub_group?&sub_group=${sub}`,
-                );
-
-                if (!response.ok) {
-                    throw new Error("Failed to fetch data in Select_fetch.js");
-                }
-
-                const jsonData = await response.json();
-
-                // Filter the jsonData before setting options and storing it in localStorage
-                const filteredData = jsonData.filter((item) => {
-                    /*
-                            Apply your filtering logic here
-                            Check if the propertyName is not all numbers and not equal to 'NULL'
-                        */
-                    return /[^\d]/.test(item.id) && item.id !== "NULL";
-                });
-
-                setOptions([...filteredData]);
-
-                localStorage.setItem(
-                    "column_subsub_group",
-                    JSON.stringify(filteredData),
-                );
-            }
-        })();
-
-        return () => {
-            active = false;
-        };
-    }, [loading]);
-
-    React.useEffect(() => {
-        if (!open) {
-            setOptions([]);
-        }
-    }, [open]);
-
-    return (
-        <React.Fragment>
-            <div>{`Sub_sub Value: '${inputValue}'`}</div>
-            <br />
-            <Autocomplete
-                inputValue={inputValue}
-                onInputChange={(event, newInputValue) => {
-                    setInputValue(newInputValue);
-                    onChange(newInputValue); // Pass newInputValue to onChange prop
-                }}
-                id="sub group"
-                sx={{ width: 360 }}
-                open={open}
-                onOpen={() => {
-                    setOpen(true);
-                }}
-                onClose={() => {
-                    setOpen(false);
-                }}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                getOptionLabel={(option) => option.id}
-                options={options}
-                loading={loading}
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        label="Sub group"
-                        InputProps={{
-                            ...params.InputProps,
-                            endAdornment: (
-                                <React.Fragment>
-                                    {loading ? (
-                                        <CircularProgress
-                                            color="inherit"
-                                            size={20}
-                                        />
-                                    ) : null}
-                                    {params.InputProps.endAdornment}
-                                </React.Fragment>
-                            ),
-                        }}
-                    />
-                )}
-            />
-        </React.Fragment>
-    );
-}
-
 export default function SelectGroup() {
     const [main, setMain] = useState("");
     const [sub, setSub] = useState("");
-    //const [sub_sub, setSub_sub] = useState("");
 
     const containerStyle = {
         width: "100%",
@@ -1140,11 +758,7 @@ export default function SelectGroup() {
     }
     function handleChangeSub(newInputValue) {
         setSub(newInputValue);
-        //setSub_sub(newInputValue);
     }
-    /*function handleChangeSubSub(newInputValue) {
-        setSub_sub(newInputValue);
-    }*/
 
     return (
         <React.Fragment>

@@ -1,13 +1,8 @@
 import React from "react";
 
-//import Content1 from '../page_specific_components/MainPage_components/Content1'
 import Content2 from "../page_specific_components/MainPage_components/Content2";
 import Content3 from "../page_specific_components/MainPage_components/Content3";
 import Content4 from "../page_specific_components/MainPage_components/Content4";
-import Content5 from "../page_specific_components/MainPage_components/Content5";
-//import Content6 from '../components/MainPage_components/Content6'
-//import Content7 from '../components/MainPage_components/Content7'
-//import Content8 from '../components/MainPage_components/Content8'
 
 import "../styles/pageStyles/MainPage.css"; 
 

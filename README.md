@@ -12,11 +12,10 @@ Navigate to MeatBallMadness then either client directory or server directory, th
 
 # Indelning av ansvar
 
-#### 📒 Första subpage (food sales) ——> Shayan ・・・・・・・・・・・・・・・・・・・・・・・・・・・・・Status: 80% färdig
-- [ ] implementera en Geomap 
-- [ ] implementera React Suspense för images som visas i 3 Card Links + HomePage_Link 
-- [ ] implementera så att man kan se varje kommuns totala inköp av livsmedel
-- [ ] implementera FallBack Fonts och minimize CSS 
+#### 📒 Första subpage (food sales) ——> Shayan ・・・・・・・・・・・・・・・・・・・・・・・・・・・・・Status: 95% färdig
+- ✅] implementera en Geomap 
+- ✅ implementera React Suspense för images som visas i 3 Card Links + HomePage_Link 
+- ✅ implementera FallBack Fonts och minimize CSS 
 #### 📒 Andra subpage (organic sales) ——> Kevin, Ahmed, Daniel ・・・・・・・・・・・・・・・・・・・Status: % färdig
 #### 📒 Tredje subpage (deal made subpage) ——> Lucas, Ali, Dilan och Hassim ・・・・・・・・・・・Status: % färdig
 #### 📒 About page ——> Lucas ・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・Status: % färdig
@@ -30,17 +29,17 @@ Navigate to MeatBallMadness then either client directory or server directory, th
 - ✅ Backend integration of data into diff charts in homepage
 - ✅ fixa en Header komponent i general_komponents av content1 komponent i MainPage
 - ✅ Light/Darkmode switch button
-- [ ] wrap 3 card links i MaingPage inuti en Grid
-- [ ] Fixa alignment av alla element oavsett skärmstorlek 700px–4000px ska alltid visa korrekt placering
-- [ ] Fixa alignment NavBar dropdowns inspiration Tendmill gör i mobile Device
+- ✅  wrap 3 card links i MaingPage inuti en Grid
+- ✅  Fixa alignment av alla element oavsett skärmstorlek 700px–4000px ska alltid visa korrekt placering
+- ✅  Fixa alignment NavBar dropdowns inspiration Tendmill gör i mobile Device
 - [ ] adda en minWidth var i HTML head och assigna till olika sektions av varje Page.js så ingen komponent overflowar
-- [ ] justera färgerna och fonterna för hela websidan tills it looks good
+- ✅ justera färgerna och fonterna för hela websidan tills it looks good
 - [ ] TABLE Auto Sort Bugg: const headCells column 'units' doesnt get sorted properly unlike column 'andel' in file Table_sticky_column_name_autoSort.js — therefor i have disabled the sorting ability of column 'units' until it gets fixed
-- [ ] Measuring Performance & Performance optimization ——> install google Chrom browser —–> go to root of project directory then `$ npx unlighthouse --site http://localhost:3000/`
+- ✅  Measuring Performance & Performance optimization ——> install google Chrom browser —–> open Lighthouse and measure
 
 
 ### Backend – server
-- [ ] implementera kompression av data via `gzip`så data kan skickas snabbare till client
+- ✅ implementera kompression av data via `gzip`så data kan skickas snabbare till client
 - [ ] deploya appen till AWS
 
 ---

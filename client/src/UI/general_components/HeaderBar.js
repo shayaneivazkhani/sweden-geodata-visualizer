@@ -1,17 +1,13 @@
 import React from "react";
-import { useState, useEffect, useRef, memo } from "react";
+import { useState, useEffect, memo } from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import Switch from "@mui/material/Switch";
-import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { minWidth } from "@mui/system";
-
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 60,
@@ -104,228 +100,6 @@ function DarkLightModeSwitch() {
     );
 }
 
-function StatisticSubpageMenu() {
-    const [state, setState] = React.useState({
-        top: false,
-        left: false,
-        bottom: false,
-        right: false,
-    });
-
-    const toggleDrawer = (anchor, open) => (event) => {
-        if (
-            event.type === "keydown" &&
-            (event.key === "Tab" || event.key === "Shift")
-        ) {
-            return;
-        }
-
-        setState({ ...state, [anchor]: open });
-    };
-
-    const TypographyTitle = styled(Typography)(() => ({
-        color: "var(--accent_color2)",
-        fontFamily: "var(--accent-font1)",
-        fontSize: 16,
-        fontWeight: 400,
-        textAlign: "left",
-        textTransform: "uppercase",
-    }));
-
-    const list = (anchor) => (
-        <Box
-            bgcolor="rgba(0,0,0,0.9)"
-            sx={{
-                width: anchor === "top" || anchor === "bottom" ? "auto" : 250,
-                paddingTop: "20px", // Add padding to the top
-                paddingLeft: "20px", // Add padding to the left
-            }}
-            role="presentation"
-            onClick={toggleDrawer(anchor, false)}
-            onKeyDown={toggleDrawer(anchor, false)}
-        >
-            <TypographyTitle>Pages with statistics</TypographyTitle>
-
-            <List>
-                {data.map((item) => (
-                    <ListItemButton
-                        component="a"
-                        href={item.link}
-                        key={item.label}
-                        sx={{
-                            py: 0,
-                            marginLeft: "7px",
-                            minHeight: 36,
-                        }}
-                        style={{ color: "#fb9062" }}
-                    >
-                        <ListItemIcon
-                            sx={{
-                                color: "inherit",
-                                minWidth: "auto",
-                                marginRight: "10px",
-                            }}
-                        >
-                            {item.icon}
-                        </ListItemIcon>
-                        <ListItemText
-                            primary={item.label}
-                            primaryTypographyProps={{
-                                fontFamily: "var(--secondary-font)",
-                                fontSize: 16,
-                                fontWeight: 400,
-                            }}
-                        />
-                    </ListItemButton>
-                ))}
-            </List>
-        </Box>
-    );
-
-    const TypographyText = styled(Typography)(() => ({
-        color: "var(--accent_color1)",
-        fontFamily: "var(--secondary-font)",
-        fontSize: 20,
-        fontWeight: 500,
-        //textTransform: "uppercase"
-        paddingTop: "var(--padding-top-text-navbar)",
-        transition: "0.10s",
-        "&:hover": {
-            transform: "scale(1.03)",
-        },
-    }));
-
-    return (
-        <div>
-            {["top"].map((anchor) => (
-                <React.Fragment key={anchor}>
-                    <Button onClick={toggleDrawer(anchor, true)}>
-                        <TypographyText>Statistics</TypographyText>
-                    </Button>
-                    <Drawer
-                        anchor={anchor}
-                        open={state[anchor]}
-                        onClose={toggleDrawer(anchor, false)}
-                    >
-                        {list(anchor)}
-                    </Drawer>
-                </React.Fragment>
-            ))}
-        </div>
-    );
-}
-
-function BuildMenu() {
-    const [state, setState] = React.useState({
-        top: false,
-        left: false,
-        bottom: false,
-        right: false,
-    });
-
-    const toggleDrawer = (anchor, open) => (event) => {
-        if (
-            event.type === "keydown" &&
-            (event.key === "Tab" || event.key === "Shift")
-        ) {
-            return;
-        }
-
-        setState({ ...state, [anchor]: open });
-    };
-
-    const TypographyTitle = styled(Typography)(() => ({
-        color: "var(--accent_color2)",
-        fontFamily: "var(--accent-font1)",
-        fontSize: 16,
-        fontWeight: 400,
-        textAlign: "left", // Center the text
-        textTransform: "uppercase",
-    }));
-
-    const list = (anchor) => (
-        <Box
-            bgcolor="rgba(0,0,0,0.9)"
-            sx={{
-                width: anchor === "top" || anchor === "bottom" ? "auto" : 250,
-                paddingTop: "20px", // Add padding to the top
-                paddingLeft: "20px", // Add padding to the left
-            }}
-            role="presentation"
-            onClick={toggleDrawer(anchor, false)}
-            onKeyDown={toggleDrawer(anchor, false)}
-        >
-            <TypographyTitle>Individual custom subpages</TypographyTitle>
-
-            <List>
-                {data2.map((item) => (
-                    <ListItemButton
-                        component="a"
-                        href={item.link}
-                        key={item.label}
-                        sx={{
-                            py: 0,
-                            marginLeft: "7px",
-                            minHeight: 36,
-                        }}
-                        style={{ color: "#fb9062" }}
-                    >
-                        <ListItemIcon
-                            sx={{
-                                color: "inherit",
-                                minWidth: "auto",
-                                marginRight: "10px",
-                            }}
-                        >
-                            {item.icon}
-                        </ListItemIcon>
-                        <ListItemText
-                            primary={item.label}
-                            primaryTypographyProps={{
-                                fontFamily:
-                                    "var(--secondary-font), Arial, sans-serif",
-                                fontSize: 16,
-                                fontWeight: 400,
-                            }}
-                        />
-                    </ListItemButton>
-                ))}
-            </List>
-        </Box>
-    );
-
-    const TypographyText = styled(Typography)(() => ({
-        color: "var(--accent_color1)",
-        fontFamily: "var(--secondary-font), Arial, sans-serif",
-        fontSize: 20,
-        fontWeight: 500,
-        //textTransform: "uppercase"
-        paddingTop: "var(--padding-top-text-navbar)",
-        "&:hover": {
-            transform: "scale(1.03)",
-        },
-    }));
-
-    return (
-        <div>
-            {["top"].map((anchor) => (
-                <React.Fragment key={anchor}>
-                    <Button onClick={toggleDrawer(anchor, true)}>
-                        <TypographyText>Build</TypographyText>
-                    </Button>
-                    <Drawer
-                        anchor={anchor}
-                        open={state[anchor]}
-                        onClose={toggleDrawer(anchor, false)}
-                    >
-                        {list(anchor)}
-                    </Drawer>
-                </React.Fragment>
-            ))}
-        </div>
-    );
-}
-
 function DropdownMenu({ text, children }) {
     const [isHovered, setIsHovered] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -335,7 +109,9 @@ function DropdownMenu({ text, children }) {
     };
 
     const handleMouseLeave = () => {
-        setIsHovered(false);
+       setTimeout(function () {
+             setIsHovered(false);
+      }, 500);
     };
 
     const toggleDropdown = () => {
@@ -380,12 +156,10 @@ function DropdownMenu({ text, children }) {
                     onMouseLeave={() => setIsDropdownOpen(false)}
                     style={{
                         position: "absolute",
-                        top: "50px", // Adjust top position to account for border thickness
-                        //left: `calc(-40px)`, // Adjust left position dynamically
+                        top: "50px",
                         left: `calc(-${window.innerWidth}px + 99vw)`, 
-                        //left: "-40px",
                         transform: "translateX(-50%)",
-                        border: "2px solid var(--doc-divider-horisontal-Color)", // Add a white border at the bottom
+                        border: "2px solid var(--doc-divider-horisontal-Color)",
                         padding: "10px",
                         borderRadius: "5px",
                         backgroundColor: "var(--header-NavBar-Color)",
@@ -395,7 +169,6 @@ function DropdownMenu({ text, children }) {
                     }}
                 >
                     {children}
-                    {/* Render the passed component inside the dropdown */}
                 </div>
             )}
         </div>
@@ -412,17 +185,17 @@ const data = [
     { icon: "📊", label: "Deals Made", link: "/deals" },
 ];
 
-const data2 = [{ icon: "📊", label: "About", link: "/about" }];
+const data2 = [{ icon: "🧾", label: "About", link: "/about" }];
 
 const data3 = [
-    { icon: "📊", label: "Ali", link: "/ali" },
-    { icon: "📊", label: "Ahmed", link: "/ahmed" },
-    { icon: "📊", label: "Dilan", link: "/dilan" },
-    { icon: "📊", label: "Daniel", link: "/daniel" },
-    { icon: "📊", label: "Hassim", link: "/hassim" },
-    { icon: "📊", label: "Kevin", link: "/kevin" },
-    { icon: "📊", label: "Lucas", link: "/lucas" },
-    { icon: "📊", label: "Shayan", link: "/shayan" },
+    { icon: "👤", label: "Ali", link: "/ali" },
+    { icon: "👤", label: "Ahmed", link: "/ahmed" },
+    { icon: "👤", label: "Dilan", link: "/dilan" },
+    { icon: "👤", label: "Daniel", link: "/daniel" },
+    { icon: "👤", label: "Hassim", link: "/hassim" },
+    { icon: "👤", label: "Kevin", link: "/kevin" },
+    { icon: "👤", label: "Lucas", link: "/lucas" },
+    { icon: "👤", label: "Shayan", link: "/shayan" },
 ];
 
 const Header = () => {
@@ -433,7 +206,7 @@ const Header = () => {
         height: "55px",
 
         backgroundColor: "var(--header-NavBar-Color)",
-        borderBottom: "1px solid var(--doc-divider-horisontal-Color)", // Add a white border at the bottom
+        borderBottom: "1px solid var(--doc-divider-horisontal-Color)", 
         boxShadow: "0 3px 20px 0 rgba(162,155,254,0.68)",
     };
 
@@ -455,8 +228,8 @@ const Header = () => {
         width: "115px",
         height: "75px",
         backgroundColor: "rgba(0,0,0,0.00)",
-        transition: "transform 0.4s", // Add transition for smoother effect
-        transform: isHovered ? "scale(1.1)" : "scale(1)", // Apply transform based on hover state
+        transition: "transform 0.4s",
+        transform: isHovered ? "scale(1.1)" : "scale(1)",
     };
 
     const TypographyText = styled(Typography)(() => ({
@@ -482,8 +255,8 @@ const Header = () => {
     const buttonStyle = {
         height: "100%",
         display: "flex",
-        flexDirection: "column", // Arrange children vertically
-        alignItems: "center", // Center items horizontally
+        flexDirection: "column",
+        alignItems: "center", 
     };
 
     const listItemStyle = {
@@ -503,8 +276,8 @@ const Header = () => {
                 <div className="header_row" style={headerStyle}>
                     <div
                         className="Homepage_picture_link"
-                        onMouseEnter={() => setIsHovered(true)} // Handle mouse enter event
-                        onMouseLeave={() => setIsHovered(false)} // Handle mouse leave event
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}
                     >
                         <Box
                             sx={{
@@ -512,10 +285,8 @@ const Header = () => {
                                 marginTop: "15px",
                                 marginLeft: "0px",
                                 "& a": {
-                                    // style the <a> element inside Box
                                     backgroundColor: "rgba(0, 0, 0, 0.00)",
                                     "& img": {
-                                        // style the <img> element inside <a>
                                         width: "148px",
                                         height: "58px",
                                         transition: "transform 0.4s",
@@ -527,22 +298,6 @@ const Header = () => {
                             }}
                         >
                             <a href="/">
-                                {/*
-                            <picture>
-                                <source
-                                    type="image/webp"
-                                    srcSet="./images/project_logo_no_background.webp"
-                                />
-                                <source
-                                    type="image/jpeg"
-                                    srcSet="./images/project_logo_no_background.jpg"
-                                />
-                                <img
-                                    src="./images/project_logo_no_background.jpg"
-                                    alt="return to homepage"
-                                />
-                            </picture>
-                            */}
                                 <img
                                     src="http://localhost:3001/images/project_logo_no_background.webp"
                                     alt="return to homepage"
@@ -560,7 +315,7 @@ const Header = () => {
                                 borderRadius: 1,
                                 height: "50px",
                                 width: "200px",
-                                paddingRight: "30px",
+                                paddingRight: "3px",
                                 backgroundColor: "rgba(0, 0, 70, 0.0)",
                             }}
                         >
@@ -576,8 +331,7 @@ const Header = () => {
                                         marginBottom: "20px",
 
                                         "&:hover": {
-                                            // Apply border styles on hover
-                                            border: `0.7px solid var(--mainPage-3CardLinks-Border-Color1)`, // Change border color on hover
+                                            border: `0.7px solid var(--mainPage-3CardLinks-Border-Color1)`,
                                         },
                                     }}
                                 >

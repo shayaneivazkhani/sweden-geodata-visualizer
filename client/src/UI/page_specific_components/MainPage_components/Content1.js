@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -251,4 +251,4 @@ const Content1 = () => {
     );
 };
 
-export default Content1;
+export default memo(Content1);
