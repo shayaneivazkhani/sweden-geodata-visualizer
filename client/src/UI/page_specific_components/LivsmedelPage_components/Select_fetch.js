@@ -7,13 +7,14 @@ import { useRef } from "react";
 import * as d3 from "d3";
 
 const MyD3Component = (props) => {
-    const svgBubbleRef = useRef();
+    const svgBubbleRef = useRef(null); // Ref till Bubble SVG element
     const [bubbleData, setBubbleData] = useState(null);
-
-    const svgMapRef = useRef(); // Ref for SVG element
+    /* const sectionRef = useRef(null); Ref till GeoMap SVG element. Later, when you attach this ref to a JSX element like this: <div className="shayan_main" ref={sectionRef}>
+    */
+    const svgMapRef = useRef(null); 
     const [mapData, setMapData] = useState(null);
 
-    // set Map data från GeoJSON
+    // 1. SET mapData variabel genom att Hämta GeoJSON från server och sedan initialisera mapData + spara Datan i Browserns LocalStorage för att undvika framtida requests
     useEffect(() => {
         const cachedData = localStorage.getItem("platserCachedData");
         
@@ -38,33 +39,21 @@ const MyD3Component = (props) => {
         }
     }, []);
 
+    // 2. när State mapData initialiserats och ifall den har initialiserats korrekt (i.e. mapData.features mapData har en features attribut), så ta och rita upp Sverige kartan och adda 2 ZOOM Knappar
     useEffect(() => {
         if (mapData && mapData.features) {
-            const svgMap = d3.select(svgMapRef.current);
-
+            const svgMap = d3.select(svgMapRef.current); // svgMapRef.current Du returnerar längre ner => <svg ref={svgBubbleRef} width={...}  height={window.innerHeight - window.innerHeight / 4}/>
+        
             var projection = d3.geoMercator().scale(100).translate([250, 250]);
-
             var geoPath = d3.geoPath().projection(projection);
-
-            function getMengdFor(data, kommunNamn) {
-                for (const obj of data) {
-                    if (obj.place2 === kommunNamn) {
-                        return parseInt(obj.value, 10);
-                    }
-                }
-                return -1;
-            }
-            function getMengdFor2(data, kommunNamn) {
-                const result = data.find((obj) => obj.place2 === kommunNamn);
-                return result ? result.value : -1;
-            }
-         
+            
+            // The <path> element is used to define a path. Paths are used to create simple or complex shapes combining several straight or curved lines. 
             svgMap
-                .selectAll("path")
-                .data(mapData.features)
-                .enter()
-                .append("path")
-                .attr("d", geoPath)
+                .selectAll("path") // välj alla <path> elements inne i svgMap container. If no <path> elements exist yet, it will create an empty selection.
+                .data(mapData.features) // This binds the GeoJSON object to the selected <path> elements
+                .enter()  // lite komplicerat men lite som att 'notera' vilka data points i mapData.features som inte har mappats till <path>
+                .append("path") // adda en <path> element för varje datapoint som vi la märke till i förra raden
+                .attr("d", geoPath) // basically den skapar en variabel 'd' datapoint för vaje GeoData eller geografiskt område vi har mappat i vår projection
                 .attr("class", (d) => "platser " + d.properties.name)
                 .style(
                     "fill",
@@ -198,7 +187,7 @@ const MyD3Component = (props) => {
         }
     }, [mapData]);
 
-    // set data baserad på input i Main_group och Sub_group från USER och sedan fetch korrekt data från backend
+    // 3. Sedan väntar vi tills USER skriver något i '2 Search_Baren' — när USER väljer något namn i Search_Baren då ta och kör denna setEffect ——> fetch korrekt data från backend baserad på props vi har get den oc set setBubbleData State variabel
     useEffect(() => {
         fetch(
             `http://localhost:3001/api/column/D3Result?main_g=${props.main_grupp}&sub_g=${props.sub_grupp}`,
@@ -218,6 +207,7 @@ const MyD3Component = (props) => {
             });
     }, [props.main_grupp, props.sub_grupp]); // The effect will re-run whenever props.main_grupp or props.sub_grupp change.
 
+    // 4. 
     useEffect(() => {
         const colorClasses = [
             {
@@ -260,7 +250,6 @@ const MyD3Component = (props) => {
 
             // Add more ranges and colors as needed
         ];
-
         const getColor = (value) => {
             for (const { range, color } of colorClasses) {
                 if (value >= range[0] && value <= range[1]) {
@@ -273,14 +262,13 @@ const MyD3Component = (props) => {
         let width = window.innerWidth - window.innerWidth / 2 - window.innerWidth / 20;
         let height = window.innerHeight - window.innerHeight / 4;
 
-        const svgBubble = d3.select(svgBubbleRef.current);
-      
+        const svgBubble = d3.select(svgBubbleRef.current); // Eller? => const svgBubble = svgBubble ? d3.select(svgBubbleRef.current) ? null;
         const svgMap = d3.select(svgMapRef.current);
 
         var projection = d3.geoMercator().scale(100).translate([250, 250]);
-
         var geoPath = d3.geoPath().projection(projection);
 
+        // används i rad 302 för att kunna returnera rätt färg till svgMap — funktionen får en input JSON data och sedan kommunNamn, vilken kommunnamn som du vill att den ska returnera mängd av livsmedel (object.attribut.value) som USER valt i 'Search_Baren'
         function getMengdFor(data, kommunNamn) {
             for (const obj of data) {
                 if (obj.place2 === kommunNamn) {
@@ -447,6 +435,7 @@ const MyD3Component = (props) => {
                 .style("font-size", "clamp(10px, 1vw, 20px)") // Change the font size here
                 .text((d) => (d.data.value ? d.data.value : ""));
         }
+        // CleanUp function
         return () => {
             svgBubble.selectAll("*").remove();
             svgMap.selectAll("path").style("fill", (d) => "#706e71");
@@ -461,42 +450,44 @@ const MyD3Component = (props) => {
         flexDirection: "row", // Arrange children vertically
         alignItems: "center", // Center items horizontally
     };
+    const zoomButtonStyle = {
+        position: "fixed",
+        top:"210px",
+        bottom: "20px",
+        left: "100px",
+    };
 
     return (
-        <div>
+        <div> <div>
+                <div id="viz" style={zoomButtonStyle}>
+                    <div id="controls">
+                    </div>
+                </div>
+                {/*  </div> */}
+            </div>
             <div className="dataDiagram" style={dataDiagramStyle}>
                 <svg
                     ref={svgBubbleRef}
                     width={
-                        window.innerWidth -
-                        window.innerWidth / 2 -
-                        window.innerWidth / 35
+                        window.innerWidth / 2 - 10
                     }
                     height={window.innerHeight - window.innerHeight / 4}
                 />
                 <svg
                     ref={svgMapRef}
                     width={
-                        window.innerWidth -
-                        window.innerWidth / 2 -
-                        window.innerWidth / 4
+                        window.innerWidth / 3
                     }
                     height={window.innerHeight - window.innerHeight / 4}
-                    style={{ paddingLeft: "20px" }}
+                    style={{ marginLeft: "20px", marginTop: "20px", }}
                 />
             </div>
 
-            <div>
-                <div id="viz">
-                    <div id="controls">
-                        <div class="controls"></div>
-                    </div>
-                </div>
-                {/*  </div> */}
-            </div>
+           
         </div>
     );
 };
+
 
 function sleep(duration) {
     return new Promise((resolve) => {
@@ -504,14 +495,11 @@ function sleep(duration) {
             resolve();
         }, duration);
     });
-}
-
+}//await sleep(1e2); // For demo purposes.
 function SelectMainGroup({ main, onChange }) {
     const [inputValue, setInputValue] = useState("");
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
-
-    const [value, setValue] = useState(options[0]);
     const loading = open && options.length === 0;
 
     useEffect(() => {
@@ -522,7 +510,7 @@ function SelectMainGroup({ main, onChange }) {
         }
 
         (async () => {
-            await sleep(1e2); // For demo purposes.
+            //await sleep(1e2); // For demo purposes.
 
             if (active) {
                 const cachedData = localStorage.getItem("column_main_group");
@@ -570,7 +558,7 @@ function SelectMainGroup({ main, onChange }) {
         };
     }, [loading, main]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!open) {
             setOptions([]);
         }
@@ -578,8 +566,6 @@ function SelectMainGroup({ main, onChange }) {
 
     return (
         <React.Fragment>
-            {/* <div>{`inputValue: '${inputValue}'`}</div> */}
-            <br />
             <Autocomplete
                 inputValue={inputValue}
                 onInputChange={(event, newInputValue) => {
@@ -625,7 +611,6 @@ function SelectMainGroup({ main, onChange }) {
         </React.Fragment>
     );
 }
-
 function SelectSubGroup({ main, onChange }) {
     const [inputValue, setInputValue] = useState("");
     const [open, setOpen] = useState(false);
@@ -640,7 +625,7 @@ function SelectSubGroup({ main, onChange }) {
         }
 
         (async () => {
-            await sleep(1e1); // For demo purposes.
+            //await sleep(1e1); // For demo purposes.
 
             if (active) {
                 const response = await fetch(
@@ -666,12 +651,13 @@ function SelectSubGroup({ main, onChange }) {
             }
         })();
 
+        // Cleanup function
         return () => {
             active = false;
         };
     }, [loading]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!open) {
             setOptions([]);
         }
@@ -726,26 +712,32 @@ function SelectSubGroup({ main, onChange }) {
     );
 }
 
+
 export default function SelectGroup() {
     const [main, setMain] = useState("");
     const [sub, setSub] = useState("");
 
+    const widthCenter = window.innerWidth / 2 - 400;
+
+    
     const containerStyle = {
-        width: "100%",
+        position: "fixed",
+        top: "80px",
+        left: widthCenter,
+        //width: "1000px",
+        maxWidth: "800px",
         height: "100px",
         display: "flex",
         alignItems: "center", // Center items horizontally
         justifyContent: "flex-end", // Center items vertically
         backgroundColor: "rgba(0, 0, 70, 0)",
-        zIndex: 2,
+        zIndex: 9,
     };
-
     const textStyle = {
         color: "var(--accent_color3)",
         paddingRight: "50px",
         borderRadius: "20px",
     };
-
     const dataStyle = {
         width: "100%",
         height: "100%",
@@ -771,22 +763,23 @@ export default function SelectGroup() {
 
                     paddingTop: "20px",
                     paddingLeft: "60px",
-                    paddingRight: "55px",
+                    paddingRight: "30px",
                     paddingBottom: "40px",
                     backgroundColor: "var(--livsmedelPage-BgColor1)",
                     boxShadow: "inset 0 1px 10px 0 #050307",
                 }}
             >
-                <div style={containerStyle}>
+                <div className="search_bar_fetch" style={containerStyle}>
                     <div
                         style={{
+                            minWidth: "400px",
+                            //width: "700px",
                             display: "flex",
                             flexDirection: "row",
                             alignItems: "center",
                             borderRadius: 4,
-                            background:
-                                "var(--livsmedelPage-SelectAttributes-BgColor1)",
-                            paddingRight: "1px",
+                            //background: "var(--livsmedelPage-SelectAttributes-BgColor1)",
+                            marginRight: "30px",
                             paddingLeft: "1px",
                             paddingBottom: "2px",
                             paddingTop: "7px",
@@ -805,7 +798,6 @@ export default function SelectGroup() {
                 <div style={dataStyle}>
                     <MyD3Component main_grupp={main} sub_grupp={sub} />
                 </div>
-                <div></div>
             </Box>
         </React.Fragment>
     );

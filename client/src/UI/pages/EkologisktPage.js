@@ -3,8 +3,9 @@ import React from "react";
 import "../styles/pageStyles/EkologisktPage.css";
 
 const Ekologiskt = () => {
+
     const body_style = {
-        height: "90vh",
+        //minHeight: `calc(${window.innerHeight}px - 231px)`,
     };
 
     return (

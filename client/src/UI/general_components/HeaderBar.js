@@ -109,9 +109,9 @@ function DropdownMenu({ text, children }) {
     };
 
     const handleMouseLeave = () => {
-       setTimeout(function () {
-             setIsHovered(false);
-      }, 500);
+        setTimeout(function () {
+            setIsHovered(false);
+        }, 170);
     };
 
     const toggleDropdown = () => {
@@ -124,23 +124,22 @@ function DropdownMenu({ text, children }) {
         fontSize: 20,
         //textTransform: "uppercase"
         paddingTop: "var(--padding-top-text-navbar)",
-        transition: "0.10s",
+        transition: "0s",
         "&:hover": {
             transform: "scale(1.03)",
         },
     }));
     const TypographyButton = {
-        fontFamily: "Cope",
-        fontSize: "25px",
-        color: "var(--accent_color1)",
-        fontSize: 20,
-        textTransform: "uppercase",
+        //fontFamily: "Cope",
+        //fontSize: "25px",
+        //color: "var(--accent_color1)",
+        //fontSize: 20,
+        //textTransform: "uppercase",
         paddingTop: "var(--padding-top-text-navbar)",
-        transform: isHovered ? "scale(1.03)" : "scale(1)", // Apply transform conditionally based on hover state
     };
 
     return (
-        <div style={{ position: "relative", display: "inline-block" }}>
+        <div className="section_dropdown" style={{ position: "relative", display: "inline-block" }}>
             <div
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
@@ -148,16 +147,17 @@ function DropdownMenu({ text, children }) {
                 style={TypographyButton}
             >
                 <FinalTypographyText>{text}</FinalTypographyText>
-                {/* Apply TypographyText style to this div */}
             </div>
             {(isHovered || isDropdownOpen) && (
                 <div
+                    className="section_dropdown_body" 
                     onMouseEnter={() => setIsDropdownOpen(true)}
                     onMouseLeave={() => setIsDropdownOpen(false)}
                     style={{
                         position: "absolute",
-                        top: "50px",
-                        left: `calc(-${window.innerWidth}px + 99vw)`, 
+                        top: "54px",
+                        left: "-48px",
+                        //left: `calc(-${window.innerWidth}px + 98vw)`,
                         transform: "translateX(-50%)",
                         border: "2px solid var(--doc-divider-horisontal-Color)",
                         padding: "10px",
@@ -184,9 +184,7 @@ const data = [
     },
     { icon: "📊", label: "Deals Made", link: "/deals" },
 ];
-
 const data2 = [{ icon: "🧾", label: "About", link: "/about" }];
-
 const data3 = [
     { icon: "👤", label: "Ali", link: "/ali" },
     { icon: "👤", label: "Ahmed", link: "/ahmed" },
@@ -206,14 +204,14 @@ const Header = () => {
         height: "55px",
 
         backgroundColor: "var(--header-NavBar-Color)",
-        borderBottom: "1px solid var(--doc-divider-horisontal-Color)", 
+        borderBottom: "1px solid var(--doc-divider-horisontal-Color)",
         boxShadow: "0 3px 20px 0 rgba(162,155,254,0.68)",
     };
 
     const headerStyle = {
         width: "100%",
         maxWidth: "1300px",
-        minWidth: "600px",
+        //minWidth: "600px",
         margin: "0 auto",
         display: "flex",
         alignItems: "flex-start",
@@ -222,42 +220,17 @@ const Header = () => {
 
     const navLinkStyle = {
         marginRight: "20px",
-    };
+    }; 
 
-    const imageStyle = {
-        width: "115px",
-        height: "75px",
-        backgroundColor: "rgba(0,0,0,0.00)",
-        transition: "transform 0.4s",
-        transform: isHovered ? "scale(1.1)" : "scale(1)",
-    };
-
-    const TypographyText = styled(Typography)(() => ({
-        fontFamily: "Cope",
-        fontSize: "25px",
-        color: "var(--accent_color1)",
-        fontSize: 20,
-        textTransform: "uppercase",
-        paddingTop: "var(--padding-top-text-navbar)",
-        "&:hover": {
-            transform: "scale(1.03)",
-        },
-    }));
 
     const TypographyTitle = styled(Typography)(() => ({
-        color: "var(--accent_color2)",
+        color: "var(--accent_color6)",
         fontFamily: "var(--accent-font1)",
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 400,
         textAlign: "left",
         textTransform: "uppercase",
     }));
-    const buttonStyle = {
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center", 
-    };
 
     const listItemStyle = {
         color: "var(--accent_color1)",
@@ -272,7 +245,6 @@ const Header = () => {
                 className="header_row_container"
                 style={header_container_Style}
             >
-               
                 <div className="header_row" style={headerStyle}>
                     <div
                         className="Homepage_picture_link"
@@ -305,9 +277,9 @@ const Header = () => {
                             </a>
                         </Box>
                     </div>
-   
+            
                     <div
-                        className="Section_with_navigation_link"
+                        className="section_with_navigation_link"
                         style={navLinkStyle}
                     >
                         <Box
@@ -375,7 +347,6 @@ const Header = () => {
                                                         marginLeft: "7px",
                                                         minHeight: 36,
                                                     }}
-                                                    style={{}}
                                                 >
                                                     <ListItemIcon
                                                         sx={{
@@ -537,4 +508,4 @@ const Header = () => {
     );
 };
 
-export default memo(Header);
+export default Header;

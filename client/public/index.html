@@ -14,28 +14,17 @@
   <link rel="preload" as="image" href="http://localhost:3001/images/ekologiskt_card_img.webp" type="image/webp">
   <link rel="preload" as="image" href="http://localhost:3001/images/deals_card_img.webp" type="image/webp">
 
-  <!--<link rel="preconnect" href="https://cdn.oaistatic.com"/> -->
-  <!--<link rel="preconnect" href="https://fonts.googleapis.com" /> -->
-  <!-- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /> -->
-  <!-- Icons to support Material Design -->
-  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" /> -->
-  <!-- Include Copperplate fonts -->
-  <!-- <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/copperplate"> -->
-  <!-- Include Other fonts -->
-  <!-- <link rel="preload" href="https://cdn.oaistatic.com/_next/static/media/signifier-light.c131ea48.woff2" as="font" crossorigin=""/> -->
-  <!-- <link rel="preload" href="https://cdn.oaistatic.com/_next/static/media/soehne-buch.13189857.woff2" as="font" crossorigin=""/> -->
-  <!-- Include Josefin Sans fonts (chatGPT have the same font) -->
-  <!--<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap"> -->
-
-  <!-- css animations from https://animate.style/ -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
-  <!--  WHY NOT? placera här => <link rel="stylesheet" href="index.css"> -->
   <style>
+    html,
+    body {
+      /* min-width: 900px;*/
+    }
+
     html {
       margin: 0;
       padding: 0;
-
       user-select: none;
     }
 
@@ -46,16 +35,7 @@
       /* Remove default padding */
 
       overflow: auto;
-
-      /*overflow-x: hidden; Prevent horizontal scrollbar */
-      /*min-width: 800px;  dont let user be able to make the window smaller than 600 pixels */
-
-      /*background-color: rgb(12, 29, 50);*/
-      /* Set background color */
-
-      /*background: rgb(0,0,0);*/
-      /*background: linear-gradient(0deg, rgb(20, 22, 42) 0%, #352073 100%);*/
-      /*background: linear-gradient(0.36turn, #0a2c3c, #1e43a1, #412dc0, #430e59);*/
+      /* overflow-x: hidden;/* Prevent horizontal scrollbar */
 
       background: linear-gradient(95deg,
           var(--doc-background-gradientColor1),
@@ -72,16 +52,32 @@
     .Homepage_picture_link a img {
       animation: rubberBand;
       animation-duration: 1s;
+      user-select: none;
     }
 
     .header_row {
-      --padding-top-text-navbar: 8px;
+      --padding-top-text-navbar: 7px;
+    }
+
+    .block_selection, .header_row,
+    .header_row_container,
+    .section_with_navigation_link,
+    .section_dropdown,
+    .section_dropdown_body {
+      user-select: none;
+    }
+
+    .search_bar_fetch {
+      background: rgb(242, 243, 247);
+      background-image: linear-gradient(43deg, var(--gradient-start) 0%, var(--gradient-mid) 46%, var(--gradient-end) 100%);
+      border-radius: 30px;
+      box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
     }
 
     /*––––––––––––––––– Save Important COLORS with custom name so that they could be used wherever needed –––––––––––––––––––––*/
 
     .dark {
-      --nice--color--1: rgba(50,20,220,0.9);
+      --nice--color--1: rgba(50, 20, 220, 0.9);
 
       --doc-background-gradientColor1: #741933;
       --doc-background-gradientColor2: #350e70;
@@ -95,21 +91,26 @@
       --accent_color3: #e6e5e6;
       --accent_color4: rgb(163, 239, 243);
       --accent_color5: rgb(0, 0, 0);
+      --accent_color6: #c8734e;
+
+      --tab_item_dense_text: #e6e5e6;
+      --tab_item_color_not_selected: #e6e5e6;
+      --tab_item_color_selected: #ff4d00;
 
       --accent_allways_Dark_color1: #101010;
 
       --header-NavBar-Color: rgb(0, 0, 0);
       --header-NavBar-DropDown--List--Color: #e6e5e6;
       --header-NavBar-DropDown--List--bgColor: #35094D;
-      --header-NavBar-DropDown--List--bgColor--hover:  rgba(50,20,220,0.9);
+      --header-NavBar-DropDown--List--bgColor--hover: rgba(50, 20, 220, 0.9);
 
       --mainPage-Content2-textColor1: #e6e5e6;
 
       --gradient-bgColor: #4158D0;
-      --gradient-start:#4158d0;
+      --gradient-start: #4158d0;
       --gradient-mid: #1888b4;
       --gradient-end: #0f31ca;
-  
+
       --mainPage-3CardLinks-BgColor1: #35094D;
       --mainPage-3CardLinks-Border-Color1: rgba(30, 237, 197, 0.78);
       --mainPage-3CardLinks-Title-Color1: rgb(163, 239, 243);
@@ -128,7 +129,7 @@
     }
 
     .light {
-      --nice--color--1: rgba(50,20,220,0.9);
+      --nice--color--1: rgba(50, 20, 220, 0.9);
 
       --doc-background-gradientColor1: #c1e6fc;
       --doc-background-gradientColor2: #b9aecb;
@@ -142,18 +143,24 @@
       --accent_color3: #35094D;
       --accent_color4: rgba(237, 154, 30, 0.78);
       --accent_color5: rgba(0, 0, 0, 0.78);
+      --accent_color6: rgb(163, 239, 243);
+
+
+      --tab_item_dense_text: #35094D;
+      --tab_item_color_not_selected: #35094D;
+      --tab_item_color_selected: #ff0000;
 
       --accent_allways_Dark_color1: #101010;
 
       --header-NavBar-Color: #1F094D;
       --header-NavBar-DropDown--List--Color: #35094D;
       --header-NavBar-DropDown--List--bgColor: #1F094D;
-      --header-NavBar-DropDown--List--bgColor--hover:  rgba(237, 154, 30, 0.78);
+      --header-NavBar-DropDown--List--bgColor--hover: rgba(237, 154, 30, 0.78);
 
       --mainPage-Content2-textColor1: #35094D;
 
       --gradient-bgColor: #4158D0;
-      --gradient-start:#4158D0;
+      --gradient-start: #4158D0;
       --gradient-mid: #C850C0;
       --gradient-end: #FFCC70;
 
@@ -207,12 +214,17 @@
       src: url(http://localhost:3001/fonts/LTBinaryNeue-Regular.ttf) format("truetype")
     }
 
+    @font-face {
+      font-family: tab;
+      src: url(http://localhost:3001/fonts/5kaSansDesign-Condensed.ttf) format("truetype")
+    }
+
     body {
       --main-font: 'Arial', sans-serif;
       --secondary-font: 'Cope', "Arial", Sans-serif;
       --third-font: 'kasper', "Arial", Sans-serif;
       --fourth-font: 'kk', "Arial", Sans-serif;
-      --fifth-font: 'Sne', "Arial", Sans-serif;
+      --fifth-font: 'tab', "Arial", Sans-serif;
 
       --accent-font1: 'Sne', "Arial", Sans-serif;
       --accent-font2: 'Josefin Sans', "Arial", Sans-serif;
@@ -224,98 +236,15 @@
       --mainpage--content2-3card-font2: 'kk', "Arial", Sans-serif;
 
       --mainpage--content23--font--size: clamp(17px, 1.1vw, 30px);
+      --mainpage--tab_table--font--size_not_selected: 12px;
+      --mainpage--tab_table--font--size_selected: 19px;
     }
 
     /*—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
-    /*
-    @font-face {
-      font-display: swap;
-      font-family: Signifier;
-      font-style: normal;
-      font-weight: 400;
-      src: url(https://cdn.oaistatic.com/_next/static/media/signifier-light.c131ea48.woff2) format("woff2")
-    }
-    
-    @font-face {
-      font-display: swap;
-      font-family: Signifier;
-      font-style: italic;
-      font-weight: 400;
-      src: url(https://cdn.oaistatic.com/_next/static/media/signifier-light-italic.ae129369.woff2) format("woff2")
-    }
-    
-    @font-face {
-      font-display: swap;
-      font-family: Signifier;
-      font-style: normal;
-      font-weight: 700;
-      src: url(https://cdn.oaistatic.com/_next/static/media/signifier-bold.3a11015f.woff2) format("woff2")
-    }
-    
-    @font-face {
-      font-display: swap;
-      font-family: Signifier;
-      font-style: italic;
-      font-weight: 700;
-      src: url(https://cdn.oaistatic.com/_next/static/media/signifier-bold-italic.52d511e3.woff2) format("woff2")
-    }
-  
-    @font-face {
-      font-display: swap;
-      font-family: Söhne;
-      font-style: normal;
-      font-weight: 400;
-      src: url(https://cdn.oaistatic.com/_next/static/media/soehne-buch.13189857.woff2) format("woff2")
-    }
-
-    @font-face {
-      font-display: swap;
-      font-family: Söhne;
-      font-style: normal;
-      font-weight: 500;
-      src: url(https://cdn.oaistatic.com/_next/static/media/soehne-kraftig.204b461c.woff2) format("woff2")
-    }
-
-    @font-face {
-      font-display: swap;
-      font-family: Söhne;
-      font-style: italic;
-      font-weight: 500;
-      src: url(https://cdn.oaistatic.com/_next/static/media/soehne-kraftig-kursiv.a0040f3f.woff2) format("woff2")
-    }
-
-   
-    @font-face {
-      font-display: swap;
-      font-family: Söhne Mono;
-      font-style: italic;
-      font-weight: 400;
-      src: url(https://cdn.oaistatic.com/_next/static/media/soehne-mono-buch-kursiv.8eeb89d0.woff2) format("woff2")
-    }
-
-    @font-face {
-      font-display: swap;
-      font-family: Söhne Circle;
-      font-style: normal;
-      font-weight: 400;
-      src: url(https://cdn.oaistatic.com/_next/static/media/soehne-circle-buch.d446e5e9.woff2) format("woff2")
-    }
-
-    @font-face {
-      font-display: swap;
-      font-family: Söhne Circle;
-      font-style: normal;
-      font-weight: 600;
-      src: url(https://cdn.oaistatic.com/_next/static/media/soehne-circle-halbfett.9eb377ad.woff2) format("woff2")
-    }
-    */
-    /*—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
-
 
     /*
-      The -webkit-scrollbar family of properties consists of seven
-    different pseudo-elements that, together, comprise a full scrollbar UI
-    element:
+      The -webkit-scrollbar family of properties consists of seven different pseudo-elements that, together, comprise a full scrollbar UI
+      element:
               1. ::-webkit-scrollbar addresses the background of the bar itself. It is usually covered by the other elements
               2. :: -webkit-scrollbar-button addresses the directional buttons on the scrollbar
               3. ::-webkit-scrollbar-track addresses the empty space "below" the progress bar
@@ -450,7 +379,7 @@
     window.addEventListener('resize', function () {
       setTimeout(function () {
         window.location.reload();
-      }, 1000);
+      }, 900);
     });
   </script>
 </body>

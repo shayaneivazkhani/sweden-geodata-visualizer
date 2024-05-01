@@ -10,24 +10,24 @@ import Table__meatball2_sweden from "./Data_Visualization_Components/Table_stick
 import "./MainPage_Content1To8_styles/MainPage_content3.css";
 
 const TabItem = styled(Tab)(({ theme }) => ({
-    position: "relative",
     borderRadius: "30px",
     textAlign: "center",
     transition: "all .5s",
-    padding: "10px 15px",
+    //padding: "10px 15px",
     height: "auto",
-    margin: "10px 0",
+    //width: "auto",
+    //margin: "10px 0",
     float: "none",
-    color: "var(--accent_color4)",
+    color: "var(--tab_item_color_not_selected)",
     fontFamily: "var(--fifth-font)",
-    fontSize: "12px",
-    fontWeight: "500",
+    fontSize: "var(--mainpage--tab_table--font--size_not_selected)",
     [theme.breakpoints.up("md")]: {
-        minWidth: 120,
+        minWidth: 90,
     },
     [`&.${tabClasses.selected}, &:hover`]: {
-        color: "var(--accent_color5)",
+        color: "var(--tab_item_color_selected)",
         backgroundColor: "#00acc1",
+        fontSize: "var(--mainpage--tab_table--font--size_selected)",
         boxShadow: "0 7px 10px -5px rgba(76, 175, 80, 0.4)",
     },
 }));
@@ -36,12 +36,12 @@ const Content3 = () => {
     const [tabIndex, setTabIndex] = React.useState(0);
 
     const outerBodyStyle = {
-        width: "100%",
         minHeight: "700px",
         paddingBottom: "20px",
     };
     const innerBodyStyle = {
         display: "flex",
+        
         flexDirection: "column", // Arrange children vertically
         alignItems: "center", // Center items horizontally
         justifyContent: "center", // Center items vertically
@@ -55,10 +55,15 @@ const Content3 = () => {
         textTransform: "uppercase",
     };
     const tabs_headStyle = {
-        width: "100%",
+        display: "flex",
+        alignItems: "center", // Center items horizontally
+        justifyContent: "center", // Center items vertically
     };
     const tabs_bodyStyle = {
-        width: "100%",
+        userSelect: "none",
+        display: "flex",
+        alignItems: "center", // Center items horizontally
+        justifyContent: "center", // Center items vertically
     };
 
     return (
@@ -77,8 +82,6 @@ const Content3 = () => {
                                 borderRadius: 1,
 
                                 paddingTop: "20px",
-                                paddingLeft: "60px",
-                                paddingRight: "55px",
                                 paddingBottom: "40px",
                                 backgroundColor: "rgba(0, 0, 70, 0.18)",
                                 boxShadow: "inset 0 1px 10px 0 #050307",
@@ -94,7 +97,7 @@ const Content3 = () => {
                                     value={tabIndex}
                                     onChange={(e, index) => setTabIndex(index)}
                                     sx={{
-                                        width: "700px",
+                                        
                                         paddingBottom: "10px",
                                         [`& .${tabsClasses.indicator}`]: {
                                             display: "none",

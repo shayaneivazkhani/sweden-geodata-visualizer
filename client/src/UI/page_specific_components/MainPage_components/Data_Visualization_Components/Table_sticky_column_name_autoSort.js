@@ -16,7 +16,6 @@ import Switch from "@mui/material/Switch";
 import { visuallyHidden } from "@mui/utils";
 import Typography from "@mui/material/Typography";
 
-
 // —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 /*
@@ -284,7 +283,11 @@ export default function EnhancedTable(props) {
                     // Assuming the JSON response is an array of objects with properties constellation_name, sub_sub_group, totalunits, and percentage_of_total_units
                     // Iterate over each object in the array and create data objects using createData function
                     const newData = data
-                        .filter((item) => item.totalunits > 5 && item.percentage_of_total_units !== 'NULL')
+                        .filter(
+                            (item) =>
+                                item.totalunits > 5 &&
+                                item.percentage_of_total_units !== "NULL",
+                        )
                         .map((item) =>
                             createData(
                                 item.constellation_name,
@@ -362,161 +365,177 @@ export default function EnhancedTable(props) {
     const emptyRows =
         rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
+    const bodyStyle = {
+      padding: "15px",
+      overflow: "auto",
+      width: "auto",
+    };
+
     return (
         <React.Fragment>
-            <FormControlLabel
-                label={
-                    <Typography
-                        sx={{
-                            fontFamily: "monospace", // Specify the desired font family
-                            fontSize: "13px", // Specify the desired font size
-                        }}
-                    >
-                        dense
-                    </Typography>
-                }
-                style={{
-                    color: "var(--accent_color3)",
-                    paddingRight: "20px",
-                    borderRadius: "20px",
-                }}
-                control={
-                    <Switch checked={dense} onChange={handleChangeDense} />
-                }
-            />
-            {/* <Paper sx={{ width: "100%", mb: 2 }}> */}
-            <Paper sx={{ width: "760px", height: "500px", overflow: "hidden" }}>
-                <TableContainer
+            <div style={bodyStyle}>
+                <FormControlLabel
+                    label={
+                        <Typography
+                            sx={{
+                                fontFamily: "monospace", // Specify the desired font family
+                                fontSize: "13px", // Specify the desired font size
+                            }}
+                        >
+                            dense
+                        </Typography>
+                    }
+                    style={{
+                        color: "var(--tab_item_dense_text)",
+                        paddingRight: "20px",
+                        borderRadius: "20px",
+                    }}
+                    control={
+                        <Switch checked={dense} onChange={handleChangeDense} />
+                    }
+                />
+                {/* <Paper sx={{ width: "100%", mb: 2 }}> */}
+                <Paper
                     sx={{
-                        height: "450px",
-                        "&::-webkit-scrollbar": {
-                            width: "9px",
-                        },
-                        "&::-webkit-scrollbar-thumb": {
-                            backgroundColor: "rgba(255, 134, 18, 0.98)",
-                            borderRadius: "3px",
-                            transition: "background-color 0.2s", // Add transition for smooth effect
-                            "&:hover": {
-                                backgroundColor: "rgba(255,106,50, 0.97)", // Change opacity on hover
-                            },
-                        },
-                        "&::-webkit-scrollbar-track": {
-                            backgroundColor: "rgba(0,172,193, 1.0)",
-                            //backgroundColor: "rgba(163,239,243, 0.97)",
-                            "&:hover": {
-                                backgroundColor: "rgba(0,172,193, 0.97)", // Change opacity on hover
-                            },
-                        },
+                        maxWidth: "760px",
+                        minWidth: "100px",
+                        height: "500px",
+                        overflow: "hidden",
                     }}
                 >
-                    <Table
-                        stickyHeader
-                        aria-label="sticky table"
-                        size={dense ? "small" : "medium"}
+                    <TableContainer
+                        sx={{
+                            height: "450px",
+                            "&::-webkit-scrollbar": {
+                                width: "9px",
+                            },
+                            "&::-webkit-scrollbar-thumb": {
+                                backgroundColor: "rgba(255, 134, 18, 0.98)",
+                                borderRadius: "3px",
+                                transition: "background-color 0.2s", // Add transition for smooth effect
+                                "&:hover": {
+                                    backgroundColor: "rgba(255,106,50, 0.97)", // Change opacity on hover
+                                },
+                            },
+                            "&::-webkit-scrollbar-track": {
+                                backgroundColor: "rgba(0,172,193, 1.0)",
+                                //backgroundColor: "rgba(163,239,243, 0.97)",
+                                "&:hover": {
+                                    backgroundColor: "rgba(0,172,193, 0.97)", // Change opacity on hover
+                                },
+                            },
+                        }}
                     >
-                        <EnhancedTableHead
-                            numSelected={selected.length}
-                            order={order}
-                            orderBy={orderBy}
-                            onSelectAllClick={handleSelectAllClick}
-                            onRequestSort={handleRequestSort}
-                            rowCount={rows.length}
-                        />
-                        <TableBody>
-                            {visibleRows.map((row, index) => {
-                                const isItemSelected = isSelected(row.id);
-                                const labelId = `enhanced-table-checkbox-${index}`;
+                        <Table
+                            stickyHeader
+                            aria-label="sticky table"
+                            size={dense ? "small" : "medium"}
+                        >
+                            <EnhancedTableHead
+                                numSelected={selected.length}
+                                order={order}
+                                orderBy={orderBy}
+                                onSelectAllClick={handleSelectAllClick}
+                                onRequestSort={handleRequestSort}
+                                rowCount={rows.length}
+                            />
+                            <TableBody>
+                                {visibleRows.map((row, index) => {
+                                    const isItemSelected = isSelected(row.id);
+                                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                                return (
+                                    return (
+                                        <TableRow
+                                            hover
+                                            onClick={(event) =>
+                                                handleClick(event, row.id)
+                                            }
+                                            role="checkbox"
+                                            aria-checked={isItemSelected}
+                                            tabIndex={-1}
+                                            key={row.id}
+                                            sx={
+                                                index % 2 === 0
+                                                    ? {
+                                                          backgroundColor:
+                                                              "rgba(187,176,219, 0.23)",
+                                                      }
+                                                    : {
+                                                          backgroundColor:
+                                                              "rgba(187,176,219, 0.30)",
+                                                      }
+                                            }
+                                        >
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                align="left"
+                                                style={{ width: "170px" }}
+                                            >
+                                                {row.name}
+                                            </TableCell>
+
+                                            <TableCell align="center">
+                                                {row.produkt}
+                                            </TableCell>
+                                            <TableCell align="right">
+                                                {row.units}
+                                            </TableCell>
+                                            <TableCell align="right">
+                                                {row.unit}
+                                            </TableCell>
+                                            <TableCell
+                                                align="right"
+                                                style={{ width: "100px" }}
+                                            >
+                                                {row.andel}
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                                {emptyRows > 0 && (
                                     <TableRow
-                                        hover
-                                        onClick={(event) =>
-                                            handleClick(event, row.id)
-                                        }
-                                        role="checkbox"
-                                        aria-checked={isItemSelected}
-                                        tabIndex={-1}
-                                        key={row.id}
-                                        sx={
-                                            index % 2 === 0
-                                                ? {
-                                                      backgroundColor:
-                                                          "rgba(187,176,219, 0.23)",
-                                                  }
-                                                : {
-                                                      backgroundColor:
-                                                          "rgba(187,176,219, 0.30)",
-                                                  }
-                                        }
+                                        style={{
+                                            height:
+                                                (dense ? 30 : 53) * emptyRows,
+                                        }}
                                     >
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            align="left"
-                                            style={{ width: "170px" }}
-                                        >
-                                            {row.name}
-                                        </TableCell>
-
-                                        <TableCell align="center">
-                                            {row.produkt}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {row.units}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {row.unit}
-                                        </TableCell>
-                                        <TableCell
-                                            align="right"
-                                            style={{ width: "100px" }}
-                                        >
-                                            {row.andel}
-                                        </TableCell>
+                                        <TableCell colSpan={6} />
                                     </TableRow>
-                                );
-                            })}
-                            {emptyRows > 0 && (
-                                <TableRow
-                                    style={{
-                                        height: (dense ? 30 : 53) * emptyRows,
-                                    }}
-                                >
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
 
-                <TablePagination
-                    rowsPerPageOptions={[
-                        25,
-                        50,
-                        100,
-                        { label: "All", value: -1 },
-                    ]}
-                    component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                    sx={{
-                        ".MuiTablePagination-toolbar": {
-                            backgroundColor: "rgba(255,255,255,0.08)",
-                            borderTop: "2px solid rgb(0,0,0)",
-                        },
-                        ".MuiTablePagination-displayedRows": {
-                            color: "black",
-                        },
-                        ".MuiTablePagination-selectLabel": {
-                            color: "black",
-                        },
-                    }}
-                />
-            </Paper>
+                    <TablePagination
+                        rowsPerPageOptions={[
+                            25,
+                            50,
+                            100,
+                            { label: "All", value: -1 },
+                        ]}
+                        component="div"
+                        count={rows.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                        sx={{
+                            ".MuiTablePagination-toolbar": {
+                                backgroundColor: "rgba(255,255,255,0.08)",
+                                borderTop: "2px solid rgb(0,0,0)",
+                            },
+                            ".MuiTablePagination-displayedRows": {
+                                color: "black",
+                            },
+                            ".MuiTablePagination-selectLabel": {
+                                color: "black",
+                            },
+                        }}
+                    />
+                </Paper>
+            </div>
         </React.Fragment>
     );
 }

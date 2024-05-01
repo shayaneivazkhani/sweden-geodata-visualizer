@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const duckdb = require("duckdb");
 const path = require("path");
 const fs = require('fs');
-var compression = require('compression')
+var compression = require('compression');
 
 const app = express();
 const port = 3001;
@@ -393,6 +393,24 @@ app.get("/api/column/D3Result", async (req, res) => {
 
     try {
         const db = await initializeduck();
+        /*const query = `SELECT
+                             constellation_name || ',  ' || ROUND(SUM(units), 2) || ' ' || GROUP_CONCAT(DISTINCT unit) || '  ${livsmedel}'  AS name,
+                              ROUND(SUM(units), 0) AS value,
+                              ' ' || ROUND(SUM(units), 0) || ' ' || GROUP_CONCAT(DISTINCT unit) || ' ${livsmedel}' AS x,
+                              ROUND(SUM(units), 0) || ' ' || GROUP_CONCAT(DISTINCT unit) AS y,
+                              ' ' || ROUND(SUM(units), 0) || 'Produkt ' || ' ${livsmedel}' AS z,
+                          FROM tendmilldb, 
+                              (SELECT 
+                                  SUM(units) AS total_units 
+                                FROM 
+                                  tendmilldb
+                                WHERE ${which_sub} LIKE '${livsmedel}') AS total
+                          WHERE
+                              ${which_sub} LIKE '${livsmedel}'
+                          GROUP BY
+                              constellation_name,
+                              total_units`;
+        */
         const query = `SELECT
                               'Område:  ' || constellation_name AS place,
                                constellation_name AS place2,
@@ -437,6 +455,54 @@ app.get("/api/column/D3Result", async (req, res) => {
         //db.close();
     }
 });
+
+/*
+app.get("/api/column/D3Result", async (req, res) => {
+  const livsmedel = req.query.livsmedel || "Salt"; // default value of Salt if 'livsmedel' is not provided
+  const which_sub = 'sub_group';
+  try {
+    const db = await initializeduck();
+    const query = `SELECT
+                      constellation_name || ' ' || ROUND(SUM(units), 0) || ' ' || GROUP_CONCAT(DISTINCT unit) AS name,
+                      ROUND(SUM(units) / total.total_units * 100, 4) * 4 AS value,
+                      ROUND(SUM(units) / total.total_units * 100, 4) + 100 AS x,
+                      ROUND(SUM(units) / total.total_units * 100, 4) + 100 AS y
+                   FROM tendmilldb, 
+                      (SELECT 
+                          SUM(units) AS total_units 
+                        FROM 
+                          tendmilldb
+                        WHERE ${which_sub} LIKE '${livsmedel}') AS total
+                   WHERE
+                      ${which_sub} LIKE '${livsmedel}'
+                   GROUP BY
+                      constellation_name,
+                      total_units`;
+
+    db.all(query, function (err, queryres) {
+      if (err) {
+        throw err;
+      }
+
+      // Map each row to an object containing all column names and their values
+      const sanitizedResult = queryres.map(row => {
+        const rowObject = {};
+        for (const [key, value] of Object.entries(row)) {
+          rowObject[key] = value ? value.toString() : 'NULL';
+        }
+        return rowObject;
+      });
+
+      res.json(sanitizedResult);
+    });
+  } catch (error) {
+    console.log("error: ", error);
+    res.status(500).json({ error: "An error occurred while processing your request" });
+  } finally {
+    //db.close();
+  }
+});
+*/
 
 app.get("/api/list/goods", async (req, res) => {
     const livsmedel = req.query.livsmedel || "Salt"; // default value of Salt if 'livsmedel' is not provided

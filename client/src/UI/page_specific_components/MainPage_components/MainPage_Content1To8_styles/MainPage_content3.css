@@ -1,21 +1,75 @@
 .content3_main_outer_body {
+    
+    padding-left: 10%;
     margin-top: 50px;
     transition: all 0.2s;
-    position: relative;
     cursor: pointer;
 }
 
 .content3_text {
-    margin-left: 50px; 
+    user-select: none;
     margin-bottom: 50px;
 
     color: rgb(253, 241, 230);
 
     text-align: left;
-    font-family: "Copperplate", sans-serif;
+    font-family: "Cope";
     font-size: 30px;
     font-weight: 100;
-    
+
     font-stretch: ultra-condensed;
     line-height: 1.5;
+}
+
+.card {
+    width: 190px;
+    height: 254px;
+}
+
+.card-inner {
+    user-select: none;
+    width: 75vw;
+    max-width: 850px;
+    height: inherit;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+}
+
+.card:hover {
+    transform: scale(1.04) rotate(1deg);
+}
+
+.circle {
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(#b0e633, #53ef7d);
+    border-radius: 50%;
+    position: absolute;
+    animation: move-up6 2s ease-in infinite alternate-reverse;
+    z-index: -2;
+}
+
+.circle:nth-child(1) {
+    top: -25px;
+    left: -55px;
+}
+
+.circle:nth-child(2) {
+    bottom: -25px;
+    right: -65px;
+    animation-name: move-down1;
+}
+
+@keyframes move-up6 {
+    to {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes move-down1 {
+    to {
+        transform: translateY(20px);
+    }
 }

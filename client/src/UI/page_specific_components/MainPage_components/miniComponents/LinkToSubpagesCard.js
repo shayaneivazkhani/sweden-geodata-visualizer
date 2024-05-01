@@ -118,6 +118,7 @@ function SubPagesCard() {
     };
 
     const containerStyle = {
+        minWidth: "130px",
         maxWidth: "1300px",
         margin: "0 auto",
         display: "flex",
@@ -137,7 +138,10 @@ function SubPagesCard() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center", // Center items horizontally
-        justifyContent: "center", // Center items vertically
+        justifyContent: "center", // Center items vertically,
+        margin: "0 auto",
+        marginRight: "5px",
+        marginLeft: "5px",
     };
 
     const cardStyle = {};

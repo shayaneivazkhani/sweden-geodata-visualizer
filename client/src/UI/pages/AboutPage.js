@@ -3,7 +3,7 @@ import React from "react";
 const AboutPage = () => {
 
     const body_style = {
-        height: "90vh",
+        //minHeight: `calc(${window.innerHeight}px - 75px)`,
     };
 
     return (

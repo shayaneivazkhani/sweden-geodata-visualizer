@@ -9,9 +9,10 @@ import "../styles/pageStyles/MainPage.css";
 const MainPage = () => {
 
     const body_style = {
-        width: "90vw",
-        margin: "0 auto",
+        //minHeight: `calc(${window.innerHeight}px - 211px)`,
+        //width: "80vw",
         maxWidth: "1200px",
+        margin: "0 auto",
     };
 
     return (
@@ -23,9 +24,6 @@ const MainPage = () => {
                     </div>
                     <div className="content3">
                         <Content3 />
-                    </div>
-                    <div className="content4">
-                        <Content4 />
                     </div>
                 </div>
             </div>

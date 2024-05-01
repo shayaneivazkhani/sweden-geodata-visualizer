@@ -5,7 +5,7 @@ import "../styles/pageStyles/DealsPage.css";
 const Deals = () => {
     
     const body_style = {
-        height: "90vh",
+        //minHeight: `calc(${window.innerHeight}px - 231px)`,
     };
 
     return (
