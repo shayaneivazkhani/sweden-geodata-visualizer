@@ -1,0 +1,57 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.js",
+  "proxy": "http://localhost:3001",
+  "dependencies": {
+    "@emotion/react": "latest",
+    "@emotion/styled": "latest",
+    "@mui/base": "latest",
+    "@mui/icons-material": "latest",
+    "@mui/joy": "latest",
+    "@mui/material": "latest",
+    "@mui/system": "latest",
+    "@mui/utils": "latest",
+    "@mui/x-charts": "latest",
+    "@mui/x-data-grid": "latest",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "chance": "latest",
+    "color": "latest",
+    "d3": "^7.9.0",
+    "d3-geo-projection": "^4.0.0",
+    "prop-types": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-favicon": "latest",
+    "react-lottie": "latest",
+    "react-router-dom": "^6.22.1",
+    "react-scripts": "latest",
+    "react-swipeable-views": "latest",
+    "styled-components": "^6.1.8",
+    "three": "^0.164.1",
+    "topojson": "1.6.20",
+    "web-vitals": "^2.1.4"
+  },
+  "description": "This project integrates components from Material-UI. You can find more information at: \n- Temporary Drawer: https://github.com/mui/material-ui/blob/v5.15.9/docs/data/material/components/drawers/TemporaryDrawer.js \n- Floating Action Button Zoom: https://github.com/mui/material-ui/blob/v5.15.9/docs/data/material/components/floating-action-button/FloatingActionButtonZoom.js \n- https://github.com/mui/material-ui/blob/v5.15.9/docs/data/material/components/selects/MultipleSelectChip.js",
+  "scripts": {
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "eject": "react-scripts eject",
+    "start": "react-scripts start",
+    "test": "react-scripts test"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
