@@ -1,8 +1,4 @@
-<p align="center" style="line-height: 2;">
-                        <img src="https://img.shields.io/badge/Subpage%201%20Status-99%25-brightgreen?style=for-the-badge"/>
-                        <img src="https://img.shields.io/badge/Subpage%202%20Status-0%25-red?style=for-the-badge"/>
-                        <img src="https://img.shields.io/badge/Subpage%203%20Status-0%25-red?style=for-the-badge"/>
-</p>
+a Fullstack Dockerised web application that visualises some form of data (in this case sales pattern of groceries) across different municipalities across Sweden
 
 
 ![applogo](project_logo_no_background.jpg)
