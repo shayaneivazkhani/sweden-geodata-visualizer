@@ -1,6 +1,10 @@
 a Fullstack Dockerised web application that visualises some form of data (in this case sales pattern of groceries) across different municipalities across Sweden
 
 
+https://github.com/user-attachments/assets/e9101864-0215-4f14-baab-8bcd21a67910
+
+
+
 ![applogo](project_logo_no_background.jpg)
 
 # Start whole WEB app Dockerized
