@@ -28,17 +28,6 @@ Navigate to MeatBallMadness then either client directory or server directory, th
 
 ## ✨ Features
 
-
-# Indelning av ansvar
-
-#### 📒 Första subpage (food sales) ——> Shayan ・・・・・・・・・・・・・Status: 99% färdig
-- ✅ implementera en Geomap 
-- ✅ implementera React Suspense för images som visas i 3 Card Links + HomePage_Link 
-- ✅ implementera FallBack Fonts och minimize CSS 
-#### 📒 Andra subpage (organic sales) ——> Kevin, Ahmed, Daniel ・・・・・・・・Status: % färdig
-#### 📒 Tredje subpage (deal made subpage) ——> Lucas, Ali, Dilan och Hassim ・・・・Status: % färdig
-#### 📒 About page ——> Lucas ・・・・・・・・・・・・・・・・・・・・・・・Status: % färdig
-
 # Implement Checkpoints
 
 ### Front-end – client 
